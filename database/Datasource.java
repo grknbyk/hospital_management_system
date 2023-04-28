@@ -1,4 +1,4 @@
-package data;
+package database;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -9,7 +9,7 @@ public class Datasource {
 
     public static final String DB_NAME = "hospital.db";
 
-    public static final String CONNECTION_STRING = "jdbc:sqlite:C:\\Users\\Lenovo\\Desktop\\hospital management system\\data\\"+ DB_NAME;
+    public static final String CONNECTION_STRING = "jdbc:sqlite:C:\\Users\\Lenovo\\Desktop\\hospital management system\\database\\"+ DB_NAME;
 
     public static final String TABLE_STAFF = "staffs";
     public static final String COLUMN_STAFF_ID = "id";

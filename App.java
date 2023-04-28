@@ -1,4 +1,4 @@
-import data.Datasource;
+import database.Datasource;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
@@ -14,7 +14,7 @@ public class App extends Application {
 
 
 
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("ui/LoginScene.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("ui/scene/LoginScene.fxml"));
         Parent root = loader.load();
         
         primaryStage.setTitle("Hospital Management System");

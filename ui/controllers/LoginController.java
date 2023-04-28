@@ -1,8 +1,8 @@
-package controllers;
+package ui.controllers;
 
 import java.io.IOException;
 
-import data.Datasource;
+import database.Datasource;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -13,7 +13,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
-public class Login {
+public class LoginController {
 
 	@FXML
 	TextField usernameTextField;
@@ -69,7 +69,7 @@ public class Login {
 
 	private void showManagerPanel(ActionEvent event) throws IOException {
 
-		root = FXMLLoader.load(getClass().getResource("../ui/ManagerScene.fxml"));
+		root = FXMLLoader.load(getClass().getResource("../scene/ManagerScene.fxml"));
 		stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
 		scene = new Scene(root);
 		stage.setTitle("Hospital Management System - Manager");
@@ -79,7 +79,7 @@ public class Login {
 
 	private void showDoctorPanel(ActionEvent event) throws IOException {
 
-		root = FXMLLoader.load(getClass().getResource("DoctorScene.fxml"));
+		root = FXMLLoader.load(getClass().getResource("../scene/DoctorScene.fxml"));
 		stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
 		scene = new Scene(root);
 		stage.setTitle("Hospital Management System - Doctor");
@@ -89,7 +89,7 @@ public class Login {
 
 	private void showNursePanel(ActionEvent event) throws IOException {
 
-		root = FXMLLoader.load(getClass().getResource("NurseScene.fxml"));
+		root = FXMLLoader.load(getClass().getResource("../scene/NurseScene.fxml"));
 		stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
 		scene = new Scene(root);
 		stage.setTitle("Hospital Management System - Nurse");
@@ -99,7 +99,7 @@ public class Login {
 
 	private void showReceptionistPanel(ActionEvent event) throws IOException {
 
-		root = FXMLLoader.load(getClass().getResource("ReceptionistScene.fxml"));
+		root = FXMLLoader.load(getClass().getResource("../scene/ReceptionistScene.fxml"));
 		stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
 		scene = new Scene(root);
 		stage.setTitle("Hospital Management System - Receptionist");
@@ -109,7 +109,7 @@ public class Login {
 
 	private void showPharmacistPanel(ActionEvent event) throws IOException {
 
-		root = FXMLLoader.load(getClass().getResource("PharmacistScene.fxml"));
+		root = FXMLLoader.load(getClass().getResource("../scene/PharmacistScene.fxml"));
 		stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
 		scene = new Scene(root);
 		stage.setTitle("Hospital Management System - Pharmacist");

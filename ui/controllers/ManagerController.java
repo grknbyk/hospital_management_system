@@ -1,4 +1,4 @@
-package controllers;
+package ui.controllers;
 
 import java.io.IOException;
 
@@ -11,14 +11,14 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.stage.Stage;
 
-public class Manager {
+public class ManagerController {
 
     @FXML
     Button logoutButton;
 
     public void logout(ActionEvent event) throws IOException {
         
-        Parent root = FXMLLoader.load(getClass().getResource("../ui/LoginScene.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("../scene/LoginScene.fxml"));
         Scene scene = new Scene(root);
         Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
         window.setTitle("Hospital Management System");
