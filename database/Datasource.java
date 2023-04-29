@@ -7,25 +7,25 @@ import java.sql.SQLException;
 
 public class Datasource {
 
-    public static final String DB_NAME = "hospital.db";
+    private static final String DB_NAME = "hospital.db";
 
-    public static final String CONNECTION_STRING = "jdbc:sqlite:C:\\Users\\Lenovo\\Desktop\\hospital management system\\database\\"+ DB_NAME;
+    private static final String CONNECTION_STRING = "jdbc:sqlite:C:\\Users\\Lenovo\\Desktop\\hospital management system\\database\\"+ DB_NAME;
 
-    public static final String TABLE_STAFF = "staffs";
-    public static final String COLUMN_STAFF_ID = "id";
-    public static final String COLUMN_STAFF_USERNAME = "username";
-    public static final String COLUMN_STAFF_PASSWORD = "password";
-    public static final String COLUMN_STAFF_STATUS = "status";
-    public static final int INDEX_STAFF_ID = 1;
-    public static final int INDEX_STAFF_USERNAME = 2;
-    public static final int INDEX_STAFF_PASSWORD = 3;
-    public static final int INDEX_STAFF_STATUS = 4;
+    private static final String TABLE_STAFF = "staffs";
+    private static final String COLUMN_STAFF_ID = "id";
+    private static final String COLUMN_STAFF_USERNAME = "username";
+    private static final String COLUMN_STAFF_PASSWORD = "password";
+    private static final String COLUMN_STAFF_STATUS = "status";
+    private static final int INDEX_STAFF_ID = 1;
+    private static final int INDEX_STAFF_USERNAME = 2;
+    private static final int INDEX_STAFF_PASSWORD = 3;
+    private static final int INDEX_STAFF_STATUS = 4;
 
-    public static final int ORDER_BY_NONE = 1;
-    public static final int ORDER_BY_ASC = 2;
-    public static final int ORDER_BY_DESC = 3;
+    private static final int ORDER_BY_NONE = 1;
+    private static final int ORDER_BY_ASC = 2;
+    private static final int ORDER_BY_DESC = 3;
 
-    public static final String QUERY_LOGIN = "SELECT " + COLUMN_STAFF_STATUS + " FROM " + TABLE_STAFF 
+    private static final String QUERY_LOGIN = "SELECT " + COLUMN_STAFF_STATUS + " FROM " + TABLE_STAFF 
     + " WHERE " + COLUMN_STAFF_USERNAME + " = ? AND " + COLUMN_STAFF_PASSWORD + " = ?";
 
 
