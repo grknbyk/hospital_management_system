@@ -9,7 +9,7 @@ public class Datasource {
 
     private static final String DB_NAME = "hospital.db";
 
-    private static final String CONNECTION_STRING = "jdbc:sqlite:C:\\Users\\Lenovo\\Desktop\\hospital management system\\database\\"+ DB_NAME;
+    private static final String CONNECTION_STRING = "jdbc:sqlite:database\\"+ DB_NAME;
 
     private static final String TABLE_STAFF = "staffs";
     private static final String COLUMN_STAFF_ID = "id";
