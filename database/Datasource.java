@@ -8,8 +8,8 @@ import java.sql.SQLException;
 public class Datasource {
 
     private static final String DB_NAME = "hospital.db";
-//abdulkadir: "jdbc:sqlite:C:\\Users\\abdul\\IdeaProjects\\hospital_management_system\\database\\"
-    private static final String CONNECTION_STRING = "jdbc:sqlite:C:\\Users\\abdul\\IdeaProjects\\hospital_management_system\\database\\"+ DB_NAME;
+
+    private static final String CONNECTION_STRING = "jdbc:sqlite:database\\"+ DB_NAME;
 
     private static final String TABLE_STAFF = "staffs";
     private static final String COLUMN_STAFF_ID = "id";
