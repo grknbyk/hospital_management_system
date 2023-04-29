@@ -10,19 +10,20 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
 public class LoginController {
 
 	@FXML
-	TextField usernameTextField;
+	private TextField usernameTextField;
 
 	@FXML
-	TextField passwordTextField;
+	private PasswordField passwordTextField;
 
 	@FXML
-	Button loginButton;
+	private Button loginButton;
 
 	private Stage stage;
 	private Scene scene;
