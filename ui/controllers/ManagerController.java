@@ -9,18 +9,20 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.MenuItem;
 import javafx.stage.Stage;
 
 public class ManagerController {
 
+
     @FXML
-    Button logoutButton;
+    private MenuItem logoutMenuItem;
 
     public void logout(ActionEvent event) throws IOException {
         
         Parent root = FXMLLoader.load(getClass().getResource("../scene/LoginScene.fxml"));
         Scene scene = new Scene(root);
-        Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        Stage window = (Stage) logoutMenuItem.getParentPopup().getOwnerNode().getScene().getWindow();
         window.setTitle("Hospital Management System");
         window.setScene(scene);
         window.show();
