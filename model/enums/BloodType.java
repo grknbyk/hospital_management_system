@@ -8,9 +8,9 @@ public enum BloodType {
     AP,
     AN,
     BP,
-    BZ,
+    BN,
     ABP,
-    ABZ,
+    ABN,
     ZP,
     ZN,
 
