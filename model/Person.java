@@ -1,5 +1,7 @@
 package model;
 
+import model.enums.Gender;
+
 abstract public class Person {
 	private int id;
 	private String name;
@@ -45,11 +47,5 @@ abstract public class Person {
 
 	public void setAge(int age) {
 		this.age = age;
-	}
-
-
-	enum Gender{
-		MALE,
-		FEMALE
 	}
 }
