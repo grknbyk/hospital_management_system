@@ -7,8 +7,7 @@ public class Medicine {
     String name;
 
     @Override
-    public int hashCode()
-    {
+    public int hashCode() {
         return name.hashCode();
     }
 }
