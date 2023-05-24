@@ -13,5 +13,5 @@ public class Patient extends Person{
     EmergencyState emergencyState;
     Priority priority;
     BloodType bloodType;
-    HashMap<Integer>
+    HashMap<Medicine, Integer> receipt;
 }
