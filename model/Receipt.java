@@ -9,13 +9,11 @@ public class Receipt {
 
     }
 
-    public Receipt(HashMap<Medicine, Integer> content)
-    {
+    public Receipt(HashMap<Medicine, Integer> content) {
         this.content = (HashMap<Medicine, Integer>) content.clone();
     }
 
-    public void add(Medicine medicine, int amount)
-    {
+    public void add(Medicine medicine, int amount) {
         int oldAmount = content.getOrDefault(medicine, 0);
         content.put(medicine, oldAmount + amount);
     }
