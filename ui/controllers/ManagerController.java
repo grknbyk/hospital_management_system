@@ -17,7 +17,9 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.FlowPane;
 import javafx.stage.Stage;
+import model.Contact;
 import model.Staff;
 
 public class ManagerController {
@@ -54,23 +56,55 @@ public class ManagerController {
 
     public void showProfileDialog(){
 
-        Dialog<ButtonType> dialog = new Dialog<ButtonType>();
-        dialog.initOwner(managerPanel.getScene().getWindow());
-        dialog.setTitle("Profile");
-        FXMLLoader fxmlLoader = new FXMLLoader();
-        fxmlLoader.setLocation(getClass().getResource("../scene/ProfileDialog.fxml"));
+        Dialog<ButtonType> dialog2 = new Dialog<ButtonType>();
+        dialog2.initOwner(managerPanel.getScene().getWindow());
+        dialog2.setTitle("Profile");
+        FXMLLoader fxmlLoader2 = new FXMLLoader();
+        fxmlLoader2.setLocation(getClass().getResource("../scene/profile/ProfileDialog.fxml"));
         try {
-            dialog.getDialogPane().setContent(fxmlLoader.load());
-            ProfileController profileController = fxmlLoader.getController();
+            dialog2.getDialogPane().setContent(fxmlLoader2.load());
+            ProfileController profileController = fxmlLoader2.getController();
             profileController.updateFields(username);
         } catch(IOException e) {
             System.out.println("Couldn't load the dialog");
             e.printStackTrace();
             return;
-        }        
+        }
 
-        dialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
-        Optional<ButtonType> result = dialog.showAndWait();
+        ButtonType editButton = new ButtonType("Edit");
+        ButtonType closeButton = new ButtonType("Close");
+
+        dialog2.getDialogPane().getButtonTypes().addAll(editButton, closeButton);
+
+        Optional<ButtonType> result = dialog2.showAndWait();
+        if(result.isPresent() && result.get() == editButton) {
+            Dialog<ButtonType> dialog = new Dialog<ButtonType>();
+            dialog.initOwner(managerPanel.getScene().getWindow());
+            dialog.setTitle("Edit Profile");
+            FXMLLoader fxmlLoader = new FXMLLoader();
+            fxmlLoader.setLocation(getClass().getResource("../scene/profile/EditProfile.fxml"));
+
+            try {
+                dialog.getDialogPane().setContent(fxmlLoader.load());
+                ProfileController profileController = fxmlLoader.getController();
+                profileController.updateEdit(username);
+            }catch (IOException e){
+                System.out.println("Couldn't load the dialog");
+                e.printStackTrace();
+                return;
+            }
+
+            dialog.getDialogPane().getButtonTypes().add(ButtonType.OK);
+            dialog.getDialogPane().getButtonTypes().add(ButtonType.CANCEL);
+
+            Optional<ButtonType> result2 = dialog.showAndWait();
+            if(result2.isPresent() && result2.get() == ButtonType.OK) {
+
+                ProfileController profileController = fxmlLoader.getController();
+                profileController.editFields(username);
+            }
+
+        }
     }
 
 	
