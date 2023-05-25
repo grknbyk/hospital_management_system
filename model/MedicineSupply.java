@@ -37,7 +37,7 @@ public class MedicineSupply {
      * @return False if there is less amount of medicine in inventory than the amount.
      */
     public boolean consumeStock(Medicine medicine, int amount) {
-        if (inventory.containsKey(medicine) && inventory.get(medicine) < amount)
+        if (!inventory.containsKey(medicine) || inventory.get(medicine) < amount)
             return false;
 
         int oldStock = inventory.get(medicine);
