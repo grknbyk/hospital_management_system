@@ -2,13 +2,26 @@ package model;
 
 import utils.Pair;
 
+import java.sql.Date;
 import java.util.TreeMap;
 import utils.List;
 
 public class Receipt {
+    private int id;
+    private int patientId;
+    private int staffId;
+    private Date givenDate;
+    private Date expireDate;
+
     private final TreeMap<Medicine, Integer> content;
 
-    public Receipt() {
+    public Receipt(int id, int patientId, int staffId, Date givenDate, Date expireDate) {
+        this.id = id;
+        this.patientId = patientId;
+        this.staffId = staffId;
+        this.givenDate = givenDate;
+        this.expireDate = expireDate;
+
         content = new TreeMap<>();
     }
 
