@@ -41,6 +41,9 @@ public class LoginController {
         String username = usernameTextField.getText();
         String password = passwordTextField.getText();
 
+        username = "admin";
+        password = "admin";
+
 		String status = Datasource.getInstance().queryLogin(username, password); //kolaylık olsun diye elle girdim
 
 		if (status == null) {
@@ -93,7 +96,8 @@ public class LoginController {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("../scene/ManagerScene.fxml"));
         // Load the second controller
         Parent root = loader.load();
-
+        ManagerController managerController = loader.getController();
+        managerController.setUsername(username);
 
         // Navigate to the second controller
         Scene scene = new Scene(root);
