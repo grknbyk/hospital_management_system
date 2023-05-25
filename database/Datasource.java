@@ -78,15 +78,17 @@ public class Datasource {
     private static final String QUERY_LOGIN = "SELECT " + COLUMN_STAFF_STATUS + " FROM " + TABLE_STAFF 
     + " WHERE " + COLUMN_STAFF_USERNAME + " = ? AND " + COLUMN_STAFF_PASSWORD + " = ?";
 
-    private static final String QUERY_STAFFS_WITH_PERSON = "SELECT * FROM " + TABLE_STAFF 
-    + " INNER JOIN " + TABLE_PERSON + " ON " + TABLE_STAFF + "." + COLUMN_STAFF_PERSON_ID + " = " + TABLE_PERSON + "." + COLUMN_PERSON_ID
-    + " INNER JOIN " + TABLE_CONTACT + " ON " + TABLE_STAFF + "." + COLUMN_STAFF_PERSON_ID + " = " + TABLE_CONTACT + "." + COLUMN_CONTACT_PERSON_ID;
+    private static final String QUERY_USER_BY_USERNAME = "SELECT * FROM " + TABLE_STAFF +
+    " INNER JOIN " + TABLE_PERSON + " ON " + TABLE_STAFF + "." + COLUMN_STAFF_PERSON_ID + " = " + TABLE_PERSON + "." + COLUMN_PERSON_ID +
+    " INNER JOIN " + TABLE_CONTACT + " ON " + TABLE_STAFF + "." + COLUMN_STAFF_PERSON_ID + " = " + TABLE_CONTACT + "." + COLUMN_CONTACT_PERSON_ID +
+    " WHERE " + COLUMN_STAFF_USERNAME + " = ?";
 
 
 
     private Connection conn;
 
     private PreparedStatement queryLogin;
+    private PreparedStatement queryUserByUsername;
 
     private static Datasource instance = new Datasource();
 
@@ -102,6 +104,7 @@ public class Datasource {
         try {
             conn = DriverManager.getConnection(CONNECTION_STRING);
             queryLogin = conn.prepareStatement(QUERY_LOGIN);
+            queryUserByUsername = conn.prepareStatement(QUERY_USER_BY_USERNAME);
             //insertIntoArtists = conn.prepareStatement(INSERT_ARTIST, Statement.RETURN_GENERATED_KEYS);
 
             return true;
@@ -116,6 +119,10 @@ public class Datasource {
 
             if (queryLogin != null) {
                 queryLogin.close();
+            }
+
+            if (queryUserByUsername != null) {
+                queryUserByUsername.close();
             }
 
             if (conn != null) {
@@ -143,62 +150,52 @@ public class Datasource {
 
 
 
-    public List<Staff> queryStaff(){
-        try (Statement statement = conn.createStatement()) {
-            ResultSet results = statement.executeQuery(QUERY_STAFFS_WITH_PERSON);
-            List<Staff> staffs = new ArrayList<>();
+    public Staff queryProfile(String username){
+        try {
+            queryUserByUsername.setString(1, username);
+            ResultSet results = queryUserByUsername.executeQuery();
+            String status = results.getString(COLUMN_STAFF_STATUS);
+            int id = results.getInt(COLUMN_STAFF_ID);
+            String name = results.getString(COLUMN_PERSON_NAME);
+            String surname = results.getString(COLUMN_PERSON_SURNAME);
+            int age = results.getInt(COLUMN_PERSON_AGE);
+            Gender gender = results.getString(COLUMN_PERSON_GENDER).equals("MALE") ? Gender.MALE : Gender.FEMALE;
+            String phone = results.getString(COLUMN_CONTACT_PHONE);
+            String email = results.getString(COLUMN_CONTACT_EMAIL);
+            String address = results.getString(COLUMN_CONTACT_ADDRESS);
+            Contact contact = new Contact(phone, email, address);
             Staff staff;
-            Contact contact;
-            while(results.next()){
-                int id = results.getInt(1);
-                String username = results.getString(2);
-                String password = results.getString(3);
-                String status = results.getString(4);
-                int person_id = results.getInt(5);
-                String name = results.getString(7);
-                String surname = results.getString(8);
-                Gender gender = results.getString(9).equals("MALE") ? Gender.MALE : Gender.FEMALE;
-                int age = results.getInt(10);
-                contact = new Contact();
-                contact.setPhone(results.getString(12));
-                contact.setEmail(results.getString(13));
-                contact.setAddress(results.getString(14));
-
-                switch(status){
-                    case "manager":
-                        staff = new Manager();
-                        staff.setStatus(Status.MANAGER);
-                        break;
-                    case "doctor":
-                        staff = new Doctor();
-                        staff.setStatus(Status.DOCTOR);
-                        break;
-                    case "nurse":
-                        staff = new Nurse();
-                        staff.setStatus(Status.NURSE);
-                        break;
-                    case "pharmacist":
-                        staff = new Pharmacist();
-                        staff.setStatus(Status.PHARMACIST);
-                        break;
-                    case "receptionist":
-                        staff = new Receptionist();
-                        staff.setStatus(Status.RECEPTIONIST);
-                        break;
-                    default:
-                        throw new IllegalStateException("Unexpected value: " + status);
-                }
-                staff.setId(person_id);
-                staff.setName(name);
-                staff.setSurname(surname);
-                staff.setAge(age);
-                staff.setGender(gender);
-                staff.setUsername(username);
-                staff.setPassword(password);
-                staff.setContact(contact);
-                staffs.add(staff);
+            switch(status){
+                case "manager":
+                    staff = new Manager();
+                    staff.setStatus(Status.MANAGER);
+                    break;
+                case "doctor":
+                    staff = new Doctor();
+                    staff.setStatus(Status.DOCTOR);
+                    break;
+                case "nurse":
+                    staff = new Nurse();
+                    staff.setStatus(Status.NURSE);
+                    break;
+                case "pharmacist":
+                    staff = new Pharmacist();
+                    staff.setStatus(Status.PHARMACIST);
+                    break;
+                case "receptionist":
+                    staff = new Receptionist();
+                    staff.setStatus(Status.RECEPTIONIST);
+                    break;
+                default:
+                    throw new IllegalStateException("Unexpected value: " + status);
             }
-            return staffs;
+            staff.setAge(age);
+            staff.setGender(gender);
+            staff.setContact(contact);
+            staff.setName(name);
+            staff.setSurname(surname);
+            staff.setId(id);
+            return staff;
         } catch (SQLException e) {
             System.out.println("Query failed: " + e.getMessage());
             return null;
