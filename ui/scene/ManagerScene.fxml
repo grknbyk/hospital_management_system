@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.FlowPane?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.controllers.ManagerController">
+<BorderPane fx:id="managerPanel" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.controllers.ManagerController">
    <top>
       <FlowPane prefHeight="10.0" prefWidth="1280.0" BorderPane.alignment="CENTER">
          <children>
@@ -39,7 +39,7 @@
             </MenuBar>
             <MenuButton mnemonicParsing="false" prefHeight="25.0" prefWidth="50.0">
               <items>
-                <MenuItem mnemonicParsing="false" text="Action 1" />
+                <MenuItem fx:id="profileMenuItem" mnemonicParsing="false" onAction="#showProfileDialog" text="Profile" />
                 <MenuItem fx:id="logoutMenuItem" mnemonicParsing="false" onAction="#logout" text="Log out" />
               </items>
                <graphic>
