@@ -10,6 +10,7 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
@@ -21,6 +22,9 @@ public class LoginController {
 
 	@FXML
 	private PasswordField passwordTextField;
+
+	@FXML
+	private Label loginErrorLabel;
 
 	@FXML
 	private Button loginButton;
@@ -38,7 +42,8 @@ public class LoginController {
 		String status = Datasource.getInstance().queryLogin(username, password);
 
 		if (status == null) {
-			System.out.println("Invalid username or password"); // label.setText("Invalid username or password");
+			System.out.println("Invalid username or password");
+			loginErrorLabel.setDisable(false);
 			return;
 		} else {
 			status = status.toLowerCase();
