@@ -1,16 +1,21 @@
 package model;
 
+import utils.Tuple;
+
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.TreeMap;
+import utils.List;
 
 public class Receipt {
-    HashMap<Medicine, Integer> content;
+    private final TreeMap<Medicine, Integer> content;
 
     public Receipt() {
-
+        content = new TreeMap<>();
     }
 
-    public Receipt(HashMap<Medicine, Integer> content) {
-        this.content = (HashMap<Medicine, Integer>) content.clone();
+    public Receipt(Receipt r) {
+        this.content = (TreeMap<Medicine, Integer>) r.content.clone();
     }
 
     public void add(Medicine medicine, int amount) {
@@ -24,6 +29,10 @@ public class Receipt {
 
         int oldAmount = content.get(medicine);
         content.put(medicine, oldAmount - amount);
+
+        if(content.get(medicine) == 0)
+            content.remove(medicine);
+
         return true;
     }
 
@@ -33,5 +42,13 @@ public class Receipt {
 
         content.remove(medicine);
         return true;
+    }
+
+    public List<Tuple<Medicine, Integer>> toList()
+    {
+        List<Tuple<Medicine, Integer>> l = new List<>();
+        content.forEach((k, v) -> l.add(new Tuple<>(k, v)));
+
+        return l;
     }
 }
