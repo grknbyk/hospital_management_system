@@ -43,7 +43,7 @@ public class LoginController {
 
 		if (status == null) {
 			System.out.println("Invalid username or password");
-			loginErrorLabel.setDisable(false);
+			loginErrorLabel.setVisible(true);
 			return;
 		} else {
 			status = status.toLowerCase();
