@@ -1,4 +1,10 @@
 package model.enums;
 
-public class EmergencyState {
+public enum EmergencyState {
+    NON_URGENT,
+    STABLE,
+    URGENT,
+    CRITICAL,
+    LIFE_THREATENING
 }
+
