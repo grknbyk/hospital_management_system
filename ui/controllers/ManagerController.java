@@ -69,7 +69,7 @@ public class ManagerController {
             System.out.println("Couldn't load the dialog");
             e.printStackTrace();
             return;
-        }
+        }        
 
         ButtonType editButton = new ButtonType("Edit");
         ButtonType closeButton = new ButtonType("Close");
