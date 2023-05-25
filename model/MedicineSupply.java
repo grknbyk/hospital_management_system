@@ -1,9 +1,13 @@
 package model;
 
+import utils.List;
+import utils.Tuple;
+
 import java.util.HashMap;
+import java.util.TreeMap;
 
 public class MedicineSupply {
-    private HashMap<Medicine, Integer> inventory;
+    private TreeMap<Medicine, Integer> inventory;
     private static final MedicineSupply instance = new MedicineSupply();
 
     private MedicineSupply() {
@@ -12,10 +16,6 @@ public class MedicineSupply {
 
     public MedicineSupply getInstance() {
         return instance;
-    }
-
-    public HashMap<Medicine, Integer> getInventory() {
-        return (HashMap<Medicine, Integer>) inventory.clone();
     }
 
     public int getStock(Medicine medicine) {
@@ -44,5 +44,12 @@ public class MedicineSupply {
         inventory.put(medicine, oldStock - amount);
 
         return true;
+    }
+
+    public List<Tuple<Medicine, Integer>> toList() {
+        List<Tuple<Medicine, Integer>> l = new List<>();
+        inventory.forEach((k, v) -> l.add(new Tuple<>(k, v)));
+
+        return l;
     }
 }
