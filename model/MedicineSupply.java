@@ -1,9 +1,8 @@
 package model;
 
 import utils.List;
-import utils.Tuple;
+import utils.Pair;
 
-import java.util.HashMap;
 import java.util.TreeMap;
 
 public class MedicineSupply {
@@ -46,9 +45,9 @@ public class MedicineSupply {
         return true;
     }
 
-    public List<Tuple<Medicine, Integer>> toList() {
-        List<Tuple<Medicine, Integer>> l = new List<>();
-        inventory.forEach((k, v) -> l.add(new Tuple<>(k, v)));
+    public List<Pair<Medicine, Integer>> toList() {
+        List<Pair<Medicine, Integer>> l = new List<>();
+        inventory.forEach((k, v) -> l.add(new Pair<>(k, v)));
 
         return l;
     }

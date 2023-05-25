@@ -2,7 +2,7 @@ package utils;
 
 import java.util.Arrays;
 
-public class List<T> implements ListInterface<T> {
+public class List<T> implements ListInterface<T>{
     Object[] arr;
     int len;
     final static int DEFAULT_SIZE = 10;

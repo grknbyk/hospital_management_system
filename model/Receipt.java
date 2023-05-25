@@ -1,6 +1,6 @@
 package model;
 
-import utils.Tuple;
+import utils.Pair;
 
 import java.util.TreeMap;
 import utils.List;
@@ -42,10 +42,10 @@ public class Receipt {
         return true;
     }
 
-    public List<Tuple<Medicine, Integer>> toList()
+    public List<Pair<Medicine, Integer>> toList()
     {
-        List<Tuple<Medicine, Integer>> l = new List<>();
-        content.forEach((k, v) -> l.add(new Tuple<>(k, v)));
+        List<Pair<Medicine, Integer>> l = new List<>();
+        content.forEach((k, v) -> l.add(new Pair<>(k, v)));
 
         return l;
     }
