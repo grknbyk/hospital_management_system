@@ -5,6 +5,11 @@ public class Contact {
     String email;
     String address;
     
+    public Contact(String phone, String email, String address) {
+        this.phone = phone;
+        this.email = email;
+        this.address = address;
+    }
     public String getPhone() {
         return phone;
     }
