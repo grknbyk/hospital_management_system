@@ -60,7 +60,7 @@ public interface ListInterface<T>
        they occur in the list.
        @return  A newly allocated array of all the entries in the list.
                 If the list is empty, the returned array is empty. */
-   public T[] toArray();
+   public Object[] toArray();
    
    /** Sees whether this list contains a given entry.
        @param anEntry  The object that is the desired entry.
