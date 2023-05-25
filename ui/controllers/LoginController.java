@@ -13,33 +13,35 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 
 public class LoginController {
 
-	@FXML
-	private TextField usernameTextField;
+    @FXML
+    private TextField usernameTextField;
 
-	@FXML
-	private PasswordField passwordTextField;
+    @FXML
+    private PasswordField passwordTextField;
 
-	@FXML
-	private Label loginErrorLabel;
+    @FXML
+    private Label loginErrorLabel;
 
-	@FXML
-	private Button loginButton;
+    @FXML
+    private Button loginButton;
 
-	private Stage stage;
-	private Scene scene;
-	private Parent root;
+    private Stage stage;
+    private Scene scene;
+    private Parent root;
 
-	@FXML
-	private void login(ActionEvent event) throws IOException {
+    @FXML
+    private void login(ActionEvent event) throws IOException {
 
-		String username = usernameTextField.getText();
-		String password = passwordTextField.getText();
+        String username = usernameTextField.getText();
+        String password = passwordTextField.getText();
 
-		String status = Datasource.getInstance().queryLogin("admin", "admin"); //kolaylık olsun diye elle girdim
+		String status = Datasource.getInstance().queryLogin(username, password); //kolaylık olsun diye elle girdim
 
 		if (status == null) {
 			System.out.println("Invalid username or password");
@@ -49,7 +51,7 @@ public class LoginController {
 			status = status.toLowerCase();
 			switch (status) {
 				case "manager":
-					showManagerPanel(event);
+					showManagerPanel(event,username);
 					break;
 				case "doctor":
 					showDoctorPanel(event);
@@ -71,56 +73,76 @@ public class LoginController {
 			}
 		}
 
-	}
+    }
 
-	private void showManagerPanel(ActionEvent event) throws IOException {
+    @FXML
+    private void usernameKeyPress(KeyEvent event) {
+        if (event.getCode() == KeyCode.ENTER)
+            passwordTextField.requestFocus();
+    }
 
-		root = FXMLLoader.load(getClass().getResource("../scene/ManagerScene.fxml"));
-		stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-		scene = new Scene(root);
-		stage.setTitle("Hospital Management System - Manager");
-		stage.setScene(scene);
-		stage.show();
-	}
+    @FXML
+    private void passwordKeyPress(KeyEvent event) {
+        if (event.getCode() == KeyCode.ENTER)
+            loginButton.fire();
+    }
 
-	private void showDoctorPanel(ActionEvent event) throws IOException {
+    private void showManagerPanel(ActionEvent event, String username) throws IOException {
 
-		root = FXMLLoader.load(getClass().getResource("../scene/DoctorScene.fxml"));
-		stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-		scene = new Scene(root);
-		stage.setTitle("Hospital Management System - Doctor");
-		stage.setScene(scene);
-		stage.show();
-	}
+        // Get the FXMLLoader
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("../scene/ManagerScene.fxml"));
+        // Load the second controller
+        Parent root = loader.load();
 
-	private void showNursePanel(ActionEvent event) throws IOException {
 
-		root = FXMLLoader.load(getClass().getResource("../scene/NurseScene.fxml"));
-		stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-		scene = new Scene(root);
-		stage.setTitle("Hospital Management System - Nurse");
-		stage.setScene(scene);
-		stage.show();
-	}
+        // Navigate to the second controller
+        Scene scene = new Scene(root);
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        stage.setTitle("Hospital Management System - Manager");
+        stage.setScene(scene);
+        stage.show();
 
-	private void showReceptionistPanel(ActionEvent event) throws IOException {
+    }
 
-		root = FXMLLoader.load(getClass().getResource("../scene/ReceptionistScene.fxml"));
-		stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-		scene = new Scene(root);
-		stage.setTitle("Hospital Management System - Receptionist");
-		stage.setScene(scene);
-		stage.show();
-	}
+    private void showDoctorPanel(ActionEvent event) throws IOException {
 
-	private void showPharmacistPanel(ActionEvent event) throws IOException {
+        root = FXMLLoader.load(getClass().getResource("../scene/DoctorScene.fxml"));
+        stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        scene = new Scene(root);
+        stage.setTitle("Hospital Management System - Doctor");
+        stage.setScene(scene);
+        stage.show();
+    }
 
-		root = FXMLLoader.load(getClass().getResource("../scene/PharmacistScene.fxml"));
-		stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-		scene = new Scene(root);
-		stage.setTitle("Hospital Management System - Pharmacist");
-		stage.setScene(scene);
-		stage.show();
-	}
+    private void showNursePanel(ActionEvent event) throws IOException {
+
+        root = FXMLLoader.load(getClass().getResource("../scene/NurseScene.fxml"));
+        stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        scene = new Scene(root);
+        stage.setTitle("Hospital Management System - Nurse");
+        stage.setScene(scene);
+        stage.show();
+    }
+
+    private void showReceptionistPanel(ActionEvent event) throws IOException {
+
+        root = FXMLLoader.load(getClass().getResource("../scene/ReceptionistScene.fxml"));
+        stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        scene = new Scene(root);
+        stage.setTitle("Hospital Management System - Receptionist");
+        stage.setScene(scene);
+        stage.show();
+    }
+
+    private void showPharmacistPanel(ActionEvent event) throws IOException {
+
+        root = FXMLLoader.load(getClass().getResource("../scene/PharmacistScene.fxml"));
+        stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+
+        scene = new Scene(root);
+        stage.setTitle("Hospital Management System - Pharmacist");
+        stage.setScene(scene);
+        stage.show();
+    }
 
 }
