@@ -11,7 +11,7 @@ public class Datasource {
 
     private static final String CONNECTION_STRING = "jdbc:sqlite:database\\"+ DB_NAME;
 
-    private static final String TABLE_STAFF = "staffs";
+    private static final String TABLE_STAFF = "staff";
     private static final String COLUMN_STAFF_ID = "id";
     private static final String COLUMN_STAFF_USERNAME = "username";
     private static final String COLUMN_STAFF_PASSWORD = "password";
