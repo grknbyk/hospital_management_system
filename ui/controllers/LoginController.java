@@ -93,7 +93,8 @@ public class LoginController {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("../scene/ManagerScene.fxml"));
         // Load the second controller
         Parent root = loader.load();
-
+        ManagerController managerController = loader.getController();
+        managerController.setUsername(username);
 
         // Navigate to the second controller
         Scene scene = new Scene(root);
