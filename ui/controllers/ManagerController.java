@@ -21,6 +21,16 @@ import javafx.stage.Stage;
 import model.Staff;
 
 public class ManagerController {
+    String username;
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
 
     @FXML
     private BorderPane managerPanel;
@@ -28,19 +38,11 @@ public class ManagerController {
     @FXML
     private MenuItem logoutMenuItem;
 
-    @FXML
-    public void listStaffs() {
-        Task<ObservableList<Staff>> task = new GetAllStaffsTask();
-        //artistTable.itemsProperty().bind(task.valueProperty());
-
-        new Thread(task).start();
-    }
-
     public void initialize() {
+     
     }
 
     public void logout(ActionEvent event) throws IOException {
-        
         Parent root = FXMLLoader.load(getClass().getResource("../scene/LoginScene.fxml"));
         Scene scene = new Scene(root);
         Stage window = (Stage) logoutMenuItem.getParentPopup().getOwnerNode().getScene().getWindow();
@@ -59,22 +61,17 @@ public class ManagerController {
         fxmlLoader.setLocation(getClass().getResource("../scene/ProfileDialog.fxml"));
         try {
             dialog.getDialogPane().setContent(fxmlLoader.load());
+            ProfileController profileController = fxmlLoader.getController();
+            profileController.updateFields(username);
         } catch(IOException e) {
             System.out.println("Couldn't load the dialog");
             e.printStackTrace();
             return;
-        }
+        }        
 
         dialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
-
         Optional<ButtonType> result = dialog.showAndWait();
     }
 
 	
-}
-class GetAllStaffsTask extends Task {
-    @Override
-    public ObservableList<Staff> call() throws Exception {
-        return FXCollections.observableArrayList(Datasource.getInstance().queryStaff());
-    }
 }
