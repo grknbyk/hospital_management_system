@@ -43,7 +43,6 @@ public class ProfileController{
     @FXML
     private Label statusField;
 
-
     @FXML
     private TextField addressTextField;
 
@@ -61,7 +60,6 @@ public class ProfileController{
 
     @FXML
     private TextField surnameTextField;
-
 
     public void updateFields(String username) {
         Staff staff = Datasource.getInstance().queryProfile(username);
