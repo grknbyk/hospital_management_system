@@ -6,8 +6,7 @@ import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import model.Staff;
 
-public class ProfileController {
-    String username;
+public class ProfileController{
 
     @FXML
     private Label ageField;
@@ -40,20 +39,10 @@ public class ProfileController {
     @FXML
     private Label statusField;
 
-    public void initialize() {
-        System.out.println(username);
-        Staff staff = Datasource.getInstance().queryProfile(getUsername());
-        idField.setText(String.valueOf(staff.getId()));
-        //statusField.setText(staff.getStatus());
+    public void updateFields(String username) {
+        Staff staff = Datasource.getInstance().queryProfile(username);
         nameField.setText(staff.getName());
         surnameField.setText(staff.getSurname());
     }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
+    
 }
