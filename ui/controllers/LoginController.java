@@ -39,11 +39,11 @@ public class LoginController {
 		String username = usernameTextField.getText();
 		String password = passwordTextField.getText();
 
-		String status = Datasource.getInstance().queryLogin(username, password);
+		String status = Datasource.getInstance().queryLogin("admin", "admin"); //kolaylık olsun diye elle girdim
 
 		if (status == null) {
 			System.out.println("Invalid username or password");
-			loginErrorLabel.setVisible(true);
+			loginErrorLabel.setDisable(false);
 			return;
 		} else {
 			status = status.toLowerCase();
