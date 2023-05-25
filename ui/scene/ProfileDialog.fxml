@@ -49,23 +49,23 @@
                   <Insets right="30.0" />
                </GridPane.margin>
             </Label>
-            <Label fx:id="SurnameField" prefHeight="17.0" prefWidth="371.0" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="3">
+            <Label fx:id="surnameField" prefHeight="17.0" prefWidth="371.0" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="3">
                <GridPane.margin>
                   <Insets right="30.0" />
                </GridPane.margin>
             </Label>
-            <Label fx:id="GenderField" prefHeight="17.0" prefWidth="354.0" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="4">
+            <Label fx:id="genderField" prefHeight="17.0" prefWidth="354.0" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="4">
                <GridPane.margin>
                   <Insets right="30.0" />
                </GridPane.margin>
             </Label>
-            <Label fx:id="AgeField" prefHeight="17.0" prefWidth="447.0" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="5">
+            <Label fx:id="ageField" prefHeight="17.0" prefWidth="447.0" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="5">
                <GridPane.margin>
                   <Insets right="30.0" />
                </GridPane.margin>
             </Label>
             <Label text="ID:" />
-            <Label prefHeight="17.0" prefWidth="336.0" text="Label" GridPane.columnIndex="1" />
+            <Label fx:id="idField" prefHeight="17.0" prefWidth="336.0" text="Label" GridPane.columnIndex="1" />
          </children>
       </GridPane>
    </center>
