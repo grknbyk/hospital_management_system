@@ -41,8 +41,8 @@ public class LoginController {
         String username = usernameTextField.getText();
         String password = passwordTextField.getText();
 
-        username = "doctor";
-        password = "doctor";
+        username = "admin";
+        password = "admin";
 
 		String status = Datasource.getInstance().queryLogin(username, password); //kolaylık olsun diye elle girdim
 
