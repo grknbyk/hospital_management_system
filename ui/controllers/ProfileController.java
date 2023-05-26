@@ -61,8 +61,11 @@ public class ProfileController{
     @FXML
     private TextField surnameTextField;
 
+    @FXML
+    private TextField phoneTextField;
+
     public void updateFields(String username) {
-        Staff staff = Datasource.getInstance().queryProfile(username);
+        Staff staff = Datasource.getInstance().queryStaffProfile(username);
         nameField.setText(staff.getName());
         surnameField.setText(staff.getSurname());
         idField.setText(String.valueOf(staff.getId()));
@@ -76,14 +79,23 @@ public class ProfileController{
     }
 
     public void updateEdit(String username) {
-        Staff staff = Datasource.getInstance().queryProfile(username);
+        Staff staff = Datasource.getInstance().queryStaffProfile(username);
         imageField.setImage(new Image("ui/imgs/default_person.png"));
         idField.setText(String.valueOf(staff.getId()));
         statusField.setText(staff.getStatus().toString());
+
+        nameTextField.setText(staff.getName());
+        surnameTextField.setText(staff.getSurname());
+        genderTextField.setText(staff.getGender().toString());
+        ageTextField.setText(String.valueOf(staff.getAge()));
+        phoneTextField.setText(staff.getContact().getPhone());
+        emailTextField.setText(staff.getContact().getEmail());
+        addressTextField.setText(staff.getContact().getAddress());
+
     }
 
     public void editFields(String username) {
-        Staff staff = Datasource.getInstance().queryProfile(username);
+        Staff staff = Datasource.getInstance().queryStaffProfile(username);
 
         imageField.setImage(new Image("ui/imgs/default_person.png"));
         idField.setText(String.valueOf(staff.getId()));
