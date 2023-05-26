@@ -1,11 +1,15 @@
 package model;
 
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
+import model.enums.Gender;
 import model.enums.Status;
 
 public abstract class Staff extends Person {
-	private String username;
-	private String password;
-	private Status status;	
+	private SimpleStringProperty username = new SimpleStringProperty("");
+	private SimpleStringProperty password = new SimpleStringProperty("");
+	private ObjectProperty<Status> status = new SimpleObjectProperty<>();
 	private Contact contact;
 	 
 	public Contact getContact() {
@@ -17,26 +21,37 @@ public abstract class Staff extends Person {
 	}
 
 	public Status getStatus() {
-		return status;
+		return status.get();
 	}
 
 	public void setStatus(Status status) {
-		this.status = status;
+		this.status.set(status);
 	}
 
 	public String getUsername() {
-		return username;
+		return username.get();
 	}
 
 	public void setUsername(String username) {
-		this.username = username;
+		this.username.set(username);
 	}
 
 	public String getPassword() {
-		return password;
+		return password.get();
 	}
 
 	public void setPassword(String password) {
-		this.password = password;
+		this.password.set(password);
+	}
+
+
+	public String getPhone() {
+		return contact.getPhone();
+	}
+	public String getEmail() {
+		return contact.getEmail();
+	}
+	public String getAddress() {
+		return contact.getAddress();
 	}
 }

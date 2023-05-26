@@ -489,7 +489,7 @@ public class Datasource {
                 doctor.setUsername(results.getString(COLUMN_STAFF_USERNAME));
                 doctor.setPassword(results.getString(COLUMN_STAFF_PASSWORD));
                 doctor.setStatus(Status.DOCTOR);
-                doctor.setExpretise(results.getString(COLUMN_DOCTOR_EXPRETISE));
+                doctor.setExpertise(results.getString(COLUMN_DOCTOR_EXPRETISE));
                 doctor.setName(results.getString(COLUMN_PERSON_NAME));
                 doctor.setSurname(results.getString(COLUMN_PERSON_SURNAME));
                 doctor.setAge(results.getInt(COLUMN_PERSON_AGE));

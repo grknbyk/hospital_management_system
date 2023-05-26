@@ -1,27 +1,23 @@
 package ui.controllers;
 
-import database.Datasource;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Optional;
 
+import database.Datasource;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.FlowPane;
 import javafx.stage.Stage;
-import model.Contact;
-import model.Staff;
+import model.*;
 
 public class ManagerController {
     String username;
@@ -33,6 +29,9 @@ public class ManagerController {
     public void setUsername(String username) {
         this.username = username;
     }
+    //Doctor>>>>>>>>>>>>>>>>>>>>>>>>>
+    @FXML
+    private TableView<Doctor> tableView;
 
 
     @FXML
@@ -44,13 +43,42 @@ public class ManagerController {
     @FXML
     private MenuButton options;
 
+    @FXML
+    private TableView<Doctor> doctorTableView;
+    private ObservableList<Doctor> doctors;
+
+    @FXML
+    private TableView<Nurse> nurseTableView;
+    private ObservableList<Nurse> nurses;
+
+    @FXML
+    private TableView<Pharmacist> pharmacistTableView;
+    private ObservableList<Pharmacist> pharmacists;
+
+    @FXML
+    private TableView<Receptionist> receptionistTableView;
+    private ObservableList<Receptionist> receptionists;
+
     public void initialize() {
         Image menuImg = new Image("ui/imgs/default_person.png");
         ImageView imageView = new ImageView(menuImg);
         imageView.setFitHeight(18);
         imageView.setFitWidth(18);
-
         options.setGraphic(imageView);
+
+        //fill the table
+        doctors = FXCollections.observableArrayList(Datasource.getInstance().queryDoctors());
+        doctorTableView.setItems(doctors);
+
+        nurses = FXCollections.observableArrayList(Datasource.getInstance().queryNurse());
+        nurseTableView.setItems(nurses);
+
+        pharmacists = FXCollections.observableArrayList(Datasource.getInstance().queryPharmacists());
+        pharmacistTableView.setItems(pharmacists);
+
+        receptionists = FXCollections.observableArrayList(Datasource.getInstance().queryRecepsionist());
+        receptionistTableView.setItems(receptionists);
+
     }
 
     public void logout(ActionEvent event) throws IOException {
@@ -78,12 +106,15 @@ public class ManagerController {
             System.out.println("Couldn't load the dialog");
             e.printStackTrace();
             return;
-        }        
+        }
 
         ButtonType editButton = new ButtonType("Edit");
         ButtonType closeButton = new ButtonType("Close");
-
         dialog2.getDialogPane().getButtonTypes().addAll(editButton, closeButton);
+
+        dialog2.getDialogPane().getScene().getWindow().setOnCloseRequest(e -> {
+            dialog2.close();
+        });
 
         Optional<ButtonType> result = dialog2.showAndWait();
         if(result.isPresent() && result.get() == editButton) {

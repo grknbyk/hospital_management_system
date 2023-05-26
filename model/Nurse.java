@@ -1,22 +1,24 @@
 package model;
 
+import javafx.beans.property.SimpleStringProperty;
+
 public class Nurse extends Staff{
     
-    private String workingArea;
+    private SimpleStringProperty workingArea = new SimpleStringProperty("");
     
     public Nurse() {
         this("no working area");
     }
     
     public Nurse(String workingArea) {
-        this.workingArea = workingArea;
+        this.workingArea.set(workingArea);
     }
 
     public String getWorkingArea() {
-        return workingArea;
+        return workingArea.get();
     }
 
     public void setWorkingArea(String workingArea) {
-        this.workingArea = workingArea;
+        this.workingArea.set(workingArea);
     }
 }
