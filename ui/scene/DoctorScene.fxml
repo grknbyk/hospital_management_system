@@ -6,6 +6,7 @@
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.cell.PropertyValueFactory?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.FlowPane?>
@@ -37,7 +38,7 @@
             <MenuButton fx:id="options" mnemonicParsing="false" prefHeight="25.0" prefWidth="50.0">
                 <items>
                     <MenuItem fx:id="profileMenuItem" mnemonicParsing="false" onAction="#showProfileDialog" text="Profile" />
-                    <MenuItem fx:id="logoutMenuItem" onAction="#logout" mnemonicParsing="false" text="Log out" />
+                    <MenuItem fx:id="logoutMenuItem" mnemonicParsing="false" onAction="#logout" text="Log out" />
                 </items>
                 <graphic>
                     <ImageView fx:id="menuImg" fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true" />
@@ -47,19 +48,56 @@
     </FlowPane>
 </top>
    <center>
-       <TableView fx:id="Doct" prefHeight="200.0" prefWidth="200.0">
+       <TableView fx:id="patientTableView" prefHeight="200.0" prefWidth="200.0">
            <columnResizePolicy>
                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
            </columnResizePolicy>
            <columns>
-               <TableColumn maxWidth="2500.0" prefWidth="102.0" text="Emergency" />
-               <TableColumn maxWidth="2000.0" prefWidth="182.0" text="Priority" />
-               <TableColumn prefWidth="75.0" text="Name" />
-               <TableColumn prefWidth="75.0" text="Last Name" />
-               <TableColumn maxWidth="2000.0" minWidth="30.0" prefWidth="100.0" text="Age" />
-               <TableColumn maxWidth="3000.0" prefWidth="75.0" text="Gender" />
-               <TableColumn maxWidth="3000.0" minWidth="30.0" prefWidth="100.0" text="Appointment Time" />
-            <TableColumn maxWidth="4000.0" minWidth="150.0" prefWidth="100.0" text="Complaint" />
+               <TableColumn maxWidth="3000.0" prefWidth="127.0" text="Emergency">
+                   <cellValueFactory>
+                       <PropertyValueFactory property="emergencyState" />
+                   </cellValueFactory>
+               </TableColumn>
+               <TableColumn maxWidth="3000.0" prefWidth="37.0" text="Priority">
+                   <cellValueFactory>
+                       <PropertyValueFactory property="priority" />
+                   </cellValueFactory>
+               </TableColumn>
+               <TableColumn maxWidth="4000.0" prefWidth="75.0" text="Name">
+                   <cellValueFactory>
+                       <PropertyValueFactory property="name" />
+                   </cellValueFactory>
+               </TableColumn>
+               <TableColumn maxWidth="4000.0" prefWidth="75.0" text="Last Name">
+                   <cellValueFactory>
+                       <PropertyValueFactory property="surname" />
+                   </cellValueFactory>
+               </TableColumn>
+               <TableColumn maxWidth="2000.0" prefWidth="75.0" text="Blood Type">
+                   <cellValueFactory>
+                       <PropertyValueFactory property="bloodType" />
+                   </cellValueFactory>
+               </TableColumn>
+               <TableColumn maxWidth="2000.0" minWidth="30.0" prefWidth="100.0" text="Age">
+                   <cellValueFactory>
+                       <PropertyValueFactory property="age" />
+                   </cellValueFactory>
+               </TableColumn>
+               <TableColumn maxWidth="3000.0" prefWidth="75.0" text="Gender">
+                   <cellValueFactory>
+                       <PropertyValueFactory property="gender" />
+                   </cellValueFactory>
+               </TableColumn>
+               <TableColumn maxWidth="2500.0" minWidth="30.0" prefWidth="100.0" text="Appointment Time">
+                   <cellValueFactory>
+                       <PropertyValueFactory property="hour" />
+                   </cellValueFactory>
+               </TableColumn>
+            <TableColumn maxWidth="4000.0" minWidth="150.0" prefWidth="100.0" text="Complaint">
+                <cellValueFactory>
+                    <PropertyValueFactory property="complaint" />
+                </cellValueFactory>
+            </TableColumn>
            </columns>
            <columnResizePolicy>
                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
