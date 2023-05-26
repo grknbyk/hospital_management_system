@@ -6,16 +6,22 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 import model.Contact;
 import model.Doctor;
 import model.Manager;
 import model.Nurse;
+import model.Patient;
 import model.Pharmacist;
 import model.Receptionist;
 import model.Staff;
+import model.enums.BloodType;
+import model.enums.EmergencyState;
 import model.enums.Gender;
+import model.enums.Priority;
 import model.enums.Status;
 
 public class Datasource {
@@ -184,6 +190,10 @@ public class Datasource {
     private static final String QUERY_STAFF_BY_ID = "SELECT id,person_id FROM " + TABLE_STAFF +
             " WHERE " + COLUMN_STAFF_ID + " = ?";
 
+    private static final String QUERY_STAFF_ID_BY_USERNAME = "SELECT " + COLUMN_STAFF_ID +
+            " FROM " + TABLE_STAFF +
+            " WHERE " + COLUMN_STAFF_USERNAME + " = ?";
+
     private static final String QUERY_DOCTOR_EXPRETISE_BY_STAFF_ID = " SELECT " + COLUMN_DOCTOR_EXPRETISE +
             " FROM " + TABLE_DOCTOR +
             " WHERE " + COLUMN_DOCTOR_STAFF_ID + " = ?";
@@ -191,6 +201,11 @@ public class Datasource {
     private static final String QUERY_NURSE_WORKING_AREA_BY_STAFF_ID = " SELECT " + COLUMN_NURSE_WORKING_AREA +
             " FROM " + TABLE_NURSE +
             " WHERE " + COLUMN_NURSE_STAFF_ID + " = ?";
+
+    private static final String QUERY_PATIENTS_BY_STAFF_ID = " SELECT * FROM " + TABLE_PATIENT +
+            " INNER JOIN " + TABLE_PERSON +
+            " ON " + TABLE_PATIENT + "." + COLUMN_PATIENT_PERSON_ID + " = " + TABLE_PERSON + "." + COLUMN_PERSON_ID +
+            " WHERE " + COLUMN_PATIENT_STAFF_ID + " = ?";
 
     private static final String UPDATE_PERSON_BY_PERSON_ID = "UPDATE " + TABLE_PERSON + " SET " +
             COLUMN_PERSON_NAME + " = ?, " +
@@ -209,6 +224,8 @@ public class Datasource {
 
     private PreparedStatement queryLogin;
     private PreparedStatement queryStaffByUsername;
+    private PreparedStatement queryStaffIdByUsername;
+    private PreparedStatement queryPatientsByStaffId;
     private PreparedStatement queryStaffById;
     private PreparedStatement queryDoctors;
     private PreparedStatement queryDoctorExpretiseByStaffId;
@@ -232,6 +249,8 @@ public class Datasource {
 
             queryLogin = conn.prepareStatement(QUERY_LOGIN);
             queryStaffByUsername = conn.prepareStatement(QUERY_STAFF_BY_USERNAME);
+            queryStaffIdByUsername = conn.prepareStatement(QUERY_STAFF_ID_BY_USERNAME);
+            queryPatientsByStaffId = conn.prepareStatement(QUERY_PATIENTS_BY_STAFF_ID);
             queryStaffById = conn.prepareStatement(QUERY_STAFF_BY_ID);
             queryDoctorExpretiseByStaffId = conn.prepareStatement(QUERY_DOCTOR_EXPRETISE_BY_STAFF_ID);
             queryNurseWorkingAreaByStaffId = conn.prepareStatement(QUERY_NURSE_WORKING_AREA_BY_STAFF_ID);
@@ -257,6 +276,14 @@ public class Datasource {
 
             if (queryStaffByUsername != null) {
                 queryStaffByUsername.close();
+            }
+
+            if (queryPatientsByStaffId != null) {
+                queryPatientsByStaffId.close();
+            }
+
+            if (queryStaffIdByUsername != null) {
+                queryStaffIdByUsername.close();
             }
 
             if (queryStaffById != null) {
@@ -360,7 +387,7 @@ public class Datasource {
         try (Statement statement = conn.createStatement()) {
             ResultSet results = statement.executeQuery(QUERY_RECEPSIONIST);
             ArrayList<Receptionist> recepsionists = new ArrayList<>();
-            while(results.next()){
+            while (results.next()) {
                 Receptionist receptionist = new Receptionist();
                 receptionist.setId(results.getInt(COLUMN_STAFF_ID));
                 receptionist.setUsername(results.getString(COLUMN_STAFF_USERNAME));
@@ -479,6 +506,73 @@ public class Datasource {
         } catch (SQLException e) {
             System.out.println("Query failed: " + e.getMessage());
             return null;
+        }
+    }
+
+
+        /**
+     * @param staff_id the id of the staff 
+     * @return patient arraylist matching the staff id
+     */
+    public ArrayList<Patient> queyPatients(int staff_id){
+        try {
+            queryPatientsByStaffId.setInt(1, staff_id);
+            ResultSet results = queryPatientsByStaffId.executeQuery();
+            ArrayList<Patient> patients = new ArrayList<>();
+            while(results.next()){
+                Patient patient = new Patient();
+                patient.setId(results.getInt(1));
+                patient.setName(results.getString(COLUMN_PERSON_NAME));
+                patient.setSurname(results.getString(COLUMN_PERSON_SURNAME));
+                patient.setAge(results.getInt(COLUMN_PERSON_AGE));
+                Gender gender = results.getString(COLUMN_PERSON_GENDER).equals("MALE") ? Gender.MALE : Gender.FEMALE;
+                patient.setGender(gender);
+
+                patient.setBloodType(BloodType.valueOf(results.getString(COLUMN_PATIENT_BLOOD_TYPE)));
+                patient.setPriority(Priority.valueOf(results.getString(COLUMN_PATIENT_PRIORITY)));
+                patient.setEmergencyState(EmergencyState.valueOf(results.getString(COLUMN_PATIENT_EMERGENCY_STATE)));
+
+                String complaint = results.getString(COLUMN_PATIENT_COMPLAINT);
+                if(complaint != null)
+                    patient.setComplaint(complaint);
+                else
+                    patient.setComplaint(null);
+                
+                String dateString = results.getString(COLUMN_PATIENT_APPOINTMENT);
+                if(dateString != null){
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+                    LocalDateTime dateTime = LocalDateTime.parse(dateString, formatter);
+                    patient.setAppointment(dateTime);
+                }else{
+                    patient.setAppointment(null);
+                }
+                patients.add(patient);
+            }
+            return patients;
+        } catch (SQLException e) {
+            System.out.println("Query failed: " + e.getMessage());
+            return null;
+        }
+    }
+
+
+
+
+    /**
+     * @param username the username of the staff entered in the login page.
+     * @return int staff id according to the username.
+     */
+    public int queryStaffId(String username) {
+        try {
+            queryStaffIdByUsername.setString(1, username);
+            ResultSet results = queryStaffIdByUsername.executeQuery();
+            if (results != null) {
+                return results.getInt(COLUMN_STAFF_ID);
+            }
+            return -1;
+        } catch (SQLException e) {
+            System.out.println("Query failed: " + e.getMessage());
+            return -1;
         }
     }
 
