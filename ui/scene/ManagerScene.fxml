@@ -8,7 +8,7 @@
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
-<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.FlowPane?>
 
@@ -37,13 +37,13 @@
                 </Menu>
               </menus>
             </MenuBar>
-            <MenuButton mnemonicParsing="false" prefHeight="25.0" prefWidth="50.0">
+            <MenuButton fx:id="options" mnemonicParsing="false" prefHeight="25.0" prefWidth="50.0">
               <items>
                 <MenuItem fx:id="profileMenuItem" mnemonicParsing="false" onAction="#showProfileDialog" text="Profile" />
                 <MenuItem fx:id="logoutMenuItem" mnemonicParsing="false" onAction="#logout" text="Log out" />
               </items>
                <graphic>
-                  <AnchorPane prefHeight="25.0" prefWidth="25.0" />
+                  <ImageView fx:id="menuImg" fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true" />
                </graphic>
             </MenuButton>
          </children>
