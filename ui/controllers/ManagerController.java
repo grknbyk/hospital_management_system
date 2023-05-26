@@ -16,6 +16,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 import javafx.stage.Stage;
@@ -40,8 +41,16 @@ public class ManagerController {
     @FXML
     private MenuItem logoutMenuItem;
 
+    @FXML
+    private MenuButton options;
+
     public void initialize() {
-     
+        Image menuImg = new Image("ui/imgs/default_person.png");
+        ImageView imageView = new ImageView(menuImg);
+        imageView.setFitHeight(18);
+        imageView.setFitWidth(18);
+
+        options.setGraphic(imageView);
     }
 
     public void logout(ActionEvent event) throws IOException {
