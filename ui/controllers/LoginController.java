@@ -41,8 +41,8 @@ public class LoginController {
         String username = usernameTextField.getText();
         String password = passwordTextField.getText();
 
-        username = "admin";
-        password = "admin";
+        username = "doctor";
+        password = "doctor";
 
 		String status = Datasource.getInstance().queryLogin(username, password); //kolaylık olsun diye elle girdim
 
@@ -57,7 +57,7 @@ public class LoginController {
 					showManagerPanel(event,username);
 					break;
 				case "doctor":
-					showDoctorPanel(event);
+					showDoctorPanel(event, username);
 					break;
 				case "nurse":
 					showNursePanel(event);
@@ -108,11 +108,17 @@ public class LoginController {
 
     }
 
-    private void showDoctorPanel(ActionEvent event) throws IOException {
+    private void showDoctorPanel(ActionEvent event, String username) throws IOException {
+        // Get the FXMLLoader
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("../scene/DoctorScene.fxml"));
+        // Load the second controller
+        Parent root = loader.load();
+        DoctorController doctorController = loader.getController();
+        doctorController.setUsername(username);
 
-        root = FXMLLoader.load(getClass().getResource("../scene/DoctorScene.fxml"));
-        stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        scene = new Scene(root);
+        // Navigate to the second controller
+        Scene scene = new Scene(root);
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         stage.setTitle("Hospital Management System - Doctor");
         stage.setScene(scene);
         stage.show();
