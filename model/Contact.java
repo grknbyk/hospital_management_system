@@ -4,12 +4,17 @@ public class Contact {
     String phone;
     String email;
     String address;
+
+    public Contact() {
+        this("no phone", "no email", "no address");
+    }
     
     public Contact(String phone, String email, String address) {
         this.phone = phone;
         this.email = email;
         this.address = address;
     }
+
     public String getPhone() {
         return phone;
     }
