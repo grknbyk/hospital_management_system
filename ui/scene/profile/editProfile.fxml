@@ -69,7 +69,7 @@
             <Label prefHeight="17.0" prefWidth="168.0" text="Phone:" GridPane.rowIndex="1" />
             <Label prefHeight="17.0" prefWidth="191.0" text="Email:" GridPane.rowIndex="2" />
             <Label prefHeight="17.0" prefWidth="194.0" text="Address:" GridPane.rowIndex="3" />
-            <TextField GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <TextField fx:id="phoneTextField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
             <TextField fx:id="emailTextField" GridPane.columnIndex="1" GridPane.rowIndex="2" />
             <TextField fx:id="addressTextField" GridPane.columnIndex="1" GridPane.rowIndex="3" />
          </children>
