@@ -65,7 +65,7 @@ public class ProfileController{
     private TextField phoneTextField;
 
     public void updateFields(String username) {
-        Staff staff = Datasource.getInstance().queryProfile(username);
+        Staff staff = Datasource.getInstance().queryStaffProfile(username);
         nameField.setText(staff.getName());
         surnameField.setText(staff.getSurname());
         idField.setText(String.valueOf(staff.getId()));
@@ -79,7 +79,7 @@ public class ProfileController{
     }
 
     public void updateEdit(String username) {
-        Staff staff = Datasource.getInstance().queryProfile(username);
+        Staff staff = Datasource.getInstance().queryStaffProfile(username);
         imageField.setImage(new Image("ui/imgs/default_person.png"));
         idField.setText(String.valueOf(staff.getId()));
         statusField.setText(staff.getStatus().toString());
@@ -95,7 +95,7 @@ public class ProfileController{
     }
 
     public void editFields(String username) {
-        Staff staff = Datasource.getInstance().queryProfile(username);
+        Staff staff = Datasource.getInstance().queryStaffProfile(username);
 
         imageField.setImage(new Image("ui/imgs/default_person.png"));
         idField.setText(String.valueOf(staff.getId()));
