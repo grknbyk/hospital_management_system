@@ -1,21 +1,23 @@
 package model;
 
+import javafx.beans.property.SimpleStringProperty;
+
 public class Doctor extends Staff{
-    private String expretise;
+    private SimpleStringProperty expertise = new SimpleStringProperty("");
 
     public Doctor(){
         this("no expertise");
     }
 
-    public Doctor(String expretise) {
-        this.expretise = expretise;
+    public Doctor(String expertise) {
+        this.expertise.set(expertise);
     }
 
-    public String getExpretise() {
-        return expretise;
+    public String getExpertise() {
+        return expertise.get();
     }
-    public void setExpretise(String expretise) {
-        this.expretise = expretise;
+    public void setExpertise(String expertise) {
+        this.expertise.set(expertise);
     }
 
 }
