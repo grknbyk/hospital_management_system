@@ -1,27 +1,18 @@
 package ui.controllers;
 
-import database.Datasource;
 import java.io.IOException;
 import java.util.Optional;
 
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.FlowPane;
 import javafx.stage.Stage;
-import model.Contact;
-import model.Staff;
 
 public class ManagerController {
     String username;
@@ -78,12 +69,15 @@ public class ManagerController {
             System.out.println("Couldn't load the dialog");
             e.printStackTrace();
             return;
-        }        
+        }
 
         ButtonType editButton = new ButtonType("Edit");
         ButtonType closeButton = new ButtonType("Close");
-
         dialog2.getDialogPane().getButtonTypes().addAll(editButton, closeButton);
+
+        dialog2.getDialogPane().getScene().getWindow().setOnCloseRequest(e -> {
+            dialog2.close();
+        });
 
         Optional<ButtonType> result = dialog2.showAndWait();
         if(result.isPresent() && result.get() == editButton) {
