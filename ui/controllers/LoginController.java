@@ -41,8 +41,8 @@ public class LoginController {
         String username = usernameTextField.getText();
         String password = passwordTextField.getText();
 
-        username = "admin";
-        password = "admin";
+        username = "doctor";
+        password = "doctor";
 
 		String status = Datasource.getInstance().queryLogin(username, password); //kolaylık olsun diye elle girdim
 
@@ -115,7 +115,7 @@ public class LoginController {
         Parent root = loader.load();
         DoctorController doctorController = loader.getController();
         doctorController.setUsername(username);
-
+        doctorController.loadPatients();
         // Navigate to the second controller
         Scene scene = new Scene(root);
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();

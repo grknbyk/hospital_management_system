@@ -1,5 +1,7 @@
 package ui.controllers;
 
+import model.*;
+import database.Datasource;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -14,13 +16,15 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
+import model.Staff;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
-public class DoctorController implements Initializable {
+public class DoctorController{
+
     String username;
 
     public String getUsername() {
@@ -34,73 +38,32 @@ public class DoctorController implements Initializable {
     @FXML
     private BorderPane DoctorPanel;
 
-    @FXML
-    private TableView<Patient> tableView;
 
     @FXML
     private MenuItem logoutMenuItem;
 
+    @FXML
+    private TableView<Patient> patientTableView;
     private ObservableList<Patient> patients;
-
-
 
     @FXML
     private MenuButton options;
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
+
+
+    public void initialize() {
 
         Image menuImg = new Image("ui/imgs/default_person.png");
         ImageView imageView = new ImageView(menuImg);
         imageView.setFitHeight(18);
         imageView.setFitWidth(18);
         options.setGraphic(imageView);
-
-//        // Initialize the TableView columns
-//        TableColumn<Patient, Integer> idColumn = new TableColumn<>("ID");
-//        idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
-//
-//        TableColumn<Patient, String> nameColumn = new TableColumn<>("Name");
-//        nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
-//
-//        TableColumn<Patient, Integer> ageColumn = new TableColumn<>("Age");
-//        ageColumn.setCellValueFactory(new PropertyValueFactory<>("age"));
-//
-//        // Add the columns to the TableView
-//        tableView.getColumns().addAll(idColumn, nameColumn, ageColumn);
-//
-//        // Create sample patients
-//        patients = FXCollections.observableArrayList(
-//                new Patient(1, "John Doe", 30),
-//                new Patient(2, "Jane Smith", 25),
-//                new Patient(3, "Alice Johnson", 35)
-//        );
-//
-//        // Set the patient data to the TableView
-//        tableView.setItems(patients);
     }
 
-    public static class Patient {
-        private int id;
-        private String name;
-        private int age;
-
-        public Patient(int id, String name, int age) {
-            this.id = id;
-            this.name = name;
-            this.age = age;
-        }
-
-        public int getId() {
-            return id;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public int getAge() {
-            return age;
-        }
+    public void loadPatients(){
+        //fill the table
+        int staffId = Datasource.getInstance().queryStaffId(username);
+        patients = FXCollections.observableArrayList(Datasource.getInstance().queyPatients(staffId));
+        patientTableView.setItems(patients);
     }
 
     public void showProfileDialog(){

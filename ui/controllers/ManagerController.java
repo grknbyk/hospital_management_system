@@ -29,7 +29,7 @@ public class ManagerController {
     public void setUsername(String username) {
         this.username = username;
     }
-    //Doctor>>>>>>>>>>>>>>>>>>>>>>>>>
+
     @FXML
     private TableView<Doctor> tableView;
 
