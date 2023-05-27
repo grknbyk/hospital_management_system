@@ -10,22 +10,8 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
-import model.Contact;
-import model.Doctor;
-import model.Manager;
-import model.Medicine;
-import model.MedicineSupply;
-import model.Nurse;
-import model.Patient;
-import model.Pharmacist;
-import model.Receptionist;
-import model.Staff;
-import model.enums.BloodType;
-import model.enums.EmergencyState;
-import model.enums.Gender;
-import model.enums.MedicineType;
-import model.enums.Priority;
-import model.enums.Status;
+import model.*;
+import model.enums.*;
 
 public class Datasource {
 
@@ -548,7 +534,7 @@ public class Datasource {
      * @param staff_id the id of the staff
      * @return patient arraylist matching the staff id
      */
-    public ArrayList<Patient> queyPatients(int staff_id) {
+    public ArrayList<Patient> queryPatients(int staff_id){
         try {
             queryPatientsByStaffId.setInt(1, staff_id);
             ResultSet results = queryPatientsByStaffId.executeQuery();

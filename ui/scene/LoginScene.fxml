@@ -28,7 +28,7 @@
         <menus>
           <Menu mnemonicParsing="false" onAction="#showAboutDialog" text="About">
             <items>
-              <MenuItem mnemonicParsing="false" text="About" />
+              <MenuItem mnemonicParsing="false" onAction="#showAboutDialog" text="About" />
             </items>
           </Menu>
         </menus>
