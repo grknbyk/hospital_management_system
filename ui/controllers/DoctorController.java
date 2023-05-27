@@ -85,8 +85,11 @@ public class DoctorController{
 
         ButtonType editButton = new ButtonType("Edit");
         ButtonType closeButton = new ButtonType("Close");
-
         dialog2.getDialogPane().getButtonTypes().addAll(editButton, closeButton);
+
+        dialog2.getDialogPane().getScene().getWindow().setOnCloseRequest(e -> {
+            dialog2.close();
+        });
 
         Optional<ButtonType> result = dialog2.showAndWait();
         if(result.isPresent() && result.get() == editButton) {
