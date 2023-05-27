@@ -7,21 +7,16 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
-import model.Staff;
 
 import java.io.IOException;
-import java.net.URL;
 import java.util.Optional;
-import java.util.ResourceBundle;
 
 public class DoctorController{
 
@@ -62,7 +57,7 @@ public class DoctorController{
     public void loadPatients(){
         //fill the table
         int staffId = Datasource.getInstance().queryStaffId(username);
-        patients = FXCollections.observableArrayList(Datasource.getInstance().queyPatients(staffId));
+        patients = FXCollections.observableArrayList(Datasource.getInstance().queryPatients(staffId));
         patientTableView.setItems(patients);
     }
 
