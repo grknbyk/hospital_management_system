@@ -55,7 +55,7 @@ public class NurseController {
     public void loadPatients(){
         //fill the table
         int staffId = Datasource.getInstance().queryStaffId(username);
-        patients = FXCollections.observableArrayList(Datasource.getInstance().queyPatients(staffId));
+        patients = FXCollections.observableArrayList(Datasource.getInstance().queryPatients(staffId));
         patientTableView.setItems(patients);
     }
 
