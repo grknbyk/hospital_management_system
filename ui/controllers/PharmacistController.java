@@ -155,7 +155,6 @@ public class PharmacistController {
         dialogStage.show();
     }
 
-
     private void copyToClipboard(String text) {
         Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
         clipboard.setContents(new StringSelection(text), null);
