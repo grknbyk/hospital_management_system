@@ -66,7 +66,8 @@ public class ProfileController{
     @FXML
     private TextField phoneTextField;
 
-    public void showFields(Staff staff) {
+    public void showFields(String username) {
+        Staff staff = Datasource.getInstance().queryStaffProfile(username);   
         nameField.setText(staff.getName());
         surnameField.setText(staff.getSurname());
         idField.setText(String.valueOf(staff.getId()));
@@ -79,7 +80,8 @@ public class ProfileController{
         imageField.setImage(new Image("ui/imgs/default_person.png"));
     }
 
-    public void showEdit(Staff staff) {
+    public void showEdit(String username) {
+        Staff staff = Datasource.getInstance().queryStaffProfile(username);   
         imageField.setImage(new Image("ui/imgs/default_person.png"));
         idField.setText(String.valueOf(staff.getId()));
         statusField.setText(staff.getStatus().toString());
