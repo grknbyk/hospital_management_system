@@ -1,5 +1,7 @@
 package ui.controllers;
 
+import database.Datasource;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
@@ -12,6 +14,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -49,6 +53,21 @@ public class ReceptionistController {
 
     @FXML
     private MenuButton options;
+
+    public void initialize() {
+        javafx.scene.image.Image menuImg = new Image("ui/imgs/default_person.png");
+        ImageView imageView = new ImageView(menuImg);
+        imageView.setFitHeight(18);
+        imageView.setFitWidth(18);
+        options.setGraphic(imageView);
+    }
+
+    public void loadPatients(){
+        //fill the table
+        int staffId = Datasource.getInstance().queryStaffId(username);
+        patients = FXCollections.observableArrayList(Datasource.getInstance().queryPatients(staffId));
+        patientTableView.setItems(patients);
+    }
 
     public void showProfileDialog() {
         new ProfileViewBuilder(username, receptionistPanel).showProfileView();
