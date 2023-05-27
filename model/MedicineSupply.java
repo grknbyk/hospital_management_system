@@ -30,6 +30,10 @@ public class MedicineSupply {
         inventory.put(medicine, oldStock + amount);
     }
 
+    public void setStock(Medicine medicine, int amount) {
+        inventory.put(medicine, amount);
+    }
+
     /**
      * @param medicine Medicine that will be consumed.
      * @param amount   Amount of medicine that will be consumed.

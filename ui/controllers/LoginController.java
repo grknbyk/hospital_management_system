@@ -50,8 +50,8 @@ public class LoginController {
         String username = usernameTextField.getText();
         String password = passwordTextField.getText();
 
-//        username = "doctor";
-//        password = "doctor";
+        username = "admin";
+        password = "admin";
 
 		String status = Datasource.getInstance().queryLogin(username, password); //kolaylık olsun diye elle girdim
 
@@ -170,7 +170,8 @@ public class LoginController {
         Parent root = loader.load();
         PharmacistController pharmacistController = loader.getController();
         pharmacistController.setUsername(username);
-        
+        pharmacistController.loadMedicine();
+
         stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         scene = new Scene(root);
         stage.setTitle("Hospital Management System - Pharmacist");

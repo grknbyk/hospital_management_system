@@ -18,9 +18,14 @@ import java.awt.datatransfer.StringSelection;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import javafx.fxml.FXML;
+import javafx.scene.layout.BorderPane;
 
 public class ReceptionistController {
     String username;
+
+    @FXML
+    private BorderPane receptionistPanel;
 
     public String getUsername() {
         return username;
@@ -31,7 +36,7 @@ public class ReceptionistController {
     }
 
     public void showProfileDialog() {
-        System.out.println("Showing profile dialog");
+        new ProfileViewBuilder(username, receptionistPanel);
     }
 
     public void logout() {
