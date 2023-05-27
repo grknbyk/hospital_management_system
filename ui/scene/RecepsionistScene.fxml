@@ -11,37 +11,41 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.FlowPane?>
 
-<BorderPane fx:id="nursePanel" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.controllers.ReceptionistController">
+<BorderPane fx:id="receptionistPanel" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+            prefHeight="768.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/19"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.controllers.ReceptionistController">
     <top>
         <FlowPane prefHeight="10.0" prefWidth="1280.0" BorderPane.alignment="CENTER">
             <children>
                 <MenuBar prefWidth="1230.0">
                     <menus>
                         <Menu mnemonicParsing="false" text="Patient">
-                            <MenuItem mnemonicParsing="false" text="Data" />
+                            <MenuItem mnemonicParsing="false" text="Data"/>
                         </Menu>
                         <Menu mnemonicParsing="false" text="Dial">
                             <items>
-                                <MenuItem mnemonicParsing="false" text="Secretary" />
-                                <MenuItem mnemonicParsing="false" text="Security" />
-                                <MenuItem mnemonicParsing="false" text="Emergency" />
+                                <MenuItem mnemonicParsing="false" text="Secretary"/>
+                                <MenuItem mnemonicParsing="false" text="Security"/>
+                                <MenuItem mnemonicParsing="false" text="Emergency"/>
                             </items>
                         </Menu>
-                        <Menu mnemonicParsing="false" text="Help" />
-                  <Menu mnemonicParsing="false" text="About">
-                     <items>
-                        <MenuItem mnemonicParsing="false" onAction="#showAboutDialog" text="About" />
-                     </items>
-                  </Menu>
+                        <Menu mnemonicParsing="false" text="Help"/>
+                        <Menu mnemonicParsing="false" text="About">
+                            <items>
+                                <MenuItem mnemonicParsing="false" onAction="#showAboutDialog" text="About"/>
+                            </items>
+                        </Menu>
                     </menus>
                 </MenuBar>
                 <MenuButton fx:id="options" mnemonicParsing="false" prefHeight="25.0" prefWidth="50.0">
                     <items>
-                        <MenuItem fx:id="profileMenuItem" mnemonicParsing="false" onAction="#showProfileDialog" text="Profile" />
-                        <MenuItem fx:id="logoutMenuItem" mnemonicParsing="false" onAction="#logout" text="Log out" />
+                        <MenuItem fx:id="profileMenuItem" mnemonicParsing="false" onAction="#showProfileDialog"
+                                  text="Profile"/>
+                        <MenuItem fx:id="logoutMenuItem" mnemonicParsing="false" onAction="#logout" text="Log out"/>
                     </items>
                     <graphic>
-                        <ImageView fx:id="menuImg" fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true" />
+                        <ImageView fx:id="menuImg" fitHeight="18.0" fitWidth="18.0" pickOnBounds="true"
+                                   preserveRatio="true"/>
                     </graphic>
                 </MenuButton>
             </children>
@@ -50,57 +54,57 @@
     <center>
         <TableView fx:id="patientTableView" prefHeight="200.0" prefWidth="200.0">
             <columnResizePolicy>
-                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
             </columnResizePolicy>
             <columns>
                 <TableColumn maxWidth="3000.0" prefWidth="127.0" text="Emergency">
                     <cellValueFactory>
-                        <PropertyValueFactory property="emergencyState" />
+                        <PropertyValueFactory property="emergencyState"/>
                     </cellValueFactory>
                 </TableColumn>
                 <TableColumn maxWidth="3000.0" prefWidth="37.0" text="Priority">
                     <cellValueFactory>
-                        <PropertyValueFactory property="priority" />
+                        <PropertyValueFactory property="priority"/>
                     </cellValueFactory>
                 </TableColumn>
                 <TableColumn maxWidth="4000.0" prefWidth="75.0" text="Name">
                     <cellValueFactory>
-                        <PropertyValueFactory property="name" />
+                        <PropertyValueFactory property="name"/>
                     </cellValueFactory>
                 </TableColumn>
                 <TableColumn maxWidth="4000.0" prefWidth="75.0" text="Last Name">
                     <cellValueFactory>
-                        <PropertyValueFactory property="surname" />
+                        <PropertyValueFactory property="surname"/>
                     </cellValueFactory>
                 </TableColumn>
                 <TableColumn maxWidth="2000.0" prefWidth="75.0" text="Blood Type">
                     <cellValueFactory>
-                        <PropertyValueFactory property="bloodType" />
+                        <PropertyValueFactory property="bloodType"/>
                     </cellValueFactory>
                 </TableColumn>
                 <TableColumn maxWidth="2000.0" minWidth="30.0" prefWidth="100.0" text="Age">
                     <cellValueFactory>
-                        <PropertyValueFactory property="age" />
+                        <PropertyValueFactory property="age"/>
                     </cellValueFactory>
                 </TableColumn>
                 <TableColumn maxWidth="3000.0" prefWidth="75.0" text="Gender">
                     <cellValueFactory>
-                        <PropertyValueFactory property="gender" />
+                        <PropertyValueFactory property="gender"/>
                     </cellValueFactory>
                 </TableColumn>
                 <TableColumn maxWidth="2500.0" minWidth="30.0" prefWidth="100.0" text="Appointment Time">
                     <cellValueFactory>
-                        <PropertyValueFactory property="hour" />
+                        <PropertyValueFactory property="hour"/>
                     </cellValueFactory>
                 </TableColumn>
                 <TableColumn maxWidth="4000.0" minWidth="150.0" prefWidth="100.0" text="Complaint">
                     <cellValueFactory>
-                        <PropertyValueFactory property="complaint" />
+                        <PropertyValueFactory property="complaint"/>
                     </cellValueFactory>
                 </TableColumn>
             </columns>
             <columnResizePolicy>
-                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
             </columnResizePolicy>
         </TableView>
     </center>
