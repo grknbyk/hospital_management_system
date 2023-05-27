@@ -152,7 +152,7 @@ public class LoginController {
         Parent root = loader.load();
         ReceptionistController receptionistController = loader.getController();
         receptionistController.setUsername(username);
-
+        receptionistController.loadPatients();
 
         scene = new Scene(root);
         stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
