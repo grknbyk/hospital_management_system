@@ -106,14 +106,11 @@ public class PharmacistController {
 
         // Create labels and fields for email, phone, and website
         Label emailLabel = new Label("Email:");
-        TextField emailField = new TextField("group1_oop@email.com");
-        emailField.setEditable(false);
+        Hyperlink emailField = new Hyperlink("group1_oop@email.com");
         emailField.setPrefWidth(200);
         emailField.setOnMouseClicked(event -> {
-            if (event.getClickCount() == 2) {
-                copyToClipboard(emailField.getText());
-                showAlert(Alert.AlertType.INFORMATION, "Copied", "Email address copied to clipboard.");
-            }
+            copyToClipboard(emailField.getText());
+            showAlert(Alert.AlertType.INFORMATION, "Copied", "Email address copied to clipboard.");
         });
 
         Label phoneLabel = new Label("Phone:");
@@ -157,7 +154,6 @@ public class PharmacistController {
         dialogStage.setScene(dialogScene);
         dialogStage.show();
     }
-
 
     private void copyToClipboard(String text) {
         Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
