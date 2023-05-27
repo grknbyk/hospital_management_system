@@ -1,12 +1,15 @@
 package model;
 
-import utils.List;
+import java.util.ArrayList;
+import java.util.List;
+
+import model.enums.MedicineType;
 import utils.Pair;
 
 import java.util.TreeMap;
 
 public class MedicineSupply {
-    private TreeMap<Medicine, Integer> inventory = new TreeMap<>();
+    private TreeMap<Medicine, SupplyItem> inventory = new TreeMap<>();
     private static MedicineSupply instance = new MedicineSupply();
 
     private MedicineSupply() {
@@ -18,42 +21,78 @@ public class MedicineSupply {
     }
 
     public int getStock(Medicine medicine) {
-        return inventory.get(medicine);
+        return inventory.get(medicine).getStock();
     }
 
     public boolean checkStock(Medicine medicine) {
-        return inventory.get(medicine) == 0;
+        return inventory.get(medicine).getStock() == 0;
     }
 
     public void supplyStock(Medicine medicine, int amount) {
-        int oldStock = inventory.getOrDefault(medicine, 0);
-        inventory.put(medicine, oldStock + amount);
+        SupplyItem oldStock = inventory.getOrDefault(medicine, null);
+        if(oldStock == null)
+            oldStock = new SupplyItem(medicine, 0);
+        oldStock.stock += amount;
+
+        inventory.put(medicine, oldStock);
     }
 
     public void setStock(Medicine medicine, int amount) {
-        inventory.put(medicine, amount);
+        SupplyItem oldStock = inventory.getOrDefault(medicine, null);
+        if(oldStock == null)
+            oldStock = new SupplyItem(medicine, 0);
+        oldStock.stock = amount;
+
+        inventory.put(medicine, oldStock);
     }
 
     /**
      * @param medicine Medicine that will be consumed.
      * @param amount   Amount of medicine that will be consumed.
      * @return False if there is less amount of medicine in inventory than the
-     *         amount.
+     * amount.
      */
     public boolean consumeStock(Medicine medicine, int amount) {
-        if (!inventory.containsKey(medicine) || inventory.get(medicine) < amount)
+        if (!inventory.containsKey(medicine) || inventory.get(medicine).stock < amount)
             return false;
 
-        int oldStock = inventory.get(medicine);
-        inventory.put(medicine, oldStock - amount);
+        SupplyItem oldStock = inventory.get(medicine);
+        oldStock.stock -= amount;
+        inventory.put(medicine, oldStock);
 
         return true;
     }
 
-    public List<Pair<Medicine, Integer>> toList() {
-        List<Pair<Medicine, Integer>> l = new List<>();
-        inventory.forEach((k, v) -> l.add(new Pair<>(k, v)));
+    public List<SupplyItem> toList() {
+        List<SupplyItem> l = new ArrayList<>();
+        inventory.forEach((k, v) -> l.add(v));
 
         return l;
+    }
+
+    public static class SupplyItem {
+        Medicine med;
+        int stock;
+
+        public SupplyItem(Medicine med, int stock) {
+            this.med = med;
+            this.stock = stock;
+        }
+
+        public String getName() {
+            return med.getName();
+        }
+
+        public MedicineType getType() {
+            return med.getType();
+        }
+
+        public int getId() {
+            return med.getId();
+        }
+
+        public int getStock() {
+            return stock;
+        }
     }
 }
