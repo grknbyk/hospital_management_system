@@ -13,6 +13,8 @@ import java.util.ArrayList;
 import model.Contact;
 import model.Doctor;
 import model.Manager;
+import model.Medicine;
+import model.MedicineSupply;
 import model.Nurse;
 import model.Patient;
 import model.Pharmacist;
@@ -21,6 +23,7 @@ import model.Staff;
 import model.enums.BloodType;
 import model.enums.EmergencyState;
 import model.enums.Gender;
+import model.enums.MedicineType;
 import model.enums.Priority;
 import model.enums.Status;
 
@@ -80,7 +83,10 @@ public class Datasource {
     private static final String COLUMN_MEDICINE_ID = "id";
     private static final String COLUMN_MEDICINE_NAME = "name";
     private static final String COLUMN_MEDICINE_TYPE = "type";
-    private static final String COLUMN_MEDICINE_STOCK = "stock";
+
+    private static final String TABLE_MEDICINE_STOCK = "medicine_stock";
+    private static final String COLUMN_MEDICINE_STOCK_MEDICINE_ID = "medicine_id";
+    private static final String COLUMN_MEDICINE_STOCK_AMOUNT = "stock";
 
     private static final String TABLE_MEDICINE_RECEIPT = "medicine_receipt";
     private static final String COLUMN_MEDICINE_RECEIPT_RECEIPT_ID = "id";
@@ -96,6 +102,11 @@ public class Datasource {
             " INNER JOIN " + TABLE_CONTACT + " ON " + TABLE_STAFF + "." + COLUMN_STAFF_PERSON_ID + " = " + TABLE_CONTACT
             + "." + COLUMN_CONTACT_PERSON_ID +
             " WHERE " + COLUMN_STAFF_USERNAME + " = ?";
+
+    private static final String QUERY_MEDICINE = "SELECT * FROM " + TABLE_MEDICINE +
+            " INNER JOIN " + TABLE_MEDICINE_STOCK + " ON " +
+            TABLE_MEDICINE + "." + COLUMN_MEDICINE_ID + " = " + TABLE_MEDICINE_STOCK + "."
+            + COLUMN_MEDICINE_STOCK_MEDICINE_ID;
 
     private static final String QUERY_DOCTORS = " SELECT " +
             TABLE_STAFF + "." + COLUMN_STAFF_ID + ", " +
@@ -226,6 +237,7 @@ public class Datasource {
     private PreparedStatement queryStaffByUsername;
     private PreparedStatement queryStaffIdByUsername;
     private PreparedStatement queryPatientsByStaffId;
+    private PreparedStatement queryMedicine;
     private PreparedStatement queryStaffById;
     private PreparedStatement queryDoctors;
     private PreparedStatement queryDoctorExpretiseByStaffId;
@@ -251,6 +263,7 @@ public class Datasource {
             queryStaffByUsername = conn.prepareStatement(QUERY_STAFF_BY_USERNAME);
             queryStaffIdByUsername = conn.prepareStatement(QUERY_STAFF_ID_BY_USERNAME);
             queryPatientsByStaffId = conn.prepareStatement(QUERY_PATIENTS_BY_STAFF_ID);
+            queryMedicine = conn.prepareStatement(QUERY_MEDICINE);
             queryStaffById = conn.prepareStatement(QUERY_STAFF_BY_ID);
             queryDoctorExpretiseByStaffId = conn.prepareStatement(QUERY_DOCTOR_EXPRETISE_BY_STAFF_ID);
             queryNurseWorkingAreaByStaffId = conn.prepareStatement(QUERY_NURSE_WORKING_AREA_BY_STAFF_ID);
@@ -276,6 +289,10 @@ public class Datasource {
 
             if (queryStaffByUsername != null) {
                 queryStaffByUsername.close();
+            }
+
+            if (queryMedicine != null) {
+                queryMedicine.close();
             }
 
             if (queryPatientsByStaffId != null) {
@@ -509,9 +526,26 @@ public class Datasource {
         }
     }
 
+    /**
+     * @param medicine_supply the supply object to update
+     */
+    public void updateMedicineSupply(MedicineSupply medicine_supply) {
+        try {
+            ResultSet results = queryMedicine.executeQuery();
+            while (results.next()) {
+                Medicine medicine = new Medicine();
+                medicine.setId(results.getInt(COLUMN_MEDICINE_ID));
+                medicine.setName(results.getString(COLUMN_MEDICINE_NAME));
+                medicine.setType(MedicineType.valueOf(results.getString(COLUMN_MEDICINE_TYPE)));
+                medicine_supply.supplyStock(medicine, results.getInt(COLUMN_MEDICINE_STOCK_AMOUNT));
+            }
+        } catch (SQLException e) {
+            System.out.println("Update failed: " + e.getMessage());
+        }
+    }
 
-        /**
-     * @param staff_id the id of the staff 
+    /**
+     * @param staff_id the id of the staff
      * @return patient arraylist matching the staff id
      */
     public ArrayList<Patient> queryPatients(int staff_id){
@@ -519,7 +553,7 @@ public class Datasource {
             queryPatientsByStaffId.setInt(1, staff_id);
             ResultSet results = queryPatientsByStaffId.executeQuery();
             ArrayList<Patient> patients = new ArrayList<>();
-            while(results.next()){
+            while (results.next()) {
                 Patient patient = new Patient();
                 patient.setId(results.getInt(1));
                 patient.setName(results.getString(COLUMN_PERSON_NAME));
@@ -533,17 +567,17 @@ public class Datasource {
                 patient.setEmergencyState(EmergencyState.valueOf(results.getString(COLUMN_PATIENT_EMERGENCY_STATE)));
 
                 String complaint = results.getString(COLUMN_PATIENT_COMPLAINT);
-                if(complaint != null)
+                if (complaint != null)
                     patient.setComplaint(complaint);
                 else
                     patient.setComplaint(null);
-                
+
                 String dateString = results.getString(COLUMN_PATIENT_APPOINTMENT);
-                if(dateString != null){
+                if (dateString != null) {
                     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
                     LocalDateTime dateTime = LocalDateTime.parse(dateString, formatter);
                     patient.setAppointment(dateTime);
-                }else{
+                } else {
                     patient.setAppointment(null);
                 }
                 patients.add(patient);
@@ -554,9 +588,6 @@ public class Datasource {
             return null;
         }
     }
-
-
-
 
     /**
      * @param username the username of the staff entered in the login page.
