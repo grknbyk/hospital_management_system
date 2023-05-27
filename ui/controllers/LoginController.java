@@ -161,7 +161,8 @@ public class LoginController {
         Parent root = loader.load();
         PharmacistController pharmacistController = loader.getController();
         pharmacistController.setUsername(username);
-        
+        pharmacistController.loadMedicine();
+
         stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         scene = new Scene(root);
         stage.setTitle("Hospital Management System - Pharmacist");
