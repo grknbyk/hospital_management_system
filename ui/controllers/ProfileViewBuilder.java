@@ -23,7 +23,6 @@ public class ProfileViewBuilder {
     public ProfileViewBuilder(String username, BorderPane owner){
         this.owner = owner;
         this.username = username;
-        showProfileView();
     }
 
     private void applyButtonFunction(Staff staff){
@@ -41,7 +40,7 @@ public class ProfileViewBuilder {
         }
     }
 
-    private void showEditProfile(){
+    public void showEditProfile(){
         Dialog<ButtonType> dialog = new Dialog<ButtonType>();
         dialog.initOwner(owner.getScene().getWindow());
         dialog.setTitle("Edit Profile");

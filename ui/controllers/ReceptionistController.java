@@ -36,7 +36,7 @@ public class ReceptionistController {
     }
 
     public void showProfileDialog() {
-        new ProfileViewBuilder(username, receptionistPanel);
+        new ProfileViewBuilder(username, receptionistPanel).showProfileView();
     }
 
     public void logout() {

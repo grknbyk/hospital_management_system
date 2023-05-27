@@ -68,6 +68,10 @@ public class DoctorController{
         options.setGraphic(imageView);
     }
 
+    public void showProfileDialog(){
+        new ProfileViewBuilder(username,DoctorPanel).showProfileView();
+    }
+
     public void loadPatients(){
         //fill the table
         int staffId = Datasource.getInstance().queryStaffId(username);
