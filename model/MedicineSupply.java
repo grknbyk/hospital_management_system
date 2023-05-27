@@ -7,13 +7,13 @@ import java.util.TreeMap;
 
 public class MedicineSupply {
     private TreeMap<Medicine, Integer> inventory;
-    private static final MedicineSupply instance = new MedicineSupply();
+    private static MedicineSupply instance = new MedicineSupply();
 
     private MedicineSupply() {
 
     }
 
-    public MedicineSupply getInstance() {
+    public static MedicineSupply getInstance() {
         return instance;
     }
 
