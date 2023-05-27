@@ -514,7 +514,7 @@ public class Datasource {
      * @param staff_id the id of the staff 
      * @return patient arraylist matching the staff id
      */
-    public ArrayList<Patient> queyPatients(int staff_id){
+    public ArrayList<Patient> queryPatients(int staff_id){
         try {
             queryPatientsByStaffId.setInt(1, staff_id);
             ResultSet results = queryPatientsByStaffId.executeQuery();
