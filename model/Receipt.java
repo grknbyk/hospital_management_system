@@ -12,7 +12,6 @@ public class Receipt {
     private int staffId;
     private Date givenDate;
     private Date expireDate;
-
     private final TreeMap<Medicine, Integer> content;
 
     public Receipt(int id, int patientId, int staffId, Date givenDate, Date expireDate) {
