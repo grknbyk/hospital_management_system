@@ -20,7 +20,8 @@
                 <MenuBar prefWidth="1230.0">
                     <menus>
                         <Menu mnemonicParsing="false" text="Patient">
-                            <MenuItem mnemonicParsing="false" text="Data"/>
+                            <MenuItem mnemonicParsing="false" text="Add"/>
+                            <MenuItem mnemonicParsing="false" text="Remove"/>
                         </Menu>
                         <Menu mnemonicParsing="false" text="Dial">
                             <items>
