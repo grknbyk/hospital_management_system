@@ -61,8 +61,8 @@ public class PharmacistController {
     private MenuItem logoutMenuItem;
 
     @FXML
-    private TableView<Pair<Medicine, Integer>> medicineTableView;
-    private ObservableList<Pair<Medicine, Integer>> medicine;
+    private TableView<MedicineSupply.SupplyItem> medicineTableView;
+    private ObservableList<MedicineSupply.SupplyItem> medicine;
 
     @FXML
     private MenuButton options;
@@ -81,7 +81,7 @@ public class PharmacistController {
         //fill the table
         int staffId = Datasource.getInstance().queryStaffId(username);
         Datasource.getInstance().updateMedicineSupply(MedicineSupply.getInstance());
-        medicine = FXCollections.observableList(Arrays.asList(MedicineSupply.getInstance().toList().toArray()).stream().map(obj -> (Pair<Medicine, Integer>) obj).collect(Collectors.toList()));
+        medicine = FXCollections.observableList(Arrays.stream(MedicineSupply.getInstance().toList().toArray()).map(obj -> (MedicineSupply.SupplyItem) obj).collect(Collectors.toList()));
         medicineTableView.setItems(medicine);
     }
 
