@@ -659,7 +659,7 @@ public class Datasource {
      * @param staff a new staff object to update existing staff by id.
      * @return message that shows the result of the operation.
      */
-    public String updateStaff(Staff staff) {
+    public String updateStaffProfile(Staff staff) {
 
         try {
             conn.setAutoCommit(false);

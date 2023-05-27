@@ -1,7 +1,13 @@
 package ui.controllers;
 
+import javafx.fxml.FXML;
+import javafx.scene.layout.BorderPane;
+
 public class PharmacistController {
     String username;
+
+    @FXML
+    private BorderPane pharmacistPanel;
 
     public String getUsername() {
         return username;
@@ -12,7 +18,7 @@ public class PharmacistController {
     }
 
     public void showProfileDialog() {
-        System.out.println("Showing profile dialog");
+        new ProfileViewBuilder(username, pharmacistPanel);
     }
 
     public void logout() {
