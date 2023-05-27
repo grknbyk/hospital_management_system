@@ -26,14 +26,9 @@
                         <MenuItem mnemonicParsing="false" text="Delete" />
                   </items>
                 </Menu>
-                <Menu mnemonicParsing="false" text="Edit">
+                <Menu mnemonicParsing="false" onAction="#showAboutDialog" text="About">
                   <items>
-                    <MenuItem mnemonicParsing="false" text="Delete" />
-                  </items>
-                </Menu>
-                <Menu mnemonicParsing="false" text="Help">
-                  <items>
-                    <MenuItem mnemonicParsing="false" text="About" />
+                    <MenuItem mnemonicParsing="false" onAction="#showAboutDialog" text="About" />
                   </items>
                 </Menu>
               </menus>
@@ -114,12 +109,12 @@
                         <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
                      </columnResizePolicy>
                      <columns>
-                        <TableColumn maxWidth="2000.0" prefWidth="75.0" text="ID" >
+                        <TableColumn maxWidth="2000.0" prefWidth="75.0" text="ID">
                             <cellValueFactory>
                                 <PropertyValueFactory property="id" />
                             </cellValueFactory>
                         </TableColumn>
-                        <TableColumn prefWidth="75.0" text="Working Area" >
+                        <TableColumn prefWidth="75.0" text="Working Area">
                             <cellValueFactory>
                                 <PropertyValueFactory property="workingArea" />
                             </cellValueFactory>
@@ -165,7 +160,7 @@
                         <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
                      </columnResizePolicy>
                      <columns>
-                         <TableColumn maxWidth="2000.0" prefWidth="75.0" text="ID" >
+                         <TableColumn maxWidth="2000.0" prefWidth="75.0" text="ID">
                              <cellValueFactory>
                                  <PropertyValueFactory property="id" />
                              </cellValueFactory>
@@ -211,7 +206,7 @@
                         <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
                      </columnResizePolicy>
                      <columns>
-                         <TableColumn maxWidth="2000.0" prefWidth="75.0" text="ID" >
+                         <TableColumn maxWidth="2000.0" prefWidth="75.0" text="ID">
                              <cellValueFactory>
                                  <PropertyValueFactory property="id" />
                              </cellValueFactory>
