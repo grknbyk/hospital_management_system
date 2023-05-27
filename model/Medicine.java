@@ -3,6 +3,7 @@ package model;
 import model.enums.MedicineType;
 
 public class Medicine implements Comparable<Medicine> {
+    
     int id;
     MedicineType type;
     String name;
@@ -10,11 +11,11 @@ public class Medicine implements Comparable<Medicine> {
     public int getId() {
         return id;
     }
-
+    
     public void setId(int id) {
         this.id = id;
     }
-
+    
     @Override
     public int hashCode() {
         return name.hashCode();
@@ -35,14 +36,15 @@ public class Medicine implements Comparable<Medicine> {
     public void setName(String name) {
         this.name = name;
     }
-
+    
     @Override
     public int compareTo(Medicine o) {
         return name.compareTo(o.name);
     }
-
+    
     @Override
     public String toString() {
-        return name;
+        return id + " " + name + " " + type + " ";
     }
+    
 }

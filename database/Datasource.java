@@ -86,7 +86,7 @@ public class Datasource {
 
     private static final String TABLE_MEDICINE_STOCK = "medicine_stock";
     private static final String COLUMN_MEDICINE_STOCK_MEDICINE_ID = "medicine_id";
-    private static final String COLUMN_MEDICINE_STOCK_AMOUNT = "amount";
+    private static final String COLUMN_MEDICINE_STOCK_AMOUNT = "stock";
 
     private static final String TABLE_MEDICINE_RECEIPT = "medicine_receipt";
     private static final String COLUMN_MEDICINE_RECEIPT_RECEIPT_ID = "id";
