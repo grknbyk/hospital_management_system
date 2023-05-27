@@ -523,7 +523,7 @@ public class Datasource {
                 medicine.setId(results.getInt(COLUMN_MEDICINE_ID));
                 medicine.setName(results.getString(COLUMN_MEDICINE_NAME));
                 medicine.setType(MedicineType.valueOf(results.getString(COLUMN_MEDICINE_TYPE)));
-                medicine_supply.supplyStock(medicine, results.getInt(COLUMN_MEDICINE_STOCK_AMOUNT));
+                medicine_supply.setStock(medicine, results.getInt(COLUMN_MEDICINE_STOCK_AMOUNT));
             }
         } catch (SQLException e) {
             System.out.println("Update failed: " + e.getMessage());
@@ -659,7 +659,7 @@ public class Datasource {
      * @param staff a new staff object to update existing staff by id.
      * @return message that shows the result of the operation.
      */
-    public String updateStaff(Staff staff) {
+    public String updateStaffProfile(Staff staff) {
 
         try {
             conn.setAutoCommit(false);
