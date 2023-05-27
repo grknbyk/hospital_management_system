@@ -1,5 +1,14 @@
 package ui.controllers;
 
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.control.Button;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.GridPane;
+import javafx.stage.Modality;
 import model.*;
 import database.Datasource;
 import javafx.collections.FXCollections;
@@ -15,7 +24,12 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
+import java.awt.*;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Optional;
 
 public class DoctorController{
@@ -61,60 +75,77 @@ public class DoctorController{
         patientTableView.setItems(patients);
     }
 
-    public void showProfileDialog(){
+    public void showAboutDialog() {
+        // Create a new stage for the dialog
+        Stage dialogStage = new Stage();
+        dialogStage.initModality(Modality.APPLICATION_MODAL);
+        dialogStage.setTitle("Help");
 
-        Dialog<ButtonType> dialog2 = new Dialog<ButtonType>();
-        dialog2.initOwner(DoctorPanel.getScene().getWindow());
-        dialog2.setTitle("Profile");
-        FXMLLoader fxmlLoader2 = new FXMLLoader();
-        fxmlLoader2.setLocation(getClass().getResource("../scene/profile/ProfileDialog.fxml"));
-        try {
-            dialog2.getDialogPane().setContent(fxmlLoader2.load());
-            ProfileController profileController = fxmlLoader2.getController();
-            profileController.updateFields(username);
-        } catch(IOException e) {
-            System.out.println("Couldn't load the dialog");
-            e.printStackTrace();
-            return;
-        }
-
-        ButtonType editButton = new ButtonType("Edit");
-        ButtonType closeButton = new ButtonType("Close");
-        dialog2.getDialogPane().getButtonTypes().addAll(editButton, closeButton);
-
-        dialog2.getDialogPane().getScene().getWindow().setOnCloseRequest(e -> {
-            dialog2.close();
+        // Create labels and fields for email, phone, and website
+        Label emailLabel = new Label("Email:");
+        TextField emailField = new TextField("group1_oop@email.com");
+        emailField.setEditable(false);
+        emailField.setPrefWidth(200);
+        emailField.setOnMouseClicked(event -> {
+            if (event.getClickCount() == 2) {
+                copyToClipboard(emailField.getText());
+                showAlert(Alert.AlertType.INFORMATION, "Copied", "Email address copied to clipboard.");
+            }
         });
 
-        Optional<ButtonType> result = dialog2.showAndWait();
-        if(result.isPresent() && result.get() == editButton) {
-            Dialog<ButtonType> dialog = new Dialog<ButtonType>();
-            dialog.initOwner(DoctorPanel.getScene().getWindow());
-            dialog.setTitle("Edit Profile");
-            FXMLLoader fxmlLoader = new FXMLLoader();
-            fxmlLoader.setLocation(getClass().getResource("../scene/profile/EditProfile.fxml"));
+        Label phoneLabel = new Label("Phone:");
+        Label phoneField = new Label("+1 123-456-7890");
 
+        Hyperlink websiteLink = new Hyperlink("Website: https://ceng.deu.edu.tr");
+        websiteLink.setOnAction(event -> {
             try {
-                dialog.getDialogPane().setContent(fxmlLoader.load());
-                ProfileController profileController = fxmlLoader.getController();
-                profileController.updateEdit(username);
-            }catch (IOException e){
-                System.out.println("Couldn't load the dialog");
+                Desktop.getDesktop().browse(new URI("https://ceng.deu.edu.tr"));
+            } catch (IOException | URISyntaxException e) {
+                // Handle any errors that occur while trying to open the link
                 e.printStackTrace();
-                return;
+                showAlert(Alert.AlertType.ERROR, "Error", "Failed to open website.");
             }
+        });
 
-            dialog.getDialogPane().getButtonTypes().add(ButtonType.OK);
-            dialog.getDialogPane().getButtonTypes().add(ButtonType.CANCEL);
+        // Create a text area for additional instructions or information
+        Label additionalInfoLabel = new Label();
+        additionalInfoLabel.setText("This project is designed for OOP lecture in Dokuz Eylul University");
 
-            Optional<ButtonType> result2 = dialog.showAndWait();
-            if(result2.isPresent() && result2.get() == ButtonType.OK) {
+        // Create a button to close the dialog
+        javafx.scene.control.Button closeButton = new Button("Close");
+        closeButton.setOnAction(event -> dialogStage.close());
 
-                ProfileController profileController = fxmlLoader.getController();
-                profileController.editFields(username);
-            }
+        // Create a grid pane to hold the dialog content
+        GridPane gridPane = new GridPane();
+        gridPane.setHgap(10);
+        gridPane.setVgap(10);
+        gridPane.setPadding(new Insets(10));
+        gridPane.setAlignment(Pos.CENTER);
+        gridPane.add(emailLabel, 0, 0);
+        gridPane.add(emailField, 1, 0);
+        gridPane.add(phoneLabel, 0, 1);
+        gridPane.add(phoneField, 1, 1);
+        gridPane.add(websiteLink, 0, 2, 2, 1);
+        gridPane.add(additionalInfoLabel, 0, 3, 2, 1);
+        gridPane.add(closeButton, 0, 4, 2, 1);
 
-        }
+        // Set the scene for the dialog and show it
+        Scene dialogScene = new Scene(gridPane);
+        dialogStage.setScene(dialogScene);
+        dialogStage.show();
+    }
+
+    private void copyToClipboard(String text) {
+        Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+        clipboard.setContents(new StringSelection(text), null);
+    }
+
+    private void showAlert(Alert.AlertType alertType, String title, String content) {
+        Alert alert = new Alert(alertType);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(content);
+        alert.showAndWait();
     }
 
     public void logout(ActionEvent event) throws IOException {
@@ -124,5 +155,6 @@ public class DoctorController{
         window.setTitle("Hospital Management System");
         window.setScene(scene);
         window.show();
+        new ProfileViewBuilder(username, DoctorPanel);
     }
 }
