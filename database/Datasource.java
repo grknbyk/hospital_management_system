@@ -671,7 +671,7 @@ public class Datasource {
                 updatePersonByPersonId.setString(1, staff.getName());
                 updatePersonByPersonId.setString(2, staff.getSurname());
                 updatePersonByPersonId.setInt(3, staff.getAge());
-                updatePersonByPersonId.setString(4, staff.getGender().toString());
+                updatePersonByPersonId.setString(4, staff.getGender().name());
                 updatePersonByPersonId.setInt(5, personId);
                 updateContactByPersonId.setString(1, staff.getContact().getPhone());
                 updateContactByPersonId.setString(2, staff.getContact().getEmail());

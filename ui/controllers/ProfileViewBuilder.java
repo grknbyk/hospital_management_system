@@ -13,8 +13,8 @@ import model.Staff;
 
 public class ProfileViewBuilder {
     private BorderPane owner;
-    private Staff staff;
     private ProfileController profileController;
+    private Staff staff;
 
     public ProfileViewBuilder() {
         // Default constructor implementation
@@ -22,7 +22,6 @@ public class ProfileViewBuilder {
 
     public ProfileViewBuilder(String username, BorderPane owner){
         this.owner = owner;
-        this.profileController = new ProfileController();
         this.staff = Datasource.getInstance().queryStaffProfile(username);   
         showProfileView();
     }
@@ -51,7 +50,7 @@ public class ProfileViewBuilder {
 
         try {
             dialog.getDialogPane().setContent(fxmlLoader.load());
-            ProfileController profileController = fxmlLoader.getController();
+            profileController = fxmlLoader.getController();
             profileController.showEdit(staff);
         }catch (IOException e){
             System.out.println("Couldn't load the dialog");
@@ -67,8 +66,7 @@ public class ProfileViewBuilder {
 
         Optional<ButtonType> result2 = dialog.showAndWait();
         if(result2.isPresent() && result2.get() == applyButton) {
-            Staff staff = profileController.returnEditedProfile();
-            applyButtonFunction(staff);
+            applyButtonFunction(profileController.returnEditedProfile());
         }else if(result2.isPresent() && result2.get() == cancelButton){
             dialog.close();
             showProfileView();

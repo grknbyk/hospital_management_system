@@ -2,7 +2,6 @@ package ui.controllers;
 
 import database.Datasource;
 import javafx.fxml.FXML;
-import javafx.scene.chart.PieChart.Data;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Spinner;
