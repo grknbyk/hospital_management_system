@@ -86,7 +86,7 @@ public class PharmacistController {
     }
 
     public void showProfileDialog() {
-        new ProfileViewBuilder(username, pharmacistPanel);
+        new ProfileViewBuilder(username, pharmacistPanel).showProfileView();
     }
 
     public void logout(ActionEvent event) throws IOException {
