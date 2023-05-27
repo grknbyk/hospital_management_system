@@ -523,7 +523,7 @@ public class Datasource {
                 medicine.setId(results.getInt(COLUMN_MEDICINE_ID));
                 medicine.setName(results.getString(COLUMN_MEDICINE_NAME));
                 medicine.setType(MedicineType.valueOf(results.getString(COLUMN_MEDICINE_TYPE)));
-                medicine_supply.supplyStock(medicine, results.getInt(COLUMN_MEDICINE_STOCK_AMOUNT));
+                medicine_supply.setStock(medicine, results.getInt(COLUMN_MEDICINE_STOCK_AMOUNT));
             }
         } catch (SQLException e) {
             System.out.println("Update failed: " + e.getMessage());
