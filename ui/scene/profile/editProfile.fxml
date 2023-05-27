@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Spinner?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
@@ -41,11 +43,11 @@
             <Label text="Surname:" GridPane.rowIndex="3" />
             <Label text="Gender:" GridPane.rowIndex="4" />
             <Label text="Age:" GridPane.rowIndex="5" />
+            <Spinner fx:id="ageSpinner" prefHeight="25.0" prefWidth="94.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
             <Label text="ID:" />
+            <ChoiceBox fx:id="genderChoiceBox" prefHeight="25.0" prefWidth="94.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
             <TextField fx:id="nameTextField" GridPane.columnIndex="1" GridPane.rowIndex="2" />
             <TextField fx:id="surnameTextField" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-            <TextField fx:id="genderTextField" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-            <TextField fx:id="ageTextField" GridPane.columnIndex="1" GridPane.rowIndex="5" />
             <Label fx:id="idField" text="Label" GridPane.columnIndex="1" />
             <Label fx:id="statusField" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="1" />
          </children>
