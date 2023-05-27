@@ -74,7 +74,7 @@ public class NurseController {
     }
 
     public void showProfileDialog(){
-        new ProfileViewBuilder(username, nursePanel);
+        new ProfileViewBuilder(username, nursePanel).showProfileView();
     }
 
     public void showAboutDialog() {

@@ -184,7 +184,7 @@ public class ManagerController {
     }
 
     public void showProfileDialog(){
-        new ProfileViewBuilder(username,managerPanel);
+        new ProfileViewBuilder(username,managerPanel).showProfileView();
     }
 	
 }
