@@ -6,7 +6,7 @@ import utils.Pair;
 import java.util.TreeMap;
 
 public class MedicineSupply {
-    private TreeMap<Medicine, Integer> inventory;
+    private TreeMap<Medicine, Integer> inventory = new TreeMap<>();
     private static MedicineSupply instance = new MedicineSupply();
 
     private MedicineSupply() {
@@ -33,7 +33,8 @@ public class MedicineSupply {
     /**
      * @param medicine Medicine that will be consumed.
      * @param amount   Amount of medicine that will be consumed.
-     * @return False if there is less amount of medicine in inventory than the amount.
+     * @return False if there is less amount of medicine in inventory than the
+     *         amount.
      */
     public boolean consumeStock(Medicine medicine, int amount) {
         if (!inventory.containsKey(medicine) || inventory.get(medicine) < amount)
