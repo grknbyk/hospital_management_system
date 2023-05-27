@@ -19,6 +19,7 @@ import utils.Pair;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class PharmacistController {
     String username;
@@ -58,7 +59,7 @@ public class PharmacistController {
         //fill the table
         int staffId = Datasource.getInstance().queryStaffId(username);
         Datasource.getInstance().updateMedicineSupply(MedicineSupply.getInstance());
-        medicine = FXCollections.observableList((List<Pair<Medicine, Integer>>) (Object) Arrays.asList(MedicineSupply.getInstance().toList().toArray()));
+        medicine = FXCollections.observableList(Arrays.asList(MedicineSupply.getInstance().toList().toArray()).stream().map(obj -> (Pair<Medicine, Integer>) obj).collect(Collectors.toList()));
         medicineTableView.setItems(medicine);
     }
 
