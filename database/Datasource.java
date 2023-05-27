@@ -74,10 +74,10 @@ public class Datasource {
     private static final String COLUMN_MEDICINE_STOCK_MEDICINE_ID = "medicine_id";
     private static final String COLUMN_MEDICINE_STOCK_AMOUNT = "stock";
 
-    private static final String TABLE_MEDICINE_RECEIPT = "medicine_receipt";
-    private static final String COLUMN_MEDICINE_RECEIPT_RECEIPT_ID = "id";
-    private static final String COLUMN_MEDICINE_RECEIPT_MEDICINE_ID = "medicine_id";
-    private static final String COLUMN_MEDICINE_RECEIPT_AMOUNT = "amount";
+    private static final String TABLE_RECEIPT_MEDICINE = "receipt_medicine";
+    private static final String COLUMN_RECEIPT_MEDICINE_RECEIPT_ID = "receipt_id";
+    private static final String COLUMN_RECEIPT_MEDICINE_MEDICINE_ID = "medicine_id";
+    private static final String COLUMN_RECEIPT_MEDICINE_AMOUNT = "medicine_amount";
 
     private static final String QUERY_LOGIN = "SELECT " + COLUMN_STAFF_STATUS + " FROM " + TABLE_STAFF
             + " WHERE " + COLUMN_STAFF_USERNAME + " = ? AND " + COLUMN_STAFF_PASSWORD + " = ?";
@@ -204,6 +204,36 @@ public class Datasource {
             " ON " + TABLE_PATIENT + "." + COLUMN_PATIENT_PERSON_ID + " = " + TABLE_PERSON + "." + COLUMN_PERSON_ID +
             " WHERE " + COLUMN_PATIENT_STAFF_ID + " = ?";
 
+    private static final String DELETE_CONTACT_BY_PERSON_ID = "DELETE FROM " + TABLE_CONTACT +
+            " WHERE " + COLUMN_CONTACT_PERSON_ID + " = ?";
+
+    private static final String DELETE_DOCTOR_BY_STAFF_ID = "DELETE FROM " + TABLE_DOCTOR +
+            " WHERE " + COLUMN_DOCTOR_STAFF_ID + " = ?";
+
+    private static final String DELETE_NURSE_BY_STAFF_ID = "DELETE FROM " + TABLE_NURSE +
+            " WHERE " + COLUMN_NURSE_STAFF_ID + " = ?";
+
+    private static final String DELETE_MEDICINE_BY_ID = "DELETE FROM " + TABLE_MEDICINE +
+            " WHERE " + COLUMN_MEDICINE_ID + " = ?";
+
+    private static final String DELETE_MEDICINE_STOCK_BY_MEDICINE_ID = "DELETE FROM " + TABLE_MEDICINE_STOCK +
+            " WHERE " + COLUMN_MEDICINE_STOCK_MEDICINE_ID + " = ?";
+
+    private static final String DELETE_PATIENT_BY_PERSON_ID = "DELETE FROM " + TABLE_PATIENT +
+            " WHERE " + COLUMN_PATIENT_PERSON_ID + " = ?";
+
+    private static final String DELETE_PERSON_BY_ID = "DELETE FROM " + TABLE_PERSON +
+            " WHERE " + COLUMN_PERSON_ID + " = ?";
+
+    private static final String DELETE_STAFF_BY_ID = "DELETE FROM " + TABLE_STAFF +
+            " WHERE " + COLUMN_STAFF_ID + " = ?";
+
+    private static final String DELETE_RECEIPT_BY_ID = "DELETE FROM " + TABLE_RECEIPT +
+            " WHERE " + COLUMN_RECEIPT_ID + " = ?";
+
+    private static final String DELETE_RECEIPT_MEDICINE_BY_RECEIPT_ID = "DELETE FROM " + TABLE_RECEIPT_MEDICINE +
+            " WHERE " + COLUMN_RECEIPT_MEDICINE_RECEIPT_ID + " = ?";
+
     private static final String UPDATE_PERSON_BY_PERSON_ID = "UPDATE " + TABLE_PERSON + " SET " +
             COLUMN_PERSON_NAME + " = ?, " +
             COLUMN_PERSON_SURNAME + " = ?, " +
@@ -228,6 +258,16 @@ public class Datasource {
     private PreparedStatement queryDoctors;
     private PreparedStatement queryDoctorExpretiseByStaffId;
     private PreparedStatement queryNurseWorkingAreaByStaffId;
+    private PreparedStatement deleteContactByPersonId;
+    private PreparedStatement deleteDoctorByStaffId;
+    private PreparedStatement deleteNurseByStaffId;
+    private PreparedStatement deleteMedicineById;
+    private PreparedStatement deleteMedicineStockByMedicineId;
+    private PreparedStatement deletePatientByPersonId;
+    private PreparedStatement deletePersonById;
+    private PreparedStatement deleteStaffById;
+    private PreparedStatement deleteReceiptById;
+    private PreparedStatement deleteReceiptMedicineByReceiptId;
     private PreparedStatement updatePersonByPersonId;
     private PreparedStatement updateContactByPersonId;
 
@@ -253,6 +293,16 @@ public class Datasource {
             queryStaffById = conn.prepareStatement(QUERY_STAFF_BY_ID);
             queryDoctorExpretiseByStaffId = conn.prepareStatement(QUERY_DOCTOR_EXPRETISE_BY_STAFF_ID);
             queryNurseWorkingAreaByStaffId = conn.prepareStatement(QUERY_NURSE_WORKING_AREA_BY_STAFF_ID);
+            deleteContactByPersonId = conn.prepareStatement(DELETE_CONTACT_BY_PERSON_ID);
+            deleteDoctorByStaffId = conn.prepareStatement(DELETE_DOCTOR_BY_STAFF_ID);
+            deleteNurseByStaffId = conn.prepareStatement(DELETE_NURSE_BY_STAFF_ID);
+            deleteMedicineById = conn.prepareStatement(DELETE_MEDICINE_BY_ID);
+            deleteMedicineStockByMedicineId = conn.prepareStatement(DELETE_MEDICINE_STOCK_BY_MEDICINE_ID);
+            deletePatientByPersonId = conn.prepareStatement(DELETE_PATIENT_BY_PERSON_ID);
+            deletePersonById = conn.prepareStatement(DELETE_PERSON_BY_ID);
+            deleteStaffById = conn.prepareStatement(DELETE_STAFF_BY_ID);
+            deleteReceiptById = conn.prepareStatement(DELETE_RECEIPT_BY_ID);
+            deleteReceiptMedicineByReceiptId = conn.prepareStatement(DELETE_RECEIPT_MEDICINE_BY_RECEIPT_ID);
             updatePersonByPersonId = conn.prepareStatement(UPDATE_PERSON_BY_PERSON_ID);
             updateContactByPersonId = conn.prepareStatement(UPDATE_CONTACT_BY_PERSON_ID);
 
@@ -295,6 +345,46 @@ public class Datasource {
 
             if (queryDoctors != null) {
                 queryDoctors.close();
+            }
+
+            if (deleteContactByPersonId != null) {
+                deleteContactByPersonId.close();
+            }
+
+            if (deleteDoctorByStaffId != null) {
+                deleteDoctorByStaffId.close();
+            }
+
+            if (deleteNurseByStaffId != null) {
+                deleteNurseByStaffId.close();
+            }
+
+            if (deleteMedicineById != null) {
+                deleteMedicineById.close();
+            }
+
+            if (deleteMedicineStockByMedicineId != null) {
+                deleteMedicineStockByMedicineId.close();
+            }
+
+            if (deletePatientByPersonId != null) {
+                deletePatientByPersonId.close();
+            }
+
+            if (deletePersonById != null) {
+                deletePersonById.close();
+            }
+
+            if (deleteStaffById != null) {
+                deleteStaffById.close();
+            }
+
+            if (deleteReceiptById != null) {
+                deleteReceiptById.close();
+            }
+
+            if (deleteReceiptMedicineByReceiptId != null) {
+                deleteReceiptMedicineByReceiptId.close();
             }
 
             if (queryDoctorExpretiseByStaffId != null) {
@@ -534,7 +624,7 @@ public class Datasource {
      * @param staff_id the id of the staff
      * @return patient arraylist matching the staff id
      */
-    public ArrayList<Patient> queryPatients(int staff_id){
+    public ArrayList<Patient> queryPatients(int staff_id) {
         try {
             queryPatientsByStaffId.setInt(1, staff_id);
             ResultSet results = queryPatientsByStaffId.executeQuery();
@@ -708,5 +798,157 @@ public class Datasource {
 
         }
     }
+
+    private boolean deleteContact(int personId) {
+        try {
+            deleteContactByPersonId.setInt(1, personId);
+            int affectedRows = deleteContactByPersonId.executeUpdate();
+            if (affectedRows == 1) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (SQLException e) {
+            System.out.println("Delete contact failed: " + e.getMessage());
+            return false;
+        }
+    }
+
+    private boolean deletePerson(int personId) {
+        try {
+            deletePersonById.setInt(1, personId);
+            int affectedRows = deletePersonById.executeUpdate();
+            if (affectedRows == 1) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (SQLException e) {
+            System.out.println("Delete person failed: " + e.getMessage());
+            return false;
+        }
+    }
+
+    private boolean deleteStaff(int staffId) {
+        try {
+            deleteStaffById.setInt(1, staffId);
+            int affectedRows = deleteStaffById.executeUpdate();
+            if (affectedRows == 1) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (SQLException e) {
+            System.out.println("Delete staff failed: " + e.getMessage());
+            return false;
+        }
+    }
+
+    private boolean deleteDoctor(int staffId) {
+        try {
+            deleteDoctorByStaffId.setInt(1, staffId);
+            int affectedRows = deleteDoctorByStaffId.executeUpdate();
+            if (affectedRows == 1) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (SQLException e) {
+            System.out.println("Delete doctor failed: " + e.getMessage());
+            return false;
+        }
+    }
+
+    private boolean deleteNurse(int staffId) {
+        try {
+            deleteNurseByStaffId.setInt(1, staffId);
+            int affectedRows = deleteNurseByStaffId.executeUpdate();
+            if (affectedRows == 1) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (SQLException e) {
+            System.out.println("Delete nurse failed: " + e.getMessage());
+            return false;
+        }
+    }
+
+    private boolean deleteMedicine(int medicineId) {
+        try {
+            deleteMedicineById.setInt(1, medicineId);
+            int affectedRows = deleteMedicineById.executeUpdate();
+            if (affectedRows == 1) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (SQLException e) {
+            System.out.println("Delete medicine failed: " + e.getMessage());
+            return false;
+        }
+    }
+
+    private boolean deletePatient(int personId) {
+        try {
+            deletePatientByPersonId.setInt(1, personId);
+            int affectedRows = deletePatientByPersonId.executeUpdate();
+            if (affectedRows == 1) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (SQLException e) {
+            System.out.println("Delete patient failed: " + e.getMessage());
+            return false;
+        }
+    }
+
+
+    private boolean deleteMedicineStock(int medicineId) {
+        try {
+            deleteMedicineStockByMedicineId.setInt(1, medicineId);
+            int affectedRows = deleteMedicineStockByMedicineId.executeUpdate();
+            if (affectedRows == 1) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (SQLException e) {
+            System.out.println("Delete medicine stock failed: " + e.getMessage());
+            return false;
+        }
+    }
+
+    private boolean deleteReceipt(int receiptId) {
+        try {
+            deleteReceiptById.setInt(1, receiptId);
+            int affectedRows = deleteReceiptById.executeUpdate();
+            if (affectedRows == 1) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (SQLException e) {
+            System.out.println("Delete receipt failed: " + e.getMessage());
+            return false;
+        }
+    }
+
+    private boolean deleteReceiptMedicine(int receiptId) {
+        try {
+            deleteReceiptMedicineByReceiptId.setInt(1, receiptId);
+            int affectedRows = deleteReceiptMedicineByReceiptId.executeUpdate();
+            if (affectedRows == 1) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (SQLException e) {
+            System.out.println("Delete receipt medicine failed: " + e.getMessage());
+            return false;
+        }
+    }
+
 
 }
