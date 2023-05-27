@@ -63,10 +63,10 @@ public class LoginController {
 					showNursePanel(event, username);
 					break;
 				case "receptionist":
-					showReceptionistPanel(event);
+					showReceptionistPanel(event, username);
 					break;
 				case "pharmacist":
-					showPharmacistPanel(event);
+					showPharmacistPanel(event, username);
 					break;
 				default:
 					// label.setText("You don't have access to this system");
@@ -140,21 +140,29 @@ public class LoginController {
         stage.show();
     }
 
-    private void showReceptionistPanel(ActionEvent event) throws IOException {
+    private void showReceptionistPanel(ActionEvent event, String username) throws IOException {
 
-        root = FXMLLoader.load(getClass().getResource("../scene/ReceptionistScene.fxml"));
-        stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("../scene/RecepsionistScene.fxml"));
+        Parent root = loader.load();
+        ReceptionistController receptionistController = loader.getController();
+        receptionistController.setUsername(username);
+
+
         scene = new Scene(root);
+        stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         stage.setTitle("Hospital Management System - Receptionist");
         stage.setScene(scene);
         stage.show();
     }
 
-    private void showPharmacistPanel(ActionEvent event) throws IOException {
+    private void showPharmacistPanel(ActionEvent event, String username) throws IOException {
 
-        root = FXMLLoader.load(getClass().getResource("../scene/PharmacistScene.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("../scene/PharmacistScene.fxml"));
+        Parent root = loader.load();
+        PharmacistController pharmacistController = loader.getController();
+        pharmacistController.setUsername(username);
+        
         stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-
         scene = new Scene(root);
         stage.setTitle("Hospital Management System - Pharmacist");
         stage.setScene(scene);
