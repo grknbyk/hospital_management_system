@@ -10,14 +10,14 @@ import model.enums.Priority;
 import java.time.LocalDateTime;
 
 public class Patient extends Person{
-    SimpleStringProperty complaint = new SimpleStringProperty("");
-    ObjectProperty<LocalDateTime> appointment = new SimpleObjectProperty<>();
-    ObjectProperty<EmergencyState> emergencyState = new SimpleObjectProperty<>();
-    ObjectProperty<Priority> priority = new SimpleObjectProperty<>();
-    ObjectProperty<BloodType> bloodType = new SimpleObjectProperty<>();
-    ObjectProperty<Integer> doctorId = new SimpleObjectProperty<>();
-    ObjectProperty<Integer> receiptId = new SimpleObjectProperty<>();
-    SimpleStringProperty hour = new SimpleStringProperty("");
+    private SimpleStringProperty complaint = new SimpleStringProperty("");
+    private ObjectProperty<LocalDateTime> appointment = new SimpleObjectProperty<>();
+    private ObjectProperty<EmergencyState> emergencyState = new SimpleObjectProperty<>();
+    private ObjectProperty<Priority> priority = new SimpleObjectProperty<>();
+    private ObjectProperty<BloodType> bloodType = new SimpleObjectProperty<>();
+    private ObjectProperty<Integer> doctorId = new SimpleObjectProperty<>();
+    private ObjectProperty<Integer> receiptId = new SimpleObjectProperty<>();
+    private SimpleStringProperty hour = new SimpleStringProperty("");
     public Patient(){
 
     }
