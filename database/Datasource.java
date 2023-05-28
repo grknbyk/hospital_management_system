@@ -760,6 +760,10 @@ public class Datasource {
             while (results.next()) {
                 Patient patient = new Patient();
                 patient.setId(results.getInt(1));
+                Object doctorId = results.getInt(COLUMN_PATIENT_STAFF_ID);
+                patient.setDoctorId(doctorId == null ? -1 : (int) doctorId );
+                Object receiptId = results.getInt(COLUMN_PATIENT_RECEIPT_ID);
+                patient.setReceiptId(receiptId == null ? -1 : (int) receiptId);
                 patient.setName(results.getString(COLUMN_PERSON_NAME));
                 patient.setSurname(results.getString(COLUMN_PERSON_SURNAME));
                 patient.setAge(results.getInt(COLUMN_PERSON_AGE));
