@@ -9,9 +9,25 @@ import java.sql.Statement;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.List;
 
-import model.*;
-import model.enums.*;
+import model.Contact;
+import model.Doctor;
+import model.Manager;
+import model.Medicine;
+import model.MedicineSupply;
+import model.Nurse;
+import model.Patient;
+import model.Person;
+import model.Pharmacist;
+import model.Receptionist;
+import model.Staff;
+import model.enums.BloodType;
+import model.enums.EmergencyState;
+import model.enums.Gender;
+import model.enums.MedicineType;
+import model.enums.Priority;
+import model.enums.Status;
 
 public class Datasource {
 
@@ -74,10 +90,10 @@ public class Datasource {
     private static final String COLUMN_MEDICINE_STOCK_MEDICINE_ID = "medicine_id";
     private static final String COLUMN_MEDICINE_STOCK_AMOUNT = "stock";
 
-    private static final String TABLE_MEDICINE_RECEIPT = "medicine_receipt";
-    private static final String COLUMN_MEDICINE_RECEIPT_RECEIPT_ID = "id";
-    private static final String COLUMN_MEDICINE_RECEIPT_MEDICINE_ID = "medicine_id";
-    private static final String COLUMN_MEDICINE_RECEIPT_AMOUNT = "amount";
+    private static final String TABLE_RECEIPT_MEDICINE = "receipt_medicine";
+    private static final String COLUMN_RECEIPT_MEDICINE_RECEIPT_ID = "receipt_id";
+    private static final String COLUMN_RECEIPT_MEDICINE_MEDICINE_ID = "medicine_id";
+    private static final String COLUMN_RECEIPT_MEDICINE_AMOUNT = "medicine_amount";
 
     private static final String QUERY_LOGIN = "SELECT " + COLUMN_STAFF_STATUS + " FROM " + TABLE_STAFF
             + " WHERE " + COLUMN_STAFF_USERNAME + " = ? AND " + COLUMN_STAFF_PASSWORD + " = ?";
@@ -204,18 +220,70 @@ public class Datasource {
             " ON " + TABLE_PATIENT + "." + COLUMN_PATIENT_PERSON_ID + " = " + TABLE_PERSON + "." + COLUMN_PERSON_ID +
             " WHERE " + COLUMN_PATIENT_STAFF_ID + " = ?";
 
+    private static final String DELETE_CONTACT_BY_PERSON_ID = "DELETE FROM " + TABLE_CONTACT +
+            " WHERE " + COLUMN_CONTACT_PERSON_ID + " = ?";
+
+    private static final String DELETE_DOCTOR_BY_STAFF_ID = "DELETE FROM " + TABLE_DOCTOR +
+            " WHERE " + COLUMN_DOCTOR_STAFF_ID + " = ?";
+
+    private static final String DELETE_NURSE_BY_STAFF_ID = "DELETE FROM " + TABLE_NURSE +
+            " WHERE " + COLUMN_NURSE_STAFF_ID + " = ?";
+
+    private static final String DELETE_MEDICINE_BY_ID = "DELETE FROM " + TABLE_MEDICINE +
+            " WHERE " + COLUMN_MEDICINE_ID + " = ?";
+
+    private static final String DELETE_MEDICINE_STOCK_BY_MEDICINE_ID = "DELETE FROM " + TABLE_MEDICINE_STOCK +
+            " WHERE " + COLUMN_MEDICINE_STOCK_MEDICINE_ID + " = ?";
+
+    private static final String DELETE_PATIENT_BY_PERSON_ID = "DELETE FROM " + TABLE_PATIENT +
+            " WHERE " + COLUMN_PATIENT_PERSON_ID + " = ?";
+
+    private static final String DELETE_PERSON_BY_ID = "DELETE FROM " + TABLE_PERSON +
+            " WHERE " + COLUMN_PERSON_ID + " = ?";
+
+    private static final String DELETE_STAFF_BY_ID = "DELETE FROM " + TABLE_STAFF +
+            " WHERE " + COLUMN_STAFF_ID + " = ?";
+
+    private static final String DELETE_RECEIPT_BY_ID = "DELETE FROM " + TABLE_RECEIPT +
+            " WHERE " + COLUMN_RECEIPT_ID + " = ?";
+
+    private static final String DELETE_RECEIPT_MEDICINE_BY_RECEIPT_ID = "DELETE FROM " + TABLE_RECEIPT_MEDICINE +
+            " WHERE " + COLUMN_RECEIPT_MEDICINE_RECEIPT_ID + " = ?";
+
     private static final String UPDATE_PERSON_BY_PERSON_ID = "UPDATE " + TABLE_PERSON + " SET " +
             COLUMN_PERSON_NAME + " = ?, " +
             COLUMN_PERSON_SURNAME + " = ?, " +
             COLUMN_PERSON_GENDER + " = ?, " +
             COLUMN_PERSON_AGE + " = ? " +
-            "WHERE " + COLUMN_PERSON_ID + " = ?";
+            " WHERE " + COLUMN_PERSON_ID + " = ?";
 
     private static final String UPDATE_CONTACT_BY_PERSON_ID = "UPDATE " + TABLE_CONTACT + " SET " +
             COLUMN_CONTACT_PHONE + " = ?, " +
             COLUMN_CONTACT_EMAIL + " = ?, " +
             COLUMN_CONTACT_ADDRESS + " = ? " +
-            "WHERE " + COLUMN_CONTACT_PERSON_ID + " = ?";
+            " WHERE " + COLUMN_CONTACT_PERSON_ID + " = ?";
+    
+    private static final String UPDATE_MEDICINE_BY_MEDICINE_ID = "UPDATE " + TABLE_MEDICINE + " SET " +
+            COLUMN_MEDICINE_NAME + " = ?, " +
+            COLUMN_MEDICINE_TYPE + " = ? " +
+            " WHERE " + COLUMN_MEDICINE_ID + " = ?";
+    
+    private static final String UPDATE_MEDICINE_STOCK_BY_MEDICINE_ID = "UPDATE " + TABLE_MEDICINE_STOCK + " SET " +
+            COLUMN_MEDICINE_STOCK_AMOUNT + " = ? " +
+            " WHERE " + COLUMN_MEDICINE_STOCK_MEDICINE_ID + " = ?";
+    
+    private static final String UPDATE_STAFF_BY_STAFF_ID = "UPDATE " + TABLE_STAFF + " SET " +
+            COLUMN_STAFF_USERNAME + " = ?, " +
+            COLUMN_STAFF_PASSWORD + " = ? " +
+            " WHERE " + COLUMN_STAFF_ID + " = ?";
+    
+    private static final String UPDATE_DOCTOR_BY_STAFF_ID = "UPDATE " + TABLE_DOCTOR + " SET " +
+            COLUMN_DOCTOR_EXPRETISE + " = ? " +
+            " WHERE " + COLUMN_DOCTOR_STAFF_ID + " = ?";
+
+    private static final String UPDATE_NURSE_BY_STAFF_ID = "UPDATE " + TABLE_NURSE + " SET " +
+            COLUMN_NURSE_WORKING_AREA + " = ? " +
+            " WHERE " + COLUMN_NURSE_STAFF_ID + " = ?";
 
     private Connection conn;
 
@@ -228,8 +296,24 @@ public class Datasource {
     private PreparedStatement queryDoctors;
     private PreparedStatement queryDoctorExpretiseByStaffId;
     private PreparedStatement queryNurseWorkingAreaByStaffId;
+    private PreparedStatement deleteContactByPersonId;
+    private PreparedStatement deleteDoctorByStaffId;
+    private PreparedStatement deleteNurseByStaffId;
+    private PreparedStatement deleteMedicineById;
+    private PreparedStatement deleteMedicineStockByMedicineId;
+    private PreparedStatement deletePatientByPersonId;
+    private PreparedStatement deletePersonById;
+    private PreparedStatement deleteStaffById;
+    private PreparedStatement deleteReceiptById;
+    private PreparedStatement deleteReceiptMedicineByReceiptId;
     private PreparedStatement updatePersonByPersonId;
     private PreparedStatement updateContactByPersonId;
+    private PreparedStatement updateMedicineByMedicineId;
+    private PreparedStatement updateMedicineStockByMedicineId;
+    private PreparedStatement updateStaffByStaffId;
+    private PreparedStatement updateDoctorByStaffId;
+    private PreparedStatement updateNurseByStaffId;
+
 
     private static Datasource instance = new Datasource();
 
@@ -253,8 +337,23 @@ public class Datasource {
             queryStaffById = conn.prepareStatement(QUERY_STAFF_BY_ID);
             queryDoctorExpretiseByStaffId = conn.prepareStatement(QUERY_DOCTOR_EXPRETISE_BY_STAFF_ID);
             queryNurseWorkingAreaByStaffId = conn.prepareStatement(QUERY_NURSE_WORKING_AREA_BY_STAFF_ID);
+            deleteContactByPersonId = conn.prepareStatement(DELETE_CONTACT_BY_PERSON_ID);
+            deleteDoctorByStaffId = conn.prepareStatement(DELETE_DOCTOR_BY_STAFF_ID);
+            deleteNurseByStaffId = conn.prepareStatement(DELETE_NURSE_BY_STAFF_ID);
+            deleteMedicineById = conn.prepareStatement(DELETE_MEDICINE_BY_ID);
+            deleteMedicineStockByMedicineId = conn.prepareStatement(DELETE_MEDICINE_STOCK_BY_MEDICINE_ID);
+            deletePatientByPersonId = conn.prepareStatement(DELETE_PATIENT_BY_PERSON_ID);
+            deletePersonById = conn.prepareStatement(DELETE_PERSON_BY_ID);
+            deleteStaffById = conn.prepareStatement(DELETE_STAFF_BY_ID);
+            deleteReceiptById = conn.prepareStatement(DELETE_RECEIPT_BY_ID);
+            deleteReceiptMedicineByReceiptId = conn.prepareStatement(DELETE_RECEIPT_MEDICINE_BY_RECEIPT_ID);
             updatePersonByPersonId = conn.prepareStatement(UPDATE_PERSON_BY_PERSON_ID);
             updateContactByPersonId = conn.prepareStatement(UPDATE_CONTACT_BY_PERSON_ID);
+            updateMedicineByMedicineId = conn.prepareStatement(UPDATE_MEDICINE_BY_MEDICINE_ID);
+            updateMedicineStockByMedicineId = conn.prepareStatement(UPDATE_MEDICINE_STOCK_BY_MEDICINE_ID);
+            updateStaffByStaffId = conn.prepareStatement(UPDATE_STAFF_BY_STAFF_ID);
+            updateDoctorByStaffId = conn.prepareStatement(UPDATE_DOCTOR_BY_STAFF_ID);
+            updateNurseByStaffId = conn.prepareStatement(UPDATE_NURSE_BY_STAFF_ID);
 
             // insertIntoArtists = conn.prepareStatement(INSERT_ARTIST,
             // Statement.RETURN_GENERATED_KEYS);
@@ -297,6 +396,46 @@ public class Datasource {
                 queryDoctors.close();
             }
 
+            if (deleteContactByPersonId != null) {
+                deleteContactByPersonId.close();
+            }
+
+            if (deleteDoctorByStaffId != null) {
+                deleteDoctorByStaffId.close();
+            }
+
+            if (deleteNurseByStaffId != null) {
+                deleteNurseByStaffId.close();
+            }
+
+            if (deleteMedicineById != null) {
+                deleteMedicineById.close();
+            }
+
+            if (deleteMedicineStockByMedicineId != null) {
+                deleteMedicineStockByMedicineId.close();
+            }
+
+            if (deletePatientByPersonId != null) {
+                deletePatientByPersonId.close();
+            }
+
+            if (deletePersonById != null) {
+                deletePersonById.close();
+            }
+
+            if (deleteStaffById != null) {
+                deleteStaffById.close();
+            }
+
+            if (deleteReceiptById != null) {
+                deleteReceiptById.close();
+            }
+
+            if (deleteReceiptMedicineByReceiptId != null) {
+                deleteReceiptMedicineByReceiptId.close();
+            }
+
             if (queryDoctorExpretiseByStaffId != null) {
                 queryDoctorExpretiseByStaffId.close();
             }
@@ -311,6 +450,26 @@ public class Datasource {
 
             if (updateContactByPersonId != null) {
                 updateContactByPersonId.close();
+            }
+
+            if (updateMedicineByMedicineId != null) {
+                updateMedicineByMedicineId.close();
+            }
+
+            if (updateMedicineStockByMedicineId != null) {
+                updateMedicineStockByMedicineId.close();
+            }
+
+            if (updateStaffByStaffId != null) {
+                updateStaffByStaffId.close();
+            }
+
+            if (updateDoctorByStaffId != null) {
+                updateDoctorByStaffId.close();
+            }
+
+            if (updateNurseByStaffId != null) {
+                updateNurseByStaffId.close();
             }
 
             if (conn != null) {
@@ -534,7 +693,7 @@ public class Datasource {
      * @param staff_id the id of the staff
      * @return patient arraylist matching the staff id
      */
-    public ArrayList<Patient> queryPatients(int staff_id){
+    public ArrayList<Patient> queryPatients(int staff_id) {
         try {
             queryPatientsByStaffId.setInt(1, staff_id);
             ResultSet results = queryPatientsByStaffId.executeQuery();
@@ -656,6 +815,7 @@ public class Datasource {
     }
 
     /**
+     * updates only personal information of the staff.
      * @param staff a new staff object to update existing staff by id.
      * @return message that shows the result of the operation.
      */
@@ -668,18 +828,10 @@ public class Datasource {
             if (personId == -1) {
                 return "Couldn't find the staff by id: " + staff.getId();
             } else {
-                updatePersonByPersonId.setString(1, staff.getName());
-                updatePersonByPersonId.setString(2, staff.getSurname());
-                updatePersonByPersonId.setInt(3, staff.getAge());
-                updatePersonByPersonId.setString(4, staff.getGender().name());
-                updatePersonByPersonId.setInt(5, personId);
-                updateContactByPersonId.setString(1, staff.getContact().getPhone());
-                updateContactByPersonId.setString(2, staff.getContact().getEmail());
-                updateContactByPersonId.setString(3, staff.getContact().getAddress());
-                updateContactByPersonId.setInt(4, personId);
-                int affectedRows1 = updatePersonByPersonId.executeUpdate();
-                int affectedRows2 = updateContactByPersonId.executeUpdate();
-                if (affectedRows1 == 1 && affectedRows2 == 1) {
+                staff.setId(personId);
+                Boolean affectedRows1 = updatePerson(staff);
+                Boolean affectedRows2 = updateContact(personId, staff.getContact());
+                if (affectedRows1 && affectedRows2) {
                     conn.commit();
                     return "Staff updated successfully";
                 } else {
@@ -708,5 +860,369 @@ public class Datasource {
 
         }
     }
+
+        /**
+     * updates personal information as well as username,password of the staff.
+     * @param staff a new staff object to update existing staff by id.
+     * @return message that shows the result of the operation.
+     */
+    public String updateStaffUser(Staff staff) {
+
+        try {
+            conn.setAutoCommit(false);
+
+            int personId = getPersonIdByStaffId(staff.getId());
+            if (personId == -1) {
+                return "Couldn't find the staff by id: " + staff.getId();
+            } else {
+                List<Boolean> affectedRows = new ArrayList<>();
+                affectedRows.add(updateStaff(staff));
+                if(staff.getStatus() == Status.DOCTOR)
+                    affectedRows.add(updateDoctor((Doctor) staff));
+                else if(staff.getStatus() == Status.NURSE)
+                    affectedRows.add(updateNurse((Nurse) staff));
+                staff.setId(personId);
+                affectedRows.add(updatePerson(staff));
+                affectedRows.add(updateContact(personId, staff.getContact()));
+                if (!affectedRows.contains(false)) {
+                    conn.commit();
+                    return "Staff updated successfully";
+                } else {
+                    return "Couldn't update the staff";
+                }
+            }
+
+            // if any error occurs, sql will rollback in the catch block
+        } catch (Exception e) {
+            System.out.println("Update staff failed: " + e.getMessage());
+            try {
+                System.out.println("Performing rollback");
+                conn.rollback();
+                return "Update staff failed: " + e.getMessage();
+            } catch (SQLException e2) {
+                System.out.println("Oh boy! Things are really bad! " + e2.getMessage());
+                return "Update staff failed: " + e2.getMessage();
+            }
+        } finally {
+            try {
+                System.out.println("Resetting default commit behavior");
+                conn.setAutoCommit(true);
+            } catch (SQLException e) {
+                System.out.println("Couldn't reset auto-commit! " + e.getMessage());
+            }
+
+        }
+    }
+
+
+
+    private boolean deleteContact(int personId) {
+        try {
+            deleteContactByPersonId.setInt(1, personId);
+            int affectedRows = deleteContactByPersonId.executeUpdate();
+            if (affectedRows == 1) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (SQLException e) {
+            System.out.println("Delete contact failed: " + e.getMessage());
+            return false;
+        }
+    }
+
+    private boolean deletePerson(int personId) {
+        try {
+            deletePersonById.setInt(1, personId);
+            int affectedRows = deletePersonById.executeUpdate();
+            if (affectedRows == 1) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (SQLException e) {
+            System.out.println("Delete person failed: " + e.getMessage());
+            return false;
+        }
+    }
+
+    private boolean deleteStaff(int staffId) {
+        try {
+            deleteStaffById.setInt(1, staffId);
+            int affectedRows = deleteStaffById.executeUpdate();
+            if (affectedRows == 1) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (SQLException e) {
+            System.out.println("Delete staff failed: " + e.getMessage());
+            return false;
+        }
+    }
+
+    private boolean deleteDoctor(int staffId) {
+        try {
+            deleteDoctorByStaffId.setInt(1, staffId);
+            int affectedRows = deleteDoctorByStaffId.executeUpdate();
+            if (affectedRows == 1) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (SQLException e) {
+            System.out.println("Delete doctor failed: " + e.getMessage());
+            return false;
+        }
+    }
+
+    private boolean deleteNurse(int staffId) {
+        try {
+            deleteNurseByStaffId.setInt(1, staffId);
+            int affectedRows = deleteNurseByStaffId.executeUpdate();
+            if (affectedRows == 1) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (SQLException e) {
+            System.out.println("Delete nurse failed: " + e.getMessage());
+            return false;
+        }
+    }
+
+    private boolean deleteMedicine(int medicineId) {
+        try {
+            deleteMedicineById.setInt(1, medicineId);
+            int affectedRows = deleteMedicineById.executeUpdate();
+            if (affectedRows == 1) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (SQLException e) {
+            System.out.println("Delete medicine failed: " + e.getMessage());
+            return false;
+        }
+    }
+
+    private boolean deletePatient(int personId) {
+        try {
+            deletePatientByPersonId.setInt(1, personId);
+            int affectedRows = deletePatientByPersonId.executeUpdate();
+            if (affectedRows == 1) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (SQLException e) {
+            System.out.println("Delete patient failed: " + e.getMessage());
+            return false;
+        }
+    }
+
+
+    private boolean deleteMedicineStock(int medicineId) {
+        try {
+            deleteMedicineStockByMedicineId.setInt(1, medicineId);
+            int affectedRows = deleteMedicineStockByMedicineId.executeUpdate();
+            if (affectedRows == 1) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (SQLException e) {
+            System.out.println("Delete medicine stock failed: " + e.getMessage());
+            return false;
+        }
+    }
+
+    private boolean deleteReceipt(int receiptId) {
+        try {
+            deleteReceiptById.setInt(1, receiptId);
+            int affectedRows = deleteReceiptById.executeUpdate();
+            if (affectedRows == 1) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (SQLException e) {
+            System.out.println("Delete receipt failed: " + e.getMessage());
+            return false;
+        }
+    }
+
+    private boolean deleteReceiptMedicine(int receiptId) {
+        try {
+            deleteReceiptMedicineByReceiptId.setInt(1, receiptId);
+            int affectedRows = deleteReceiptMedicineByReceiptId.executeUpdate();
+            if (affectedRows == 1) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (SQLException e) {
+            System.out.println("Delete receipt medicine failed: " + e.getMessage());
+            return false;
+        }
+    }
+
+    private boolean updatePerson(Person person){
+        try{
+            updatePersonByPersonId.setString(1, person.getName());
+            updatePersonByPersonId.setString(2, person.getSurname());
+            updatePersonByPersonId.setString(3, person.getGender().name());
+            updatePersonByPersonId.setInt(4, person.getAge());
+            updatePersonByPersonId.setInt(5, person.getId());
+            int affectedRows = updatePersonByPersonId.executeUpdate();
+            if(affectedRows == 1){
+                return true;
+            }else{
+                return false;
+            }
+        }catch (SQLException e){
+            System.out.println("Update person failed: " + e.getMessage());
+            return false;
+        }
+    }
+
+    private boolean updateContact(int person_id, Contact contact){
+        try{
+            updateContactByPersonId.setString(1, contact.getPhone());
+            updateContactByPersonId.setString(2, contact.getEmail());
+            updateContactByPersonId.setString(3, contact.getAddress());
+            updateContactByPersonId.setInt(4, person_id);
+            int affectedRows = updateContactByPersonId.executeUpdate();
+            if(affectedRows == 1){
+                return true;
+            }else{
+                return false;
+            }
+        }catch (SQLException e){
+            System.out.println("Update contact failed: " + e.getMessage());
+            return false;
+        }
+    }
+
+    private boolean updateStaff(Staff staff){
+        try{
+            updateStaffByStaffId.setString(1, staff.getUsername());
+            updateStaffByStaffId.setString(2, staff.getPassword());
+            updateStaffByStaffId.setInt(3, staff.getId());
+            int affectedRows = updateStaffByStaffId.executeUpdate();
+            if(affectedRows == 1){
+                return true;
+            }else{
+                return false;
+            }
+        }catch (SQLException e){
+            System.out.println("Update staff failed: " + e.getMessage());
+            return false;
+        }
+    }
+
+    private boolean updateDoctor(Doctor doctor){
+        try{
+            updateDoctorByStaffId.setString(1, doctor.getExpertise());
+            updateDoctorByStaffId.setInt(2, doctor.getId());
+            int affectedRows = updateDoctorByStaffId.executeUpdate();
+            if(affectedRows == 1){
+                return true;
+            }else{
+                return false;
+            }
+        }catch (SQLException e){
+            System.out.println("Update doctor failed: " + e.getMessage());
+            return false;
+        }
+    }
+
+    private boolean updateNurse(Nurse nurse){
+        try{
+            updateNurseByStaffId.setString(1, nurse.getWorkingArea());
+            updateNurseByStaffId.setInt(2, nurse.getId());
+            int affectedRows = updateNurseByStaffId.executeUpdate();
+            if(affectedRows == 1){
+                return true;
+            }else{
+                return false;
+            }
+        }catch (SQLException e){
+            System.out.println("Update nurse failed: " + e.getMessage());
+            return false;
+        }
+    }
+
+    public Boolean updateMedicine(Medicine medicine){
+        try {
+            conn.setAutoCommit(false);
+            updateMedicineByMedicineId.setString(1, medicine.getName());
+            updateMedicineByMedicineId.setString(2, medicine.getType().name());
+            updateMedicineByMedicineId.setInt(3, medicine.getId());
+            int affectedRows = updateMedicineByMedicineId.executeUpdate();
+            if(affectedRows == 1){
+                return true;
+            }else{
+                return false;
+            }
+
+            // if any error occurs, sql will rollback in the catch block
+        } catch (Exception e) {
+            System.out.println("Update staff failed: " + e.getMessage());
+            try {
+                System.out.println("Performing rollback");
+                conn.rollback();
+                System.out.println("Update staff failed: " + e.getMessage());
+            } catch (SQLException e2) {
+                System.out.println("Oh boy! Things are really bad! " + e2.getMessage());
+                System.out.println("Update staff failed: " + e2.getMessage()    );
+            }
+            return false;
+        } finally {
+            try {
+                System.out.println("Resetting default commit behavior");
+                conn.setAutoCommit(true);
+            } catch (SQLException e) {
+                System.out.println("Couldn't reset auto-commit! " + e.getMessage());
+            }
+
+        }
+    }
+
+    public boolean updateMedicineStock(int medicineId, int quantity){
+        try {
+            conn.setAutoCommit(false);
+            updateMedicineStockByMedicineId.setInt(1, quantity);
+            updateMedicineStockByMedicineId.setInt(2, medicineId);
+            int affectedRows = updateMedicineStockByMedicineId.executeUpdate();
+            if(affectedRows == 1){
+                return true;
+            }else{
+                return false;
+            }
+
+            // if any error occurs, sql will rollback in the catch block
+        } catch (Exception e) {
+            System.out.println("Update staff failed: " + e.getMessage());
+            try {
+                System.out.println("Performing rollback");
+                conn.rollback();
+                System.out.println("Update staff failed: " + e.getMessage());
+            } catch (SQLException e2) {
+                System.out.println("Oh boy! Things are really bad! " + e2.getMessage());
+                System.out.println("Update staff failed: " + e2.getMessage()    );
+            }
+            return false;
+        } finally {
+            try {
+                System.out.println("Resetting default commit behavior");
+                conn.setAutoCommit(true);
+            } catch (SQLException e) {
+                System.out.println("Couldn't reset auto-commit! " + e.getMessage());
+            }
+
+        }
+    }
+
 
 }

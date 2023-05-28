@@ -1,5 +1,6 @@
 package model;
 
+import model.enums.MedicineType;
 import utils.Pair;
 
 import java.sql.Date;
@@ -12,7 +13,8 @@ public class Receipt {
     private int staffId;
     private Date givenDate;
     private Date expireDate;
-    private final TreeMap<Medicine, Integer> content;
+    private boolean isGiven;
+    private final TreeMap<Medicine, ReceiptItem> content;
 
     public Receipt(int id, int patientId, int staffId, Date givenDate, Date expireDate) {
         this.id = id;
@@ -20,28 +22,35 @@ public class Receipt {
         this.staffId = staffId;
         this.givenDate = givenDate;
         this.expireDate = expireDate;
-
+        
+        isGiven = false;
         content = new TreeMap<>();
     }
 
+    public void giveReceipt() {
+        isGiven = true;
+    }
+
     public Receipt(Receipt r) {
-        this.content = (TreeMap<Medicine, Integer>) r.content.clone();
+        this.content = (TreeMap<Medicine, ReceiptItem>) r.content.clone();
     }
 
     public void add(Medicine medicine, int amount) {
-        int oldAmount = content.getOrDefault(medicine, 0);
-        content.put(medicine, oldAmount + amount);
+        ReceiptItem oldStock = content.getOrDefault(medicine, null);
+        if(oldStock == null)
+            oldStock = new ReceiptItem(medicine, 0);
+        oldStock.amount += amount;
+
+        content.put(medicine, oldStock);
     }
 
     public boolean decrease(Medicine medicine, int amount) {
-        if (!content.containsKey(medicine) || content.get(medicine) < amount)
+        if (!content.containsKey(medicine) || content.get(medicine).amount < amount)
             return false;
 
-        int oldAmount = content.get(medicine);
-        content.put(medicine, oldAmount - amount);
-
-        if(content.get(medicine) == 0)
-            content.remove(medicine);
+        ReceiptItem oldStock = content.get(medicine);
+        oldStock.amount -= amount;
+        content.put(medicine, oldStock);
 
         return true;
     }
@@ -54,11 +63,57 @@ public class Receipt {
         return true;
     }
 
-    public List<Pair<Medicine, Integer>> toList()
+    public List<ReceiptItem> toList()
     {
-        List<Pair<Medicine, Integer>> l = new List<>();
-        content.forEach((k, v) -> l.add(new Pair<>(k, v)));
+        List<ReceiptItem> l = new List<>();
+        content.forEach((k, v) -> l.add(v));
 
         return l;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public int getPatientId() {
+        return patientId;
+    }
+
+    public int getStaffId() {
+        return staffId;
+    }
+
+    public Date getGivenDate() {
+        return givenDate;
+    }
+
+    public Date getExpireDate() {
+        return expireDate;
+    }
+
+    public static class ReceiptItem {
+        Medicine med;
+        int amount;
+
+        public ReceiptItem(Medicine med, int amount) {
+            this.med = med;
+            this.amount = amount;
+        }
+
+        public String getName() {
+            return med.getName();
+        }
+
+        public MedicineType getType() {
+            return med.getType();
+        }
+
+        public int getId() {
+            return med.getId();
+        }
+
+        public int getAmount() {
+            return amount;
+        }
     }
 }

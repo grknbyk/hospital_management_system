@@ -6,7 +6,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
-import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Modality;
 import model.*;
@@ -32,7 +31,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Optional;
 
-public class DoctorController{
+public class DoctorController {
 
     String username;
 
@@ -50,6 +49,8 @@ public class DoctorController{
 
     @FXML
     private MenuItem logoutMenuItem;
+    @FXML
+    private MenuItem prescribeMenuItem;
 
     @FXML
     private TableView<Patient> patientTableView;
@@ -66,17 +67,29 @@ public class DoctorController{
         imageView.setFitHeight(18);
         imageView.setFitWidth(18);
         options.setGraphic(imageView);
+
+        initializePrescribeMenuItem();
     }
 
-    public void loadPatients(){
+    public void initializePrescribeMenuItem() {
+        prescribeMenuItem.setOnAction(event -> {
+            Patient selectedPerson = patientTableView.getSelectionModel().getSelectedItem();
+            if (selectedPerson == null)
+                return;
+
+            System.out.println("Selected Row: " + selectedPerson.getName());
+        });
+    }
+
+    public void showProfileDialog() {
+        new ProfileViewBuilder(username, DoctorPanel).showProfileView();
+    }
+
+    public void loadPatients() {
         //fill the table
         int staffId = Datasource.getInstance().queryStaffId(username);
         patients = FXCollections.observableArrayList(Datasource.getInstance().queryPatients(staffId));
         patientTableView.setItems(patients);
-    }
-
-    public void showProfileDialog() {
-        new ProfileViewBuilder(username,DoctorPanel);
     }
 
     public void showAboutDialog() {
@@ -87,14 +100,11 @@ public class DoctorController{
 
         // Create labels and fields for email, phone, and website
         Label emailLabel = new Label("Email:");
-        TextField emailField = new TextField("group1_oop@email.com");
-        emailField.setEditable(false);
+        Hyperlink emailField = new Hyperlink("group1_oop@email.com");
         emailField.setPrefWidth(200);
         emailField.setOnMouseClicked(event -> {
-            if (event.getClickCount() == 2) {
-                copyToClipboard(emailField.getText());
-                showAlert(Alert.AlertType.INFORMATION, "Copied", "Email address copied to clipboard.");
-            }
+            copyToClipboard(emailField.getText());
+            showAlert(Alert.AlertType.INFORMATION, "Copied", "Email address copied to clipboard.");
         });
 
         Label phoneLabel = new Label("Phone:");
