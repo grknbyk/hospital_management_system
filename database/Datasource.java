@@ -11,7 +11,8 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import model.Contact;
 import model.Doctor;
@@ -31,6 +32,7 @@ import model.enums.Gender;
 import model.enums.MedicineType;
 import model.enums.Priority;
 import model.enums.Status;
+import utils.List;
 
 public class Datasource {
 
@@ -956,7 +958,7 @@ public class Datasource {
             if (personId == -1) {
                 return "Couldn't find the staff by id: " + staff.getId();
             } else {
-                List<Boolean> affectedRows = new ArrayList<>();
+                ArrayList<Boolean> affectedRows = new ArrayList<>();
                 affectedRows.add(updateStaff(staff));
                 if (staff.getStatus() == Status.DOCTOR)
                     affectedRows.add(updateDoctor((Doctor) staff));
@@ -1453,10 +1455,10 @@ public class Datasource {
 
     private int insertReceipt(Receipt receipt) {
         try {
-            ResultSet generatedKeys = insertReceipt.getGeneratedKeys();
-            if (!generatedKeys.next())
+            int receipt_id = queryLastReceiptId();
+            if (receipt_id == -1)
                 throw new SQLException("Couldn't get id for receipt!");
-            int receipt_id = generatedKeys.getInt(1);
+            receipt_id++;
 
             insertReceipt.setInt(1, receipt_id);
             insertReceipt.setInt(2, receipt.getPatientId());
@@ -1562,14 +1564,61 @@ public class Datasource {
             // if any error occurs, sql will rollback in the catch block
         } catch (Exception e) {
             StringBuilder sb = new StringBuilder();
-            sb.append("Update staff failed: " + e.getMessage());
+            sb.append("Adding new medicine failed: " + e.getMessage());
             try {
                 sb.append("Performing rollback");
                 conn.rollback();
-                sb.append("Update staff failed: " + e.getMessage());
+                sb.append("Adding new medicine failed: " + e.getMessage());
             } catch (SQLException e2) {
                 sb.append("Oh boy! Things are really bad! " + e2.getMessage());
-                sb.append("Update staff failed: " + e2.getMessage());
+                sb.append("Adding new medicine failed: " + e2.getMessage());
+            }
+            return sb.toString();
+        } finally {
+            try {
+                System.out.println("Resetting default commit behavior");
+                conn.setAutoCommit(true);
+            } catch (SQLException e) {
+                System.out.println("Couldn't reset auto-commit! " + e.getMessage());
+            }
+
+        }
+    }
+
+    public String addNewReceipt(Receipt receipt) {
+        try {
+            conn.setAutoCommit(false);
+            ArrayList<Boolean> results = new ArrayList<>();
+            int receipt_id = insertReceipt(receipt);
+            if (receipt_id > 0)
+                results.add(true);
+            else
+                results.add(false);
+
+            TreeMap<Medicine, Receipt.ReceiptItem> medicines = receipt.getContent();
+            for (Map.Entry<Medicine, Receipt.ReceiptItem> entry : medicines.entrySet()) {
+                int medicine_id = entry.getKey().getId();
+                int quantity = entry.getValue().getAmount();
+                Boolean receiptMedicineResult = insertReceiptMedicine(receipt_id, medicine_id, quantity);
+                results.add(receiptMedicineResult);
+            }
+
+            if (results.contains(false)) {
+                throw new SQLException("Couldn't insert receipt!");
+            }
+            conn.commit();
+            return "Receipt added successfully!";
+            // if any error occurs, sql will rollback in the catch block
+        } catch (Exception e) {
+            StringBuilder sb = new StringBuilder();
+            sb.append("Adding new receipt failed: " + e.getMessage());
+            try {
+                sb.append("Performing rollback");
+                conn.rollback();
+                sb.append("Adding new receipt failed: " + e.getMessage());
+            } catch (SQLException e2) {
+                sb.append("Oh boy! Things are really bad! " + e2.getMessage());
+                sb.append("Adding new receipt failed: " + e2.getMessage());
             }
             return sb.toString();
         } finally {
