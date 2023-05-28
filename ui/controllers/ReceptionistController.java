@@ -11,6 +11,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
+import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
@@ -26,6 +27,8 @@ import java.awt.datatransfer.StringSelection;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Optional;
+
 import javafx.fxml.FXML;
 import javafx.scene.layout.BorderPane;
 import model.Patient;
@@ -64,9 +67,40 @@ public class ReceptionistController {
 
     public void loadPatients(){
         //fill the table
-        int staffId = Datasource.getInstance().queryStaffId(username);
-        patients = FXCollections.observableArrayList(Datasource.getInstance().queryPatients(staffId));
+        patients = FXCollections.observableArrayList(Datasource.getInstance().queryPatients(2));
         patientTableView.setItems(patients);
+    }
+
+    public void registerPatient() {
+        Patient selectedPatient = patientTableView.getSelectionModel().getSelectedItem();
+        if(selectedPatient == null) {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("No Patient Selected");
+            alert.setHeaderText(null);
+            alert.setContentText("Select a patient");
+            alert.showAndWait();
+            return;
+        }
+
+        Dialog<ButtonType> dialog = new Dialog<>();
+        dialog.initOwner(receptionistPanel.getScene().getWindow());
+        dialog.setTitle("Register Patient");
+        FXMLLoader fxmlLoader = new FXMLLoader();
+        fxmlLoader.setLocation(getClass().getResource("../scene/RegisterPatient.fxml"));
+        try {
+            dialog.getDialogPane().setContent(fxmlLoader.load());
+            RegisterPatientController registerPatientController = fxmlLoader.getController();
+            registerPatientController.updateFields(selectedPatient);
+        } catch (IOException e) {
+            System.out.println("Couldn't load the dialog");
+            e.printStackTrace();
+            return;
+        }
+
+        dialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
+
+        Optional<ButtonType> result = dialog.showAndWait();
+
     }
 
     public void showProfileDialog() {
