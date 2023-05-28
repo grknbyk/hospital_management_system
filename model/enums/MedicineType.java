@@ -11,5 +11,10 @@ public enum MedicineType {
     INHALERS,
     INJECTIONS,
     PATCHES,
-    BUCCAL
+    BUCCAL;
+
+    public String toString() {
+        String n = name();
+        return n.substring(0, 1).toUpperCase() + n.substring(1).toLowerCase();
+    }
 }
