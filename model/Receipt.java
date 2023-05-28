@@ -14,8 +14,6 @@ public class Receipt {
     private Date expireDate;
     private boolean isGiven;
 
-
-
     private final TreeMap<Medicine, ReceiptItem> content;
 
     public TreeMap<Medicine, ReceiptItem> getContent() {
