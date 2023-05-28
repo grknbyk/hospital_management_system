@@ -107,6 +107,9 @@ public class Datasource {
             " INNER JOIN " + TABLE_CONTACT + " ON " + TABLE_STAFF + "." + COLUMN_STAFF_PERSON_ID + " = " + TABLE_CONTACT
             + "." + COLUMN_CONTACT_PERSON_ID +
             " WHERE " + COLUMN_STAFF_USERNAME + " = ?";
+    
+    private static final String QUERY_STAFF_USERNAME_BY_ID = "SELECT " + COLUMN_STAFF_USERNAME + " FROM " + TABLE_STAFF +
+            " WHERE " + COLUMN_STAFF_ID + " = ?";
 
     private static final String QUERY_MEDICINE = "SELECT * FROM " + TABLE_MEDICINE +
             " INNER JOIN " + TABLE_MEDICINE_STOCK + " ON " +
@@ -329,6 +332,7 @@ public class Datasource {
     private ArrayList<PreparedStatement> preparedStatements;
     private PreparedStatement queryLogin;
     private PreparedStatement queryStaffByUsername;
+    private PreparedStatement queryStaffUsernameById;
     private PreparedStatement queryStaffIdByUsername;
     private PreparedStatement queryPatientsByStaffId;
     private PreparedStatement queryMedicine;
@@ -382,6 +386,8 @@ public class Datasource {
             preparedStatements.add(queryLogin);
             queryStaffByUsername = conn.prepareStatement(QUERY_STAFF_BY_USERNAME);
             preparedStatements.add(queryStaffByUsername);
+            queryStaffUsernameById = conn.prepareStatement(QUERY_STAFF_USERNAME_BY_ID);
+            preparedStatements.add(queryStaffUsernameById);
             queryStaffIdByUsername = conn.prepareStatement(QUERY_STAFF_ID_BY_USERNAME);
             preparedStatements.add(queryStaffIdByUsername);
             queryPatientsByStaffId = conn.prepareStatement(QUERY_PATIENTS_BY_STAFF_ID);
@@ -801,6 +807,28 @@ public class Datasource {
             System.out.println("Query failed: " + e.getMessage());
             return -1;
         }
+    }
+
+    private String queryUsernameById(int staff_id){
+        try {
+            queryStaffUsernameById.setInt(1, staff_id);
+            ResultSet results = queryStaffUsernameById.executeQuery();
+            if (results != null) {
+                return results.getString(COLUMN_STAFF_USERNAME);
+            }
+            return null;
+        } catch (SQLException e) {
+            System.out.println("Query failed: " + e.getMessage());
+            return null;
+        }
+    }
+
+    /**
+     * @param staff_id the id of the staff entered in the login page.
+     * @return Staff object for information of the staff according to the username.
+     */
+    public Staff queryStaffProfile(int staff_id) {
+        return queryStaffProfile(queryUsernameById(staff_id));
     }
 
     /**
