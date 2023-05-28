@@ -19,7 +19,7 @@
                 <menus>
                   <Menu mnemonicParsing="false" text="Patient">
                      <items>
-                        <MenuItem mnemonicParsing="false" text="Data" />
+                        <MenuItem mnemonicParsing="false" onAction="#showPatientData" text="Data" />
                         <MenuItem mnemonicParsing="false" text="Discharge" />
                         <MenuItem mnemonicParsing="false" text="Hospitalize" />
                      </items>
