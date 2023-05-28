@@ -20,6 +20,8 @@ import java.awt.datatransfer.StringSelection;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.sql.Date;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
@@ -40,6 +42,8 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import model.Medicine;
 import model.MedicineSupply;
+import model.Receipt;
+import model.enums.MedicineType;
 import utils.Pair;
 
 
@@ -63,6 +67,9 @@ public class PharmacistController {
     @FXML
     private TableView<MedicineSupply.SupplyItem> medicineTableView;
     private ObservableList<MedicineSupply.SupplyItem> medicine;
+    @FXML
+    private TableView<Receipt> receiptsTableView;
+    private ObservableList<Receipt> receipts;
 
     @FXML
     private MenuButton options;
@@ -85,8 +92,18 @@ public class PharmacistController {
         medicineTableView.setItems(medicine);
     }
 
+    public void loadReceipts() {
+        //fill the table
+        int staffId = Datasource.getInstance().queryStaffId(username);
+        Datasource.getInstance().updateMedicineSupply(MedicineSupply.getInstance());
+        ArrayList<Receipt> arr = new ArrayList<>();
+        arr.add(new Receipt(31, 62, 93, new Date(System.currentTimeMillis()), new Date(System.currentTimeMillis() + 50000000)));
+        receipts = FXCollections.observableList(arr);
+        receiptsTableView.setItems(receipts);
+    }
+
     public void showProfileDialog() {
-        new ProfileViewBuilder(username, pharmacistPanel);
+        new ProfileViewBuilder(username, pharmacistPanel).showProfileView();
     }
 
     public void logout(ActionEvent event) throws IOException {
@@ -106,14 +123,11 @@ public class PharmacistController {
 
         // Create labels and fields for email, phone, and website
         Label emailLabel = new Label("Email:");
-        TextField emailField = new TextField("group1_oop@email.com");
-        emailField.setEditable(false);
+        Hyperlink emailField = new Hyperlink("group1_oop@email.com");
         emailField.setPrefWidth(200);
         emailField.setOnMouseClicked(event -> {
-            if (event.getClickCount() == 2) {
-                copyToClipboard(emailField.getText());
-                showAlert(Alert.AlertType.INFORMATION, "Copied", "Email address copied to clipboard.");
-            }
+            copyToClipboard(emailField.getText());
+            showAlert(Alert.AlertType.INFORMATION, "Copied", "Email address copied to clipboard.");
         });
 
         Label phoneLabel = new Label("Phone:");
@@ -157,7 +171,6 @@ public class PharmacistController {
         dialogStage.setScene(dialogScene);
         dialogStage.show();
     }
-
 
     private void copyToClipboard(String text) {
         Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();

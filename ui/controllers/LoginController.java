@@ -50,9 +50,6 @@ public class LoginController {
         String username = usernameTextField.getText();
         String password = passwordTextField.getText();
 
-        username = "doctor";
-        password = "doctor";
-
 		String status = Datasource.getInstance().queryLogin(username, password); //kolaylık olsun diye elle girdim
 
 		if (status == null) {
@@ -155,7 +152,7 @@ public class LoginController {
         Parent root = loader.load();
         ReceptionistController receptionistController = loader.getController();
         receptionistController.setUsername(username);
-
+        receptionistController.loadPatients();
 
         scene = new Scene(root);
         stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
@@ -171,6 +168,7 @@ public class LoginController {
         PharmacistController pharmacistController = loader.getController();
         pharmacistController.setUsername(username);
         pharmacistController.loadMedicine();
+        pharmacistController.loadReceipts();
 
         stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         scene = new Scene(root);
@@ -188,14 +186,11 @@ public class LoginController {
 
         // Create labels and fields for email, phone, and website
         Label emailLabel = new Label("Email:");
-        TextField emailField = new TextField("group1_oop@email.com");
-        emailField.setEditable(false);
+        Hyperlink emailField = new Hyperlink("group1_oop@email.com");
         emailField.setPrefWidth(200);
         emailField.setOnMouseClicked(event -> {
-            if (event.getClickCount() == 2) {
-                copyToClipboard(emailField.getText());
-                showAlert(Alert.AlertType.INFORMATION, "Copied", "Email address copied to clipboard.");
-            }
+            copyToClipboard(emailField.getText());
+            showAlert(Alert.AlertType.INFORMATION, "Copied", "Email address copied to clipboard.");
         });
 
         Label phoneLabel = new Label("Phone:");
