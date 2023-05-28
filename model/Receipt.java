@@ -71,6 +71,26 @@ public class Receipt {
         return l;
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public int getPatientId() {
+        return patientId;
+    }
+
+    public int getStaffId() {
+        return staffId;
+    }
+
+    public Date getGivenDate() {
+        return givenDate;
+    }
+
+    public Date getExpireDate() {
+        return expireDate;
+    }
+
     public static class ReceiptItem {
         Medicine med;
         int amount;
