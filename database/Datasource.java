@@ -11,8 +11,23 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
-import model.*;
-import model.enums.*;
+import model.Contact;
+import model.Doctor;
+import model.Manager;
+import model.Medicine;
+import model.MedicineSupply;
+import model.Nurse;
+import model.Patient;
+import model.Person;
+import model.Pharmacist;
+import model.Receptionist;
+import model.Staff;
+import model.enums.BloodType;
+import model.enums.EmergencyState;
+import model.enums.Gender;
+import model.enums.MedicineType;
+import model.enums.Priority;
+import model.enums.Status;
 
 public class Datasource {
 
@@ -250,24 +265,24 @@ public class Datasource {
     
     private static final String UPDATE_MEDICINE_BY_MEDICINE_ID = "UPDATE " + TABLE_MEDICINE + " SET " +
             COLUMN_MEDICINE_NAME + " = ?, " +
-            COLUMN_MEDICINE_TYPE + " = ?, " +
+            COLUMN_MEDICINE_TYPE + " = ? " +
             " WHERE " + COLUMN_MEDICINE_ID + " = ?";
     
     private static final String UPDATE_MEDICINE_STOCK_BY_MEDICINE_ID = "UPDATE " + TABLE_MEDICINE_STOCK + " SET " +
-            COLUMN_MEDICINE_STOCK_AMOUNT + " = ?, " +
+            COLUMN_MEDICINE_STOCK_AMOUNT + " = ? " +
             " WHERE " + COLUMN_MEDICINE_STOCK_MEDICINE_ID + " = ?";
     
     private static final String UPDATE_STAFF_BY_STAFF_ID = "UPDATE " + TABLE_STAFF + " SET " +
             COLUMN_STAFF_USERNAME + " = ?, " +
-            COLUMN_STAFF_PASSWORD + " = ?, " +
+            COLUMN_STAFF_PASSWORD + " = ? " +
             " WHERE " + COLUMN_STAFF_ID + " = ?";
     
     private static final String UPDATE_DOCTOR_BY_STAFF_ID = "UPDATE " + TABLE_DOCTOR + " SET " +
-            COLUMN_DOCTOR_EXPRETISE + " = ?, " +
+            COLUMN_DOCTOR_EXPRETISE + " = ? " +
             " WHERE " + COLUMN_DOCTOR_STAFF_ID + " = ?";
 
     private static final String UPDATE_NURSE_BY_STAFF_ID = "UPDATE " + TABLE_NURSE + " SET " +
-            COLUMN_NURSE_WORKING_AREA + " = ?, " +
+            COLUMN_NURSE_WORKING_AREA + " = ? " +
             " WHERE " + COLUMN_NURSE_STAFF_ID + " = ?";
 
     private Connection conn;

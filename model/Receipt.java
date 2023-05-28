@@ -12,6 +12,7 @@ public class Receipt {
     private int staffId;
     private Date givenDate;
     private Date expireDate;
+    private boolean isGiven;
     private final TreeMap<Medicine, Integer> content;
 
     public Receipt(int id, int patientId, int staffId, Date givenDate, Date expireDate) {
@@ -20,8 +21,13 @@ public class Receipt {
         this.staffId = staffId;
         this.givenDate = givenDate;
         this.expireDate = expireDate;
-
+        
+        isGiven = false;
         content = new TreeMap<>();
+    }
+
+    public void giveReceipt() {
+        isGiven = true;
     }
 
     public Receipt(Receipt r) {
