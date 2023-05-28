@@ -1,6 +1,6 @@
 package model;
 
-import utils.Pair;
+import model.enums.MedicineType;
 
 import java.sql.Date;
 import java.util.TreeMap;
@@ -12,8 +12,11 @@ public class Receipt {
     private int staffId;
     private Date givenDate;
     private Date expireDate;
-    private boolean isGiven; // set true if receipt is given to patient
-    private final TreeMap<Medicine, Integer> content;
+    private boolean isGiven;
+
+
+
+    private final TreeMap<Medicine, ReceiptItem> content;
 
     public Receipt(int id, int patientId, int staffId, Date givenDate, Date expireDate) {
         this.id = id;
@@ -26,24 +29,30 @@ public class Receipt {
         content = new TreeMap<>();
     }
 
+    public void giveReceipt() {
+        isGiven = true;
+    }
+
     public Receipt(Receipt r) {
-        this.content = (TreeMap<Medicine, Integer>) r.content.clone();
+        this.content = (TreeMap<Medicine, ReceiptItem>) r.content.clone();
     }
 
     public void add(Medicine medicine, int amount) {
-        int oldAmount = content.getOrDefault(medicine, 0);
-        content.put(medicine, oldAmount + amount);
+        ReceiptItem oldStock = content.getOrDefault(medicine, null);
+        if(oldStock == null)
+            oldStock = new ReceiptItem(medicine, 0);
+        oldStock.amount += amount;
+
+        content.put(medicine, oldStock);
     }
 
     public boolean decrease(Medicine medicine, int amount) {
-        if (!content.containsKey(medicine) || content.get(medicine) < amount)
+        if (!content.containsKey(medicine) || content.get(medicine).amount < amount)
             return false;
 
-        int oldAmount = content.get(medicine);
-        content.put(medicine, oldAmount - amount);
-
-        if(content.get(medicine) == 0)
-            content.remove(medicine);
+        ReceiptItem oldStock = content.get(medicine);
+        oldStock.amount -= amount;
+        content.put(medicine, oldStock);
 
         return true;
     }
@@ -56,10 +65,10 @@ public class Receipt {
         return true;
     }
 
-    public List<Pair<Medicine, Integer>> toList()
+    public List<ReceiptItem> toList()
     {
-        List<Pair<Medicine, Integer>> l = new List<>();
-        content.forEach((k, v) -> l.add(new Pair<>(k, v)));
+        List<ReceiptItem> l = new List<>();
+        content.forEach((k, v) -> l.add(v));
 
         return l;
     }
@@ -68,40 +77,20 @@ public class Receipt {
         return id;
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
     public int getPatientId() {
         return patientId;
-    }
-
-    public void setPatientId(int patientId) {
-        this.patientId = patientId;
     }
 
     public int getStaffId() {
         return staffId;
     }
 
-    public void setStaffId(int staffId) {
-        this.staffId = staffId;
-    }
-
     public Date getGivenDate() {
         return givenDate;
     }
 
-    public void setGivenDate(Date givenDate) {
-        this.givenDate = givenDate;
-    }
-
     public Date getExpireDate() {
         return expireDate;
-    }
-
-    public void setExpireDate(Date expireDate) {
-        this.expireDate = expireDate;
     }
 
     public boolean isGiven() {
@@ -112,19 +101,29 @@ public class Receipt {
         this.isGiven = isGiven;
     }
 
-    public TreeMap<Medicine, Integer> getContent() {
-        return content;
-    }
+    public static class ReceiptItem {
+        Medicine med;
+        int amount;
 
-    public void giveReceipt() {
-        isGiven = true;
-    }
+        public ReceiptItem(Medicine med, int amount) {
+            this.med = med;
+            this.amount = amount;
+        }
 
-    public void setIsGiven(boolean isGiven) {
-        this.isGiven = isGiven;
-    }
+        public String getName() {
+            return med.getName();
+        }
 
-    public boolean getIsGiven() {
-        return isGiven;
+        public MedicineType getType() {
+            return med.getType();
+        }
+
+        public int getId() {
+            return med.getId();
+        }
+
+        public int getAmount() {
+            return amount;
+        }
     }
 }
