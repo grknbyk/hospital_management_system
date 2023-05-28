@@ -70,19 +70,19 @@ public class Patient extends Person{
         this.bloodType.set(bloodType);
     }
 
-    public ObjectProperty<Integer> getDoctorId() {
-        return doctorId;
+    public int getDoctorId() {
+        return doctorId.get();
     }
 
-    public void setDoctorId(ObjectProperty<Integer> doctorId) {
-        this.doctorId = doctorId;
+    public void setDoctorId(int doctorId) {
+        this.doctorId.set(doctorId);
     }
 
-    public ObjectProperty<Integer> getReceiptId() {
-        return receiptId;
+    public int getReceiptId() {
+        return receiptId.get();
     }
 
-    public void setReceiptId(ObjectProperty<Integer> receiptId) {
-        this.receiptId = receiptId;
+    public void setReceiptId(int receiptId) {
+        this.receiptId.set(receiptId);
     }
 }
