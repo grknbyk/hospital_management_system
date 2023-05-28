@@ -13,7 +13,6 @@ public class Receipt {
     private Date givenDate;
     private Date expireDate;
     private boolean isGiven;
-
     private final TreeMap<Medicine, ReceiptItem> content;
 
     public TreeMap<Medicine, ReceiptItem> getContent() {
@@ -44,7 +43,6 @@ public class Receipt {
         if(oldStock == null)
             oldStock = new ReceiptItem(medicine, 0);
         oldStock.amount += amount;
-
         content.put(medicine, oldStock);
     }
 
