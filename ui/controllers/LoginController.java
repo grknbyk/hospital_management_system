@@ -50,6 +50,9 @@ public class LoginController {
         String username = usernameTextField.getText();
         String password = passwordTextField.getText();
 
+        username = "doctor";
+        password = "doctor";
+
 		String status = Datasource.getInstance().queryLogin(username, password); //kolaylık olsun diye elle girdim
 
 		if (status == null) {

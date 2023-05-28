@@ -18,6 +18,7 @@ public class Patient extends Person{
     private ObjectProperty<Integer> doctorId = new SimpleObjectProperty<>();
     private ObjectProperty<Integer> receiptId = new SimpleObjectProperty<>();
     private SimpleStringProperty hour = new SimpleStringProperty("");
+
     public Patient(){
 
     }
