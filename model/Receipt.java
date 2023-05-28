@@ -1,7 +1,6 @@
 package model;
 
 import model.enums.MedicineType;
-import utils.Pair;
 
 import java.sql.Date;
 import java.util.TreeMap;
@@ -14,6 +13,9 @@ public class Receipt {
     private Date givenDate;
     private Date expireDate;
     private boolean isGiven;
+
+
+
     private final TreeMap<Medicine, ReceiptItem> content;
 
     public Receipt(int id, int patientId, int staffId, Date givenDate, Date expireDate) {
@@ -89,6 +91,14 @@ public class Receipt {
 
     public Date getExpireDate() {
         return expireDate;
+    }
+
+    public boolean isGiven() {
+        return isGiven;
+    }
+
+    public void setGiven(boolean isGiven) {
+        this.isGiven = isGiven;
     }
 
     public static class ReceiptItem {
