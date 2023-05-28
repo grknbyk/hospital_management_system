@@ -39,7 +39,7 @@ public class PatientDataController {
         imageView.setImage(new Image("ui/imgs/default_person.png"));
         ageLabel.setText(patient.getName());
         bloodLabel.setText(patient.getBloodType().toString());
-        doctorNameLabel.setText("doktor adi");
+        doctorNameLabel.setText(Datasource.getInstance().queryStaffProfile(patient.getDoctorId()).getName());
         genderLabel.setText(patient.getGender().toString());
         idLabel.setText(String.valueOf(patient.getId()));
         nameLabel.setText(patient.getName());
