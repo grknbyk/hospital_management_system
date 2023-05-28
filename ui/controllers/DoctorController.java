@@ -3,10 +3,8 @@ package ui.controllers;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
-import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
-import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Modality;
 import model.*;
@@ -30,9 +28,8 @@ import java.awt.datatransfer.StringSelection;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Optional;
 
-public class DoctorController{
+public class DoctorController {
 
     String username;
 
@@ -50,6 +47,8 @@ public class DoctorController{
 
     @FXML
     private MenuItem logoutMenuItem;
+    @FXML
+    private MenuItem prescribeMenuItem;
 
     @FXML
     private TableView<Patient> patientTableView;
@@ -66,13 +65,25 @@ public class DoctorController{
         imageView.setFitHeight(18);
         imageView.setFitWidth(18);
         options.setGraphic(imageView);
+
+        initializePrescribeMenuItem();
     }
 
-    public void showProfileDialog(){
-        new ProfileViewBuilder(username,DoctorPanel).showProfileView();
+    public void initializePrescribeMenuItem() {
+        prescribeMenuItem.setOnAction(event -> {
+            Patient selectedPerson = patientTableView.getSelectionModel().getSelectedItem();
+            if (selectedPerson == null)
+                return;
+
+            System.out.println("Selected Row: " + selectedPerson.getName());
+        });
     }
 
-    public void loadPatients(){
+    public void showProfileDialog() {
+        new ProfileViewBuilder(username, DoctorPanel).showProfileView();
+    }
+
+    public void loadPatients() {
         //fill the table
         int staffId = Datasource.getInstance().queryStaffId(username);
         patients = FXCollections.observableArrayList(Datasource.getInstance().queryPatients(staffId));
