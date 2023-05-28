@@ -319,6 +319,11 @@ public class Datasource {
     private static final String INSERT_RECEIPT_MEDICINE = "INSERT INTO " + TABLE_RECEIPT_MEDICINE +
             " VALUES (?,?,?)";
 
+    private static final String QUERY_LAST_PERSON_ID = "SELECT MAX(" + COLUMN_PERSON_ID + ") FROM " + TABLE_PERSON;
+    private static final String QUERY_LAST_STAFF_ID = "SELECT MAX(" + COLUMN_STAFF_ID + ") FROM " + TABLE_STAFF;
+    private static final String QUERY_LAST_MEDICINE_ID = "SELECT MAX(" + COLUMN_MEDICINE_ID + ") FROM " + TABLE_MEDICINE;
+    private static final String QUERY_LAST_RECEIPT_ID = "SELECT MAX(" + COLUMN_RECEIPT_ID + ") FROM " + TABLE_RECEIPT;
+
     private Connection conn;
 
     private ArrayList<PreparedStatement> preparedStatements;
@@ -423,11 +428,11 @@ public class Datasource {
             preparedStatements.add(updateDoctorByStaffId);
             updateNurseByStaffId = conn.prepareStatement(UPDATE_NURSE_BY_STAFF_ID);
             preparedStatements.add(updateNurseByStaffId);
-            insertPerson = conn.prepareStatement(INSERT_PERSON, Statement.RETURN_GENERATED_KEYS);
+            insertPerson = conn.prepareStatement(INSERT_PERSON);
             preparedStatements.add(insertPerson);
             insertContact = conn.prepareStatement(INSERT_CONTACT);
             preparedStatements.add(insertContact);
-            insertStaff = conn.prepareStatement(INSERT_STAFF, Statement.RETURN_GENERATED_KEYS);
+            insertStaff = conn.prepareStatement(INSERT_STAFF);
             preparedStatements.add(insertStaff);
             insertDoctor = conn.prepareStatement(INSERT_DOCTOR);
             preparedStatements.add(insertDoctor);
@@ -435,11 +440,11 @@ public class Datasource {
             preparedStatements.add(insertNurse);
             insertPatient = conn.prepareStatement(INSERT_PATIENT);
             preparedStatements.add(insertPatient);
-            insertMedicine = conn.prepareStatement(INSERT_MEDICINE, Statement.RETURN_GENERATED_KEYS);
+            insertMedicine = conn.prepareStatement(INSERT_MEDICINE);
             preparedStatements.add(insertMedicine);
             insertMedicineStock = conn.prepareStatement(INSERT_MEDICINE_STOCK);
             preparedStatements.add(insertMedicineStock);
-            insertReceipt = conn.prepareStatement(INSERT_RECEIPT, Statement.RETURN_GENERATED_KEYS);
+            insertReceipt = conn.prepareStatement(INSERT_RECEIPT);
             preparedStatements.add(insertReceipt);
             insertReceiptMedicine = conn.prepareStatement(INSERT_RECEIPT_MEDICINE);
             preparedStatements.add(insertReceiptMedicine);
@@ -454,9 +459,11 @@ public class Datasource {
     public void close() {
         try {
 
-            for (PreparedStatement preparedStatement : preparedStatements) {
-                if (preparedStatement != null) {
-                    preparedStatement.close();
+            if (preparedStatements != null) {
+                for (PreparedStatement preparedStatement : preparedStatements) {
+                    if (preparedStatement != null) {
+                        preparedStatement.close();
+                    }
                 }
             }
 
@@ -477,6 +484,62 @@ public class Datasource {
                 return results.getInt(COLUMN_STAFF_PERSON_ID);
             } else {
                 throw new IllegalStateException("Unexpected value: id-> " + id);
+            }
+        } catch (SQLException e) {
+            System.out.println("Query failed: " + e.getMessage());
+            return -1;
+        }
+    }
+
+    private int queryLastMedicineId(){
+        try(Statement statement = conn.createStatement()) {
+            ResultSet results = statement.executeQuery(QUERY_LAST_MEDICINE_ID);
+            if (results != null) {
+                return results.getInt(1);
+            } else {
+                return -1;
+            }
+        } catch (SQLException e) {
+            System.out.println("Query failed: " + e.getMessage());
+            return -1;
+        }
+    }
+
+    private int queryLastReceiptId(){
+        try(Statement statement = conn.createStatement()) {
+            ResultSet results = statement.executeQuery(QUERY_LAST_RECEIPT_ID);
+            if (results != null) {
+                return results.getInt(1);
+            } else {
+                return -1;
+            }
+        } catch (SQLException e) {
+            System.out.println("Query failed: " + e.getMessage());
+            return -1;
+        }
+    }
+
+    private int queryLastPersonId(){
+        try(Statement statement = conn.createStatement()) {
+            ResultSet results = statement.executeQuery(QUERY_LAST_PERSON_ID);
+            if (results != null) {
+                return results.getInt(1);
+            } else {
+                return -1;
+            }
+        } catch (SQLException e) {
+            System.out.println("Query failed: " + e.getMessage());
+            return -1;
+        }
+    }
+
+    private int queryLastStaffId(){
+        try(Statement statement = conn.createStatement()) {
+            ResultSet results = statement.executeQuery(QUERY_LAST_STAFF_ID);
+            if (results != null) {
+                return results.getInt(1);
+            } else {
+                return -1;
             }
         } catch (SQLException e) {
             System.out.println("Query failed: " + e.getMessage());
@@ -1413,10 +1476,10 @@ public class Datasource {
 
     private int insertMedicine(Medicine medicine) {
         try {
-            ResultSet generatedKeys = insertMedicine.getGeneratedKeys();
-            if (!generatedKeys.next())
+            int medicine_id = queryLastMedicineId();
+            if (medicine_id == -1)
                 throw new SQLException("Couldn't get id for medicine!");
-            int medicine_id = generatedKeys.getInt(1);
+            medicine_id++;
 
             insertMedicine.setInt(1, medicine_id);
             insertMedicine.setString(2, medicine.getName());
@@ -1433,7 +1496,7 @@ public class Datasource {
         }
     }
 
-    private boolean insertMedicineStock(int medicine_id, int medicine_amount){
+    private boolean insertMedicineStock(int medicine_id, int medicine_amount) {
         try {
             if (medicine_amount <= 0)
                 throw new SQLException("Medicine amount can't be negative!");
@@ -1450,20 +1513,20 @@ public class Datasource {
         }
     }
 
-    public String addNewMedicine(Medicine medicine, int amount){
+    public String addNewMedicine(Medicine medicine, int amount) {
         try {
             conn.setAutoCommit(false);
             ArrayList<Boolean> results = new ArrayList<>();
             int medicine_id = insertMedicine(medicine);
-            if (medicine_id >0)
+            if (medicine_id > 0)
                 results.add(true);
             else
                 results.add(false);
-            
-            Boolean medicineStockResult = insertMedicineStock(medicine.getId(), amount);
+
+            Boolean medicineStockResult = insertMedicineStock(medicine_id, amount);
             results.add(medicineStockResult);
 
-            if (results.contains(false)){
+            if (results.contains(false)) {
                 throw new SQLException("Couldn't insert medicine!");
             }
             conn.commit();
@@ -1491,7 +1554,5 @@ public class Datasource {
 
         }
     }
-
-
 
 }
