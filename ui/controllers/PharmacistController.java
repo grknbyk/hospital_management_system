@@ -20,6 +20,8 @@ import java.awt.datatransfer.StringSelection;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.sql.Date;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
@@ -40,6 +42,8 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import model.Medicine;
 import model.MedicineSupply;
+import model.Receipt;
+import model.enums.MedicineType;
 import utils.Pair;
 
 
@@ -63,6 +67,9 @@ public class PharmacistController {
     @FXML
     private TableView<MedicineSupply.SupplyItem> medicineTableView;
     private ObservableList<MedicineSupply.SupplyItem> medicine;
+    @FXML
+    private TableView<Receipt> receiptsTableView;
+    private ObservableList<Receipt> receipts;
 
     @FXML
     private MenuButton options;
@@ -83,6 +90,16 @@ public class PharmacistController {
         Datasource.getInstance().updateMedicineSupply(MedicineSupply.getInstance());
         medicine = FXCollections.observableList(Arrays.stream(MedicineSupply.getInstance().toList().toArray()).map(obj -> (MedicineSupply.SupplyItem) obj).collect(Collectors.toList()));
         medicineTableView.setItems(medicine);
+    }
+
+    public void loadReceipts() {
+        //fill the table
+        int staffId = Datasource.getInstance().queryStaffId(username);
+        Datasource.getInstance().updateMedicineSupply(MedicineSupply.getInstance());
+        ArrayList<Receipt> arr = new ArrayList<>();
+        arr.add(new Receipt(31, 62, 93, new Date(System.currentTimeMillis()), new Date(System.currentTimeMillis() + 50000000)));
+        receipts = FXCollections.observableList(arr);
+        receiptsTableView.setItems(receipts);
     }
 
     public void showProfileDialog() {
