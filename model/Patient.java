@@ -10,12 +10,14 @@ import model.enums.Priority;
 import java.time.LocalDateTime;
 
 public class Patient extends Person{
-    SimpleStringProperty complaint = new SimpleStringProperty("");
-    ObjectProperty<LocalDateTime> appointment = new SimpleObjectProperty<>();
-    ObjectProperty<EmergencyState> emergencyState = new SimpleObjectProperty<>();
-    ObjectProperty<Priority> priority = new SimpleObjectProperty<>();
-    ObjectProperty<BloodType> bloodType = new SimpleObjectProperty<>();
-    SimpleStringProperty hour = new SimpleStringProperty("");
+    private SimpleStringProperty complaint = new SimpleStringProperty("");
+    private ObjectProperty<LocalDateTime> appointment = new SimpleObjectProperty<>();
+    private ObjectProperty<EmergencyState> emergencyState = new SimpleObjectProperty<>();
+    private ObjectProperty<Priority> priority = new SimpleObjectProperty<>();
+    private ObjectProperty<BloodType> bloodType = new SimpleObjectProperty<>();
+    private ObjectProperty<Integer> doctorId = new SimpleObjectProperty<>();
+    private ObjectProperty<Integer> receiptId = new SimpleObjectProperty<>();
+    private SimpleStringProperty hour = new SimpleStringProperty("");
     public Patient(){
 
     }
@@ -66,5 +68,21 @@ public class Patient extends Person{
     }
     public void setBloodType(BloodType bloodType) {
         this.bloodType.set(bloodType);
+    }
+
+    public ObjectProperty<Integer> getDoctorId() {
+        return doctorId;
+    }
+
+    public void setDoctorId(ObjectProperty<Integer> doctorId) {
+        this.doctorId = doctorId;
+    }
+
+    public ObjectProperty<Integer> getReceiptId() {
+        return receiptId;
+    }
+
+    public void setReceiptId(ObjectProperty<Integer> receiptId) {
+        this.receiptId = receiptId;
     }
 }
