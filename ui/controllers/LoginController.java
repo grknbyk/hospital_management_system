@@ -50,10 +50,10 @@ public class LoginController {
         String username = usernameTextField.getText();
         String password = passwordTextField.getText();
 
-        username = "doctor";
-        password = "doctor";
+        username = "receptionist";
+        password = "receptionist";
 
-		String status = Datasource.getInstance().queryLogin(username, password); //kolaylık olsun diye elle girdim
+		String status = Datasource.getInstance().queryLogin(username, password);
 
 		if (status == null) {
 			System.out.println("Invalid username or password");
