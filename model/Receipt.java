@@ -18,6 +18,10 @@ public class Receipt {
 
     private final TreeMap<Medicine, ReceiptItem> content;
 
+    public TreeMap<Medicine, ReceiptItem> getContent() {
+        return content;
+    }
+
     public Receipt(int id, int patientId, int staffId, Date givenDate, Date expireDate) {
         this.id = id;
         this.patientId = patientId;
