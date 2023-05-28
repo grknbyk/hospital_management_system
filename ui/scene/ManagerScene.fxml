@@ -26,7 +26,7 @@
                         <MenuItem mnemonicParsing="false" text="Delete" />
                   </items>
                 </Menu>
-                <Menu mnemonicParsing="false" onAction="#showAboutDialog" text="About">
+                <Menu mnemonicParsing="false" text="About">
                   <items>
                     <MenuItem mnemonicParsing="false" onAction="#showAboutDialog" text="About" />
                   </items>
