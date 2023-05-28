@@ -168,6 +168,7 @@ public class LoginController {
         PharmacistController pharmacistController = loader.getController();
         pharmacistController.setUsername(username);
         pharmacistController.loadMedicine();
+        pharmacistController.loadReceipts();
 
         stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         scene = new Scene(root);

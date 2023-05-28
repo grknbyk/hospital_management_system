@@ -7,7 +7,15 @@ public class Medicine implements Comparable<Medicine> {
     private int id;
     private MedicineType type;
     private String name;
-    
+
+    public Medicine() {
+    }
+
+    public Medicine(String name, MedicineType type) {
+        this.name = name;
+        this.type = type;
+    }
+
     public int getId() {
         return id;
     }
