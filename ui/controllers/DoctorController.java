@@ -75,6 +75,10 @@ public class DoctorController{
         patientTableView.setItems(patients);
     }
 
+    public void showProfileDialog() {
+        new ProfileViewBuilder(username,DoctorPanel);
+    }
+
     public void showAboutDialog() {
         // Create a new stage for the dialog
         Stage dialogStage = new Stage();
@@ -146,6 +150,38 @@ public class DoctorController{
         alert.setHeaderText(null);
         alert.setContentText(content);
         alert.showAndWait();
+    }
+
+    public void showPatientData() {
+        Patient selectedPatient = patientTableView.getSelectionModel().getSelectedItem();
+        if(selectedPatient == null) {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("No Patient Selected");
+            alert.setHeaderText(null);
+            alert.setContentText("Please select the patient you want to retrieve data from.");
+            alert.showAndWait();
+            return;
+        }
+
+        Dialog<ButtonType> dialog = new Dialog<>();
+        dialog.initOwner(DoctorPanel.getScene().getWindow());
+        dialog.setTitle("Patient Data");
+        FXMLLoader fxmlLoader = new FXMLLoader();
+        fxmlLoader.setLocation(getClass().getResource("../scene/PatientData.fxml"));
+        try {
+            dialog.getDialogPane().setContent(fxmlLoader.load());
+            PatientDataController patientDataController = fxmlLoader.getController();
+            patientDataController.updateFields(selectedPatient);
+        } catch (IOException e) {
+            System.out.println("Couldn't load the dialog");
+            e.printStackTrace();
+            return;
+        }
+
+        dialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
+
+
+        Optional<ButtonType> result = dialog.showAndWait();
     }
 
     public void logout(ActionEvent event) throws IOException {
