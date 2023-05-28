@@ -69,7 +69,7 @@ public class ReceptionistController {
 
     public void loadPatients(){
         //fill the table
-        patients = FXCollections.observableArrayList(Datasource.getInstance().queryPatients(2));
+        patients = FXCollections.observableArrayList(Datasource.getInstance().queryPatientsNullStaff());
         patientTableView.setItems(patients);
     }
 
