@@ -27,11 +27,13 @@ import java.awt.datatransfer.StringSelection;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.Optional;
 
 import javafx.fxml.FXML;
 import javafx.scene.layout.BorderPane;
 import model.Patient;
+import model.Staff;
 
 public class ReceptionistController {
     String username;
@@ -96,11 +98,35 @@ public class ReceptionistController {
             e.printStackTrace();
             return;
         }
+        dialog.getDialogPane().getScene().getWindow().setOnCloseRequest(e -> {
+            dialog.close();
+        });
 
-        dialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
+        ButtonType applyButton = new ButtonType("Apply");
+        ButtonType cancelButton = new ButtonType("Cancel");
+
+        dialog.getDialogPane().getButtonTypes().addAll(applyButton, cancelButton);
 
         Optional<ButtonType> result = dialog.showAndWait();
+        if(result.isPresent() && result.get() == applyButton) {
+            applyButtonFunction(selectedPatient);
+        }else if(result.isPresent() && result.get() == cancelButton){
+            dialog.close();
+        }
+    }
 
+    private void applyButtonFunction(Patient patient){
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Confirmation");
+        alert.setHeaderText("Confirmation Dialog");
+        alert.setContentText("Are you sure you want to save the changes?");
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            //update patient here
+        } else if (result.isPresent() && result.get() == ButtonType.CANCEL) {
+            registerPatient();
+        }
     }
 
     public void showProfileDialog() {
