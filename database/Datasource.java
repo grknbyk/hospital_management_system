@@ -60,7 +60,6 @@ public class Datasource {
     private static final String COLUMN_CONTACT_ADDRESS = "address";
 
     private static final String TABLE_PATIENT = "patient";
-    private static final String COLUMN_PATIENT_ID = "id";
     private static final String COLUMN_PATIENT_PERSON_ID = "person_id";
     private static final String COLUMN_PATIENT_STAFF_ID = "staff_id";
     private static final String COLUMN_PATIENT_RECEIPT_ID = "receipt_id";
@@ -642,7 +641,7 @@ public class Datasource {
             ArrayList<Patient> patients = new ArrayList<>();
             while(results.next()){
                 Patient patient = new Patient();
-                patient.setId(results.getInt(COLUMN_PATIENT_ID));
+                patient.setId(results.getInt(COLUMN_PATIENT_PERSON_ID));
                 patient.setReceiptId(results.getInt(COLUMN_PATIENT_RECEIPT_ID));
                 patient.setComplaint(results.getString(COLUMN_PATIENT_COMPLAINT));
 
