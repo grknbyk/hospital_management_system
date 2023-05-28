@@ -33,7 +33,7 @@ import java.util.Optional;
 
 public class DoctorController {
 
-    String username;
+    private String username;
 
     public String getUsername() {
         return username;
@@ -46,11 +46,8 @@ public class DoctorController {
     @FXML
     private BorderPane DoctorPanel;
 
-
     @FXML
     private MenuItem logoutMenuItem;
-    @FXML
-    private MenuItem prescribeMenuItem;
 
     @FXML
     private TableView<Patient> patientTableView;
@@ -59,7 +56,6 @@ public class DoctorController {
     @FXML
     private MenuButton options;
 
-
     public void initialize() {
 
         Image menuImg = new Image("ui/imgs/default_person.png");
@@ -67,18 +63,6 @@ public class DoctorController {
         imageView.setFitHeight(18);
         imageView.setFitWidth(18);
         options.setGraphic(imageView);
-
-        initializePrescribeMenuItem();
-    }
-
-    public void initializePrescribeMenuItem() {
-        prescribeMenuItem.setOnAction(event -> {
-            Patient selectedPerson = patientTableView.getSelectionModel().getSelectedItem();
-            if (selectedPerson == null)
-                return;
-
-            System.out.println("Selected Row: " + selectedPerson.getName());
-        });
     }
 
     public void showProfileDialog() {
@@ -162,6 +146,36 @@ public class DoctorController {
         alert.showAndWait();
     }
 
+    public void showPrescribe() {
+        Patient selectedPatient = patientTableView.getSelectionModel().getSelectedItem();
+        if(selectedPatient == null) {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("No Patient Selected");
+            alert.setHeaderText(null);
+            alert.setContentText("Please select the patient to write prescribe");
+            alert.showAndWait();
+            return;
+        }
+
+        Dialog<ButtonType> dialog = new Dialog<>();
+        dialog.initOwner(DoctorPanel.getScene().getWindow());
+        dialog.setTitle("Prescribe");
+        FXMLLoader fxmlLoader = new FXMLLoader();
+        fxmlLoader.setLocation(getClass().getResource("../scene/PatientPrescribe.fxml"));
+        try {
+            dialog.getDialogPane().setContent(fxmlLoader.load());
+            PatientPrescribeController patientPrescribeController = fxmlLoader.getController();
+            patientPrescribeController.updateFields(selectedPatient);
+        } catch (IOException e) {
+            System.out.println("Couldn't load the dialog");
+            e.printStackTrace();
+            return;
+        }
+
+        dialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
+        Optional<ButtonType> result = dialog.showAndWait();
+    }
+
     public void showPatientData() {
         Patient selectedPatient = patientTableView.getSelectionModel().getSelectedItem();
         if(selectedPatient == null) {
@@ -189,7 +203,6 @@ public class DoctorController {
         }
 
         dialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
-
 
         Optional<ButtonType> result = dialog.showAndWait();
     }
