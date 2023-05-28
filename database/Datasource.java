@@ -289,7 +289,7 @@ public class Datasource {
             " WHERE " + COLUMN_NURSE_STAFF_ID + " = ?";
 
     private static final String INSERT_PERSON = "INSERT INTO " + TABLE_PERSON +
-            " VALUES (?,?,?,?)";
+            " VALUES (?,?,?,?,?)";
 
     private static final String INSERT_CONTACT = "INSERT INTO " + TABLE_CONTACT +
             " VALUES (?,?,?,?)";
@@ -305,21 +305,16 @@ public class Datasource {
             " VALUES (?,?)";
 
     private static final String INSERT_PATIENT = "INSERT INTO " + TABLE_PATIENT +
-            " (" + COLUMN_PATIENT_PERSON_ID + "," + COLUMN_PATIENT_STAFF_ID + "," + 
-            COLUMN_PATIENT_RECEIPT_ID + "," + COLUMN_PATIENT_COMPLAINT + "," +
-            COLUMN_PATIENT_APPOINTMENT + "," + COLUMN_PATIENT_EMERGENCY_STATE + "," +
-            COLUMN_PATIENT_PRIORITY + "," + COLUMN_PATIENT_BLOOD_TYPE + ") " +
             " VALUES (?,?,?,?,?,?,?,?)";
 
-
     private static final String INSERT_MEDICINE = "INSERT INTO " + TABLE_MEDICINE +
-            " VALUES (?,?)";
+            " VALUES (?,?,?)";
 
     private static final String INSERT_MEDICINE_STOCK = "INSERT INTO " + TABLE_MEDICINE_STOCK +
             " VALUES (?,?)";
 
     private static final String INSERT_RECEIPT = "INSERT INTO " + TABLE_RECEIPT +
-            " VALUES (?,?,?,?,?)";
+            " VALUES (?,?,?,?,?,?)";
 
     private static final String INSERT_RECEIPT_MEDICINE = "INSERT INTO " + TABLE_RECEIPT_MEDICINE +
             " VALUES (?,?,?)";
@@ -1221,16 +1216,17 @@ public class Datasource {
             ResultSet generatedKeys = insertPerson.getGeneratedKeys();
             if (!generatedKeys.next())
                 throw new SQLException("Couldn't get id for person!");
-
-            insertPerson.setString(1, person.getName());
-            insertPerson.setString(2, person.getSurname());
-            insertPerson.setString(3, person.getGender().name());
-            insertPerson.setInt(4, person.getAge());
+            int id = generatedKeys.getInt(1);
+            insertPerson.setInt(1, id);
+            insertPerson.setString(2, person.getName());
+            insertPerson.setString(3, person.getSurname());
+            insertPerson.setString(4, person.getGender().name());
+            insertPerson.setInt(5, person.getAge());
             int affectedRows = insertPerson.executeUpdate();
             if (affectedRows != 1) {
                 throw new SQLException("Couldn't insert person!");
             }
-            return generatedKeys.getInt(1);
+            return id;
         } catch (SQLException e) {
             System.out.println("Insert person failed: " + e.getMessage());
             return -1;
@@ -1272,16 +1268,17 @@ public class Datasource {
             ResultSet generatedKeys = insertStaff.getGeneratedKeys();
             if (!generatedKeys.next())
                 throw new SQLException("Couldn't get id for staff!");
-
-            insertStaff.setString(1, staff.getUsername());
-            insertStaff.setString(2, staff.getPassword());
-            insertStaff.setString(3, staff.getStatus().name());
-            insertStaff.setInt(4, person_id);
+            int id = generatedKeys.getInt(1);
+            insertStaff.setInt(1, id);
+            insertStaff.setString(2, staff.getUsername());
+            insertStaff.setString(3, staff.getPassword());
+            insertStaff.setString(4, staff.getStatus().name());
+            insertStaff.setInt(5, person_id);
             int affectedRows = insertStaff.executeUpdate();
             if (affectedRows != 1) {
                 throw new SQLException("Couldn't insert staff!");
             }
-            return generatedKeys.getInt(1);
+            return id;
         } catch (SQLException e) {
             System.out.println("Insert staff failed: " + e.getMessage());
             return -1;
@@ -1368,28 +1365,30 @@ public class Datasource {
             ResultSet generatedKeys = insertReceipt.getGeneratedKeys();
             if (!generatedKeys.next())
                 throw new SQLException("Couldn't get id for receipt!");
+            int receipt_id = generatedKeys.getInt(1);
 
-            insertReceipt.setInt(1, receipt.getPatientId());
-            insertReceipt.setInt(2, receipt.getStaffId());
+            insertReceipt.setInt(1, receipt_id);
+            insertReceipt.setInt(2, receipt.getPatientId());
+            insertReceipt.setInt(3, receipt.getStaffId());
 
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 
             Date givenDate = receipt.getGivenDate();
             String formattedgivenDate = formatter.format(givenDate);
-            insertReceipt.setString(3, formattedgivenDate);
+            insertReceipt.setString(4, formattedgivenDate);
 
             Date expireDate = receipt.getExpireDate();
             String formattedexpireDate = formatter.format(expireDate);
-            insertReceipt.setString(4, formattedexpireDate);
+            insertReceipt.setString(5, formattedexpireDate);
 
             Boolean isGiven = receipt.isGiven();
-            insertReceipt.setString(5, isGiven.toString());
+            insertReceipt.setString(6, isGiven.toString());
 
             int affectedRows = insertReceipt.executeUpdate();
             if (affectedRows != 1) {
                 throw new SQLException("Couldn't insert receipt!");
             }
-            return generatedKeys.getInt(1);
+            return receipt_id;
         } catch (SQLException e) {
             System.out.println("Insert receipt failed: " + e.getMessage());
             return -1;
@@ -1417,15 +1416,17 @@ public class Datasource {
             ResultSet generatedKeys = insertMedicine.getGeneratedKeys();
             if (!generatedKeys.next())
                 throw new SQLException("Couldn't get id for medicine!");
+            int medicine_id = generatedKeys.getInt(1);
 
-            insertMedicine.setString(1, medicine.getName());
-            insertMedicine.setString(2, medicine.getType().name());
+            insertMedicine.setInt(1, medicine_id);
+            insertMedicine.setString(2, medicine.getName());
+            insertMedicine.setString(3, medicine.getType().name());
 
             int affectedRows = insertMedicine.executeUpdate();
             if (affectedRows != 1) {
                 throw new SQLException("Couldn't insert medicine!");
             }
-            return generatedKeys.getInt(1);
+            return medicine_id;
         } catch (SQLException e) {
             System.out.println("Insert medicine failed: " + e.getMessage());
             return -1;
