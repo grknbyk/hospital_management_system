@@ -1709,6 +1709,11 @@ public class Datasource {
      * required fields: name, surname, age, gender for person
      * username, password, status for staff
      * phone, email, address for contact of the staff.
+     * WARNING: if you add a doctor, you must pass Doctor object
+     *          to retrieve the doctor's expertise.
+     *          if you add a nurse, you must pass Nurse object
+     *         to retrieve the nurse's expertise.
+     *        else, no workingArea or no expertise will be added.
      * 
      * @param staff pass the required fields mentioned above
      * @return message that shows the result of the operation.
