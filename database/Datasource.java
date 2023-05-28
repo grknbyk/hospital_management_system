@@ -240,35 +240,35 @@ public class Datasource {
             COLUMN_PERSON_SURNAME + " = ?, " +
             COLUMN_PERSON_GENDER + " = ?, " +
             COLUMN_PERSON_AGE + " = ? " +
-            "WHERE " + COLUMN_PERSON_ID + " = ?";
+            " WHERE " + COLUMN_PERSON_ID + " = ?";
 
     private static final String UPDATE_CONTACT_BY_PERSON_ID = "UPDATE " + TABLE_CONTACT + " SET " +
             COLUMN_CONTACT_PHONE + " = ?, " +
             COLUMN_CONTACT_EMAIL + " = ?, " +
             COLUMN_CONTACT_ADDRESS + " = ? " +
-            "WHERE " + COLUMN_CONTACT_PERSON_ID + " = ?";
+            " WHERE " + COLUMN_CONTACT_PERSON_ID + " = ?";
     
     private static final String UPDATE_MEDICINE_BY_MEDICINE_ID = "UPDATE " + TABLE_MEDICINE + " SET " +
             COLUMN_MEDICINE_NAME + " = ?, " +
             COLUMN_MEDICINE_TYPE + " = ?, " +
-            "WHERE " + COLUMN_MEDICINE_ID + " = ?";
+            " WHERE " + COLUMN_MEDICINE_ID + " = ?";
     
     private static final String UPDATE_MEDICINE_STOCK_BY_MEDICINE_ID = "UPDATE " + TABLE_MEDICINE_STOCK + " SET " +
             COLUMN_MEDICINE_STOCK_AMOUNT + " = ?, " +
-            "WHERE " + COLUMN_MEDICINE_STOCK_MEDICINE_ID + " = ?";
+            " WHERE " + COLUMN_MEDICINE_STOCK_MEDICINE_ID + " = ?";
     
     private static final String UPDATE_STAFF_BY_STAFF_ID = "UPDATE " + TABLE_STAFF + " SET " +
             COLUMN_STAFF_USERNAME + " = ?, " +
             COLUMN_STAFF_PASSWORD + " = ?, " +
-            "WHERE " + COLUMN_STAFF_ID + " = ?";
+            " WHERE " + COLUMN_STAFF_ID + " = ?";
     
     private static final String UPDATE_DOCTOR_BY_STAFF_ID = "UPDATE " + TABLE_DOCTOR + " SET " +
             COLUMN_DOCTOR_EXPRETISE + " = ?, " +
-            "WHERE " + COLUMN_DOCTOR_STAFF_ID + " = ?";
+            " WHERE " + COLUMN_DOCTOR_STAFF_ID + " = ?";
 
     private static final String UPDATE_NURSE_BY_STAFF_ID = "UPDATE " + TABLE_NURSE + " SET " +
             COLUMN_NURSE_WORKING_AREA + " = ?, " +
-            "WHERE " + COLUMN_NURSE_STAFF_ID + " = ?";
+            " WHERE " + COLUMN_NURSE_STAFF_ID + " = ?";
 
     private Connection conn;
 
