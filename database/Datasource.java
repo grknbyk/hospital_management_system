@@ -1730,7 +1730,7 @@ public class Datasource {
 
             int staff_id = insertStaff(person_id, staff);
 
-            Boolean result = insertContact(staff_id, staff.getContact());
+            Boolean result = insertContact(person_id, staff.getContact());
             results.add(result);
 
             if (staff.getStatus() == Status.DOCTOR){
