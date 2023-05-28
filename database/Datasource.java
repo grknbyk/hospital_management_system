@@ -329,6 +329,9 @@ public class Datasource {
             + TABLE_MEDICINE;
     private static final String QUERY_LAST_RECEIPT_ID = "SELECT MAX(" + COLUMN_RECEIPT_ID + ") FROM " + TABLE_RECEIPT;
 
+    private static final String QUERY_PATIENTS_NULL_STAFF = "SELECT * FROM " + TABLE_PATIENT +
+            " WHERE " + COLUMN_PATIENT_STAFF_ID + " IS NULL";
+
     private Connection conn;
 
     private ArrayList<PreparedStatement> preparedStatements;
@@ -631,6 +634,35 @@ public class Datasource {
             System.out.println("Query failed: " + e.getMessage());
             return null;
         }
+    }
+
+    public ArrayList<Patient> queryPatientsNullStaff(){
+        try(Statement statement = conn.createStatement()){
+            ResultSet results = statement.executeQuery(QUERY_PATIENTS_NULL_STAFF);
+            ArrayList<Patient> patients = new ArrayList<>();
+            while(results.next()){
+                Patient patient = new Patient();
+                patient.setId(results.getInt(COLUMN_PATIENT_ID));
+                patient.setReceiptId(results.getInt(COLUMN_PATIENT_RECEIPT_ID));
+                patient.setComplaint(results.getString(COLUMN_PATIENT_COMPLAINT));
+
+                String dateString = results.getString(COLUMN_PATIENT_APPOINTMENT);
+                if (dateString != null) {
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+                    LocalDateTime dateTime = LocalDateTime.parse(dateString, formatter);
+                    patient.setAppointment(dateTime);
+                }
+                patient.setBloodType(BloodType.valueOf(results.getString(COLUMN_PATIENT_BLOOD_TYPE)));
+                patient.setEmergencyState(EmergencyState.valueOf(results.getString(COLUMN_PATIENT_EMERGENCY_STATE)));
+                patient.setPriority(Priority.valueOf(results.getString(COLUMN_PATIENT_PRIORITY)));
+                patients.add(patient);
+            }
+            return patients;
+        }catch (SQLException e){
+            System.out.println("Query failed: " + e.getMessage());
+            return null;
+        }
+
     }
 
     /**
