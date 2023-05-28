@@ -295,7 +295,7 @@ public class Datasource {
             " VALUES (?,?,?,?)";
 
     private static final String INSERT_STAFF = "INSERT INTO " + TABLE_STAFF +
-            "(" + COLUMN_STAFF_USERNAME + "," + COLUMN_STAFF_PASSWORD + "," + COLUMN_STAFF_STATUS + ")" +
+            " (" + COLUMN_STAFF_USERNAME + "," + COLUMN_STAFF_PASSWORD + "," + COLUMN_STAFF_STATUS + ") " +
             " VALUES (?,?,?)";
 
     private static final String INSERT_DOCTOR = "INSERT INTO " + TABLE_DOCTOR +
@@ -305,7 +305,12 @@ public class Datasource {
             " VALUES (?,?)";
 
     private static final String INSERT_PATIENT = "INSERT INTO " + TABLE_PATIENT +
+            " (" + COLUMN_PATIENT_PERSON_ID + "," + COLUMN_PATIENT_STAFF_ID + "," + 
+            COLUMN_PATIENT_RECEIPT_ID + "," + COLUMN_PATIENT_COMPLAINT + "," +
+            COLUMN_PATIENT_APPOINTMENT + "," + COLUMN_PATIENT_EMERGENCY_STATE + "," +
+            COLUMN_PATIENT_PRIORITY + "," + COLUMN_PATIENT_BLOOD_TYPE + ") " +
             " VALUES (?,?,?,?,?,?,?,?)";
+
 
     private static final String INSERT_MEDICINE = "INSERT INTO " + TABLE_MEDICINE +
             " VALUES (?,?)";
@@ -1443,5 +1448,49 @@ public class Datasource {
             return false;
         }
     }
+
+    public String addNewMedicine(Medicine medicine, int amount){
+        try {
+            conn.setAutoCommit(false);
+            ArrayList<Boolean> results = new ArrayList<>();
+            int medicine_id = insertMedicine(medicine);
+            if (medicine_id >0)
+                results.add(true);
+            else
+                results.add(false);
+            
+            Boolean medicineStockResult = insertMedicineStock(medicine.getId(), amount);
+            results.add(medicineStockResult);
+
+            if (results.contains(false)){
+                throw new SQLException("Couldn't insert medicine!");
+            }
+            conn.commit();
+            return "Medicine added successfully!";
+            // if any error occurs, sql will rollback in the catch block
+        } catch (Exception e) {
+            StringBuilder sb = new StringBuilder();
+            sb.append("Update staff failed: " + e.getMessage());
+            try {
+                sb.append("Performing rollback");
+                conn.rollback();
+                sb.append("Update staff failed: " + e.getMessage());
+            } catch (SQLException e2) {
+                sb.append("Oh boy! Things are really bad! " + e2.getMessage());
+                sb.append("Update staff failed: " + e2.getMessage());
+            }
+            return sb.toString();
+        } finally {
+            try {
+                System.out.println("Resetting default commit behavior");
+                conn.setAutoCommit(true);
+            } catch (SQLException e) {
+                System.out.println("Couldn't reset auto-commit! " + e.getMessage());
+            }
+
+        }
+    }
+
+
 
 }
