@@ -32,7 +32,6 @@ import model.enums.Gender;
 import model.enums.MedicineType;
 import model.enums.Priority;
 import model.enums.Status;
-import utils.List;
 
 public class Datasource {
 
@@ -109,8 +108,9 @@ public class Datasource {
             " INNER JOIN " + TABLE_CONTACT + " ON " + TABLE_STAFF + "." + COLUMN_STAFF_PERSON_ID + " = " + TABLE_CONTACT
             + "." + COLUMN_CONTACT_PERSON_ID +
             " WHERE " + COLUMN_STAFF_USERNAME + " = ?";
-    
-    private static final String QUERY_STAFF_USERNAME_BY_ID = "SELECT " + COLUMN_STAFF_USERNAME + " FROM " + TABLE_STAFF +
+
+    private static final String QUERY_STAFF_USERNAME_BY_ID = "SELECT " + COLUMN_STAFF_USERNAME + " FROM " + TABLE_STAFF
+            +
             " WHERE " + COLUMN_STAFF_ID + " = ?";
 
     private static final String QUERY_MEDICINE = "SELECT * FROM " + TABLE_MEDICINE +
@@ -300,8 +300,7 @@ public class Datasource {
             " VALUES (?,?,?,?)";
 
     private static final String INSERT_STAFF = "INSERT INTO " + TABLE_STAFF +
-            " (" + COLUMN_STAFF_USERNAME + "," + COLUMN_STAFF_PASSWORD + "," + COLUMN_STAFF_STATUS + ") " +
-            " VALUES (?,?,?)";
+            " VALUES (?,?,?,?,?)";
 
     private static final String INSERT_DOCTOR = "INSERT INTO " + TABLE_DOCTOR +
             " VALUES (?,?)";
@@ -326,7 +325,8 @@ public class Datasource {
 
     private static final String QUERY_LAST_PERSON_ID = "SELECT MAX(" + COLUMN_PERSON_ID + ") FROM " + TABLE_PERSON;
     private static final String QUERY_LAST_STAFF_ID = "SELECT MAX(" + COLUMN_STAFF_ID + ") FROM " + TABLE_STAFF;
-    private static final String QUERY_LAST_MEDICINE_ID = "SELECT MAX(" + COLUMN_MEDICINE_ID + ") FROM " + TABLE_MEDICINE;
+    private static final String QUERY_LAST_MEDICINE_ID = "SELECT MAX(" + COLUMN_MEDICINE_ID + ") FROM "
+            + TABLE_MEDICINE;
     private static final String QUERY_LAST_RECEIPT_ID = "SELECT MAX(" + COLUMN_RECEIPT_ID + ") FROM " + TABLE_RECEIPT;
 
     private Connection conn;
@@ -499,8 +499,8 @@ public class Datasource {
         }
     }
 
-    private int queryLastMedicineId(){
-        try(Statement statement = conn.createStatement()) {
+    private int queryLastMedicineId() {
+        try (Statement statement = conn.createStatement()) {
             ResultSet results = statement.executeQuery(QUERY_LAST_MEDICINE_ID);
             if (results != null) {
                 return results.getInt(1);
@@ -513,8 +513,8 @@ public class Datasource {
         }
     }
 
-    private int queryLastReceiptId(){
-        try(Statement statement = conn.createStatement()) {
+    private int queryLastReceiptId() {
+        try (Statement statement = conn.createStatement()) {
             ResultSet results = statement.executeQuery(QUERY_LAST_RECEIPT_ID);
             if (results != null) {
                 return results.getInt(1);
@@ -527,8 +527,8 @@ public class Datasource {
         }
     }
 
-    private int queryLastPersonId(){
-        try(Statement statement = conn.createStatement()) {
+    private int queryLastPersonId() {
+        try (Statement statement = conn.createStatement()) {
             ResultSet results = statement.executeQuery(QUERY_LAST_PERSON_ID);
             if (results != null) {
                 return results.getInt(1);
@@ -541,8 +541,8 @@ public class Datasource {
         }
     }
 
-    private int queryLastStaffId(){
-        try(Statement statement = conn.createStatement()) {
+    private int queryLastStaffId() {
+        try (Statement statement = conn.createStatement()) {
             ResultSet results = statement.executeQuery(QUERY_LAST_STAFF_ID);
             if (results != null) {
                 return results.getInt(1);
@@ -761,7 +761,7 @@ public class Datasource {
                 Patient patient = new Patient();
                 patient.setId(results.getInt(1));
                 Object doctorId = results.getInt(COLUMN_PATIENT_STAFF_ID);
-                patient.setDoctorId(doctorId == null ? -1 : (int) doctorId );
+                patient.setDoctorId(doctorId == null ? -1 : (int) doctorId);
                 Object receiptId = results.getInt(COLUMN_PATIENT_RECEIPT_ID);
                 patient.setReceiptId(receiptId == null ? -1 : (int) receiptId);
                 patient.setName(results.getString(COLUMN_PERSON_NAME));
@@ -815,7 +815,7 @@ public class Datasource {
         }
     }
 
-    private String queryUsernameById(int staff_id){
+    private String queryUsernameById(int staff_id) {
         try {
             queryStaffUsernameById.setInt(1, staff_id);
             ResultSet results = queryStaffUsernameById.executeQuery();
@@ -1310,11 +1310,11 @@ public class Datasource {
 
     private int insertPerson(Person person) {
         try {
-            ResultSet generatedKeys = insertPerson.getGeneratedKeys();
-            if (!generatedKeys.next())
+            int person_id = queryLastPersonId();
+            if (person_id == -1)
                 throw new SQLException("Couldn't get id for person!");
-            int id = generatedKeys.getInt(1);
-            insertPerson.setInt(1, id);
+            person_id++;
+            insertPerson.setInt(1, person_id);
             insertPerson.setString(2, person.getName());
             insertPerson.setString(3, person.getSurname());
             insertPerson.setString(4, person.getGender().name());
@@ -1323,16 +1323,16 @@ public class Datasource {
             if (affectedRows != 1) {
                 throw new SQLException("Couldn't insert person!");
             }
-            return id;
+            return person_id;
         } catch (SQLException e) {
             System.out.println("Insert person failed: " + e.getMessage());
             return -1;
         }
     }
 
-    private boolean insertContact(int id, Contact contact) {
+    private boolean insertContact(int staff_id, Contact contact) {
         try {
-            insertContact.setInt(1, id);
+            insertContact.setInt(1, staff_id);
 
             String phone = contact.getPhone();
             if (phone == null)
@@ -1362,20 +1362,20 @@ public class Datasource {
 
     private int insertStaff(int person_id, Staff staff) {
         try {
-            ResultSet generatedKeys = insertStaff.getGeneratedKeys();
-            if (!generatedKeys.next())
+            int staff_id = queryLastStaffId();
+            if (staff_id == -1)
                 throw new SQLException("Couldn't get id for staff!");
-            int id = generatedKeys.getInt(1);
-            insertStaff.setInt(1, id);
+            staff_id++;
+            insertStaff.setInt(1, staff_id);
             insertStaff.setString(2, staff.getUsername());
             insertStaff.setString(3, staff.getPassword());
-            insertStaff.setString(4, staff.getStatus().name());
+            insertStaff.setString(4, staff.getStatus().name().toLowerCase());
             insertStaff.setInt(5, person_id);
             int affectedRows = insertStaff.executeUpdate();
             if (affectedRows != 1) {
                 throw new SQLException("Couldn't insert staff!");
             }
-            return id;
+            return staff_id;
         } catch (SQLException e) {
             System.out.println("Insert staff failed: " + e.getMessage());
             return -1;
@@ -1438,13 +1438,15 @@ public class Datasource {
             insertContact.setString(4, complaint);
 
             LocalDateTime appointment = patient.getAppointment();
+            if (appointment == null)
+                appointment = LocalDateTime.now();
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
             String formattedDateTime = appointment.format(formatter);
             insertPatient.setString(5, formattedDateTime);
 
-            insertContact.setString(6, patient.getEmergencyState().name());
-            insertContact.setString(7, patient.getPriority().name());
-            insertContact.setString(8, patient.getBloodType().name());
+            insertPatient.setString(6, patient.getEmergencyState().name());
+            insertPatient.setString(7, patient.getPriority().name());
+            insertPatient.setString(8, patient.getBloodType().name());
 
             int affectedRows = insertPatient.executeUpdate();
             if (affectedRows != 1) {
@@ -1547,6 +1549,13 @@ public class Datasource {
         }
     }
 
+    /**
+     * required fields: medicine, MedicineType
+     * 
+     * @param medince pass the required fields mentioned above
+     * @param amount  quantity of the medicine
+     * @return message that shows the result of the operation.
+     */
     public String addNewMedicine(Medicine medicine, int amount) {
         try {
             conn.setAutoCommit(false);
@@ -1589,6 +1598,13 @@ public class Datasource {
         }
     }
 
+    /**
+     * required fields: patient_id, staff_id, given_date, expire_date,
+     * add at least one medicine to the receipt content
+     * 
+     * @param receipt pass the required fields mentioned above
+     * @return message that shows the result of the operation.
+     */
     public String addNewReceipt(Receipt receipt) {
         try {
             conn.setAutoCommit(false);
@@ -1600,6 +1616,8 @@ public class Datasource {
                 results.add(false);
 
             TreeMap<Medicine, Receipt.ReceiptItem> medicines = receipt.getContent();
+            if (medicines.size() == 0)
+                throw new SQLException("Receipt must have at least one medicine!");
             for (Map.Entry<Medicine, Receipt.ReceiptItem> entry : medicines.entrySet()) {
                 int medicine_id = entry.getKey().getId();
                 int quantity = entry.getValue().getAmount();
@@ -1624,6 +1642,126 @@ public class Datasource {
                 sb.append("Oh boy! Things are really bad! " + e2.getMessage());
                 sb.append("Adding new receipt failed: " + e2.getMessage());
             }
+            return sb.toString();
+        } finally {
+            try {
+                System.out.println("Resetting default commit behavior");
+                conn.setAutoCommit(true);
+            } catch (SQLException e) {
+                System.out.println("Couldn't reset auto-commit! " + e.getMessage());
+            }
+
+        }
+    }
+
+    /**
+     * required fields: name, surname, age, gender for person
+     * emergency_state, priority, blood_type for patient
+     * doctor_id, receipt_id, appointment, complaints optional
+     * 
+     * @param patient pass the required fields mentioned above
+     * @return message that shows the result of the operation.
+     */
+    public String addNewPatient(Patient patient) {
+        try {
+            conn.setAutoCommit(false);
+            ArrayList<Boolean> results = new ArrayList<>();
+            int patient_id = insertPerson(patient);
+            if (patient_id == -1)
+                results.add(false);
+            else
+                results.add(true);
+
+            Boolean result = insertPatient(patient_id, patient.getDoctorId(), patient.getReceiptId(), patient);
+            results.add(result);
+
+            if (results.contains(false)) {
+                throw new SQLException("Couldn't insert patient!");
+            }
+            conn.commit();
+            return "Patient added successfully!";
+            // if any error occurs, sql will rollback in the catch block
+        } catch (Exception e) {
+            StringBuilder sb = new StringBuilder();
+            sb.append("Adding new patient failed: " + e.getMessage() + "\n");
+            try {
+                sb.append("Performing rollback \n");
+                conn.rollback();
+                sb.append("Adding new patient failed: " + e.getMessage() + "\n");
+            } catch (SQLException e2) {
+                sb.append("Oh boy! Things are really bad! " + e2.getMessage() + "\n");
+                sb.append("Adding new patient failed: " + e2.getMessage() + "\n");
+            }
+            System.out.println(sb.toString());
+            return sb.toString();
+        } finally {
+            try {
+                System.out.println("Resetting default commit behavior");
+                conn.setAutoCommit(true);
+            } catch (SQLException e) {
+                System.out.println("Couldn't reset auto-commit! " + e.getMessage());
+            }
+
+        }
+    }
+
+    /**
+     * required fields: name, surname, age, gender for person
+     * username, password, status for staff
+     * phone, email, address for contact of the staff.
+     * 
+     * @param staff pass the required fields mentioned above
+     * @return message that shows the result of the operation.
+     */
+    public String addNewStaff(Staff staff) {
+        try {
+            conn.setAutoCommit(false);
+            ArrayList<Boolean> results = new ArrayList<>();
+            int person_id = insertPerson(staff);
+            if (person_id == -1)
+                results.add(false);
+            else
+                results.add(true);
+
+            int staff_id = insertStaff(person_id, staff);
+
+            Boolean result = insertContact(staff_id, staff.getContact());
+            results.add(result);
+
+            if (staff.getStatus() == Status.DOCTOR){
+                Doctor doctor = new Doctor();
+                if (staff instanceof Doctor)
+                    doctor = (Doctor) staff;
+                boolean doctorResult = insertDoctor(staff_id, doctor);
+                results.add(doctorResult);
+            }
+
+            if (staff.getStatus() == Status.NURSE){
+                Nurse nurse = new Nurse();
+                if (staff instanceof Nurse)
+                    nurse = (Nurse) staff;
+                boolean nurseResult = insertNurse(staff_id, nurse);
+                results.add(nurseResult);
+            }
+
+            if (results.contains(false)) {
+                throw new SQLException("Couldn't insert staff!");
+            }
+            conn.commit();
+            return "Staff added successfully!";
+            // if any error occurs, sql will rollback in the catch block
+        } catch (Exception e) {
+            StringBuilder sb = new StringBuilder();
+            sb.append("Adding new staff failed: " + e.getMessage() + "\n");
+            try {
+                sb.append("Performing rollback \n");
+                conn.rollback();
+                sb.append("Adding new staff failed: " + e.getMessage() + "\n");
+            } catch (SQLException e2) {
+                sb.append("Oh boy! Things are really bad! " + e2.getMessage() + "\n");
+                sb.append("Adding new staff failed: " + e2.getMessage() + "\n");
+            }
+            System.out.println(sb.toString());
             return sb.toString();
         } finally {
             try {
