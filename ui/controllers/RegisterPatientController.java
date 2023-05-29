@@ -31,7 +31,6 @@ public class RegisterPatientController {
     @FXML
     private DatePicker datePicker;
 
-
     public void updateFields(Patient patient) {
         complaintTextArea.setText(patient.getComplaint());
         complaintTextArea.setEditable(false);
