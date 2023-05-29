@@ -52,7 +52,7 @@ public class Medicine implements Comparable<Medicine> {
     
     @Override
     public String toString() {
-        return getId() + " " + getName() + " " + getType() + " ";
+        return getName();
     }
     
 }

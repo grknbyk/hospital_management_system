@@ -1,35 +1,43 @@
 package ui.controllers;
 
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
-import javafx.scene.control.Button;
-import javafx.scene.control.Dialog;
-import javafx.scene.control.Label;
-import javafx.scene.control.MenuItem;
-import javafx.scene.layout.GridPane;
-import javafx.stage.Modality;
-import model.*;
+import java.awt.Desktop;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.sql.Date;
+import java.time.LocalDate;
+import java.util.Optional;
+
 import database.Datasource;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.Hyperlink;
+import javafx.scene.control.Label;
+import javafx.scene.control.MenuButton;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.TableView;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
-
-import java.awt.*;
-import java.awt.datatransfer.Clipboard;
-import java.awt.datatransfer.StringSelection;
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.Optional;
+import model.Patient;
+import model.Receipt;
 
 public class DoctorController {
 
@@ -70,12 +78,11 @@ public class DoctorController {
     }
 
     public void loadPatients() {
-        //fill the table
+        // fill the table
         int staffId = Datasource.getInstance().queryStaffId(username);
         patients = FXCollections.observableArrayList(Datasource.getInstance().queryPatients(staffId));
         patientTableView.setItems(patients);
     }
-
 
     public void showHelpDialog() {
         // Create a new stage for the dialog
@@ -85,7 +92,8 @@ public class DoctorController {
 
         // Create a text area for additional instructions or information
         Label additionalInfoLabel = new Label();
-        additionalInfoLabel.setText("Contact us via our contact addresses for error reporting. \nCheck out our tutorial content on our website.");
+        additionalInfoLabel.setText(
+                "Contact us via our contact addresses for error reporting. \nCheck out our tutorial content on our website.");
 
         // Create labels and fields for email, phone, and website
         Label emailLabel = new Label("Email:");
@@ -134,7 +142,6 @@ public class DoctorController {
         dialogStage.show();
     }
 
-
     public void showAboutDialog() {
         // Create a new stage for the dialog
         Stage dialogStage = new Stage();
@@ -143,7 +150,8 @@ public class DoctorController {
 
         // Create a text area for additional instructions or information
         Label additionalInfoLabel = new Label();
-        additionalInfoLabel.setText("Who are we?\nWe are computer engineering students at Dokuz Eylül University. \nWe developed this project for our school's OOP class. You can contact us via the following e-mail addresses.");
+        additionalInfoLabel.setText(
+                "Who are we?\nWe are computer engineering students at Dokuz Eylül University. \nWe developed this project for our school's OOP class. You can contact us via the following e-mail addresses.");
 
         // Create labels and fields for email, phone, and website
         Label emailLabel = new Label("Abdulkadir Öksüz:");
@@ -212,7 +220,6 @@ public class DoctorController {
         dialogStage.show();
     }
 
-
     private void copyToClipboard(String text) {
         Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
         clipboard.setContents(new StringSelection(text), null);
@@ -228,7 +235,7 @@ public class DoctorController {
 
     public void showPrescribe() {
         Patient selectedPatient = patientTableView.getSelectionModel().getSelectedItem();
-        if(selectedPatient == null) {
+        if (selectedPatient == null) {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("No Patient Selected");
             alert.setHeaderText(null);
@@ -246,6 +253,15 @@ public class DoctorController {
             dialog.getDialogPane().setContent(fxmlLoader.load());
             PatientPrescribeController patientPrescribeController = fxmlLoader.getController();
             patientPrescribeController.updateFields(selectedPatient);
+            int patientId = selectedPatient.getId();
+            int doctorId = Datasource.getInstance().queryStaffId(username);
+            LocalDate currentDate = LocalDate.now();
+            Date sqlDate = Date.valueOf(currentDate);
+            LocalDate localDate = sqlDate.toLocalDate(); // Convert java.sql.Date to java.time.LocalDate
+            LocalDate newDate = localDate.plusWeeks(4); // Add 4 weeks to the date
+            Date newSqlDate = Date.valueOf(newDate);
+            Receipt receipt = new Receipt(0, patientId, doctorId, sqlDate, newSqlDate);
+            patientPrescribeController.setReceipt(receipt);
         } catch (IOException e) {
             System.out.println("Couldn't load the dialog");
             e.printStackTrace();
@@ -258,7 +274,7 @@ public class DoctorController {
 
     public void showPatientData() {
         Patient selectedPatient = patientTableView.getSelectionModel().getSelectedItem();
-        if(selectedPatient == null) {
+        if (selectedPatient == null) {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("No Patient Selected");
             alert.setHeaderText(null);
