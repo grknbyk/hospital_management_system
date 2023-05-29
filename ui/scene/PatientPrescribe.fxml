@@ -4,40 +4,47 @@
 <?import javafx.scene.layout.*?>
 
 <?import javafx.scene.control.cell.PropertyValueFactory?>
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.controllers.PatientPrescribeController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0"
+            prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="ui.controllers.PatientPrescribeController">
     <top>
         <AnchorPane prefHeight="140.0" prefWidth="600.0" BorderPane.alignment="CENTER">
             <children>
-                <TextArea fx:id="nameTextArea" editable="false" layoutX="10.0" layoutY="30.0" prefHeight="15.0" prefWidth="570.0" />
-                <Label layoutX="10.0" layoutY="10.0" prefWidth="400.0" text="Name" />
-                <TextArea fx:id="complaintTextArea" editable="false" layoutX="10.0" layoutY="95.0" prefHeight="15.0" prefWidth="570.0" />
-                <Label layoutX="10.0" layoutY="78.0" prefWidth="400.0" text="Complaint" />
+                <TextArea fx:id="nameTextArea" editable="false" layoutX="10.0" layoutY="30.0" prefHeight="15.0"
+                          prefWidth="570.0"/>
+                <Label layoutX="10.0" layoutY="10.0" prefWidth="400.0" text="Name"/>
+                <TextArea fx:id="complaintTextArea" editable="false" layoutX="10.0" layoutY="95.0" prefHeight="15.0"
+                          prefWidth="570.0"/>
+                <Label layoutX="10.0" layoutY="78.0" prefWidth="400.0" text="Complaint"/>
             </children>
         </AnchorPane>
     </top>
     <center>
-        <TableView fx:id="tableView" prefHeight="200.0" prefWidth="300.0">
-            <columns>
-                <TableColumn fx:id="medicineColumn" prefWidth="150.0" text="Medicine Name">
-                    <cellValueFactory>
-                        <PropertyValueFactory property="name" />
-                    </cellValueFactory>
-                </TableColumn>
-                <TableColumn fx:id="amountColumn" prefWidth="150.0" text="Amount">
-                    <cellValueFactory>
-                        <PropertyValueFactory property="amount" />
-                    </cellValueFactory>
-                </TableColumn>
-            </columns>
-        </TableView>
+        <HBox spacing="10.0" alignment="CENTER">
+            <TableView fx:id="tableView" prefHeight="200.0" prefWidth="300.0">
+                <columns>
+                    <TableColumn fx:id="medicineColumn" prefWidth="150.0" text="Medicine Name">
+                        <cellValueFactory>
+                            <PropertyValueFactory property="name"/>
+                        </cellValueFactory>
+                    </TableColumn>
+                    <TableColumn fx:id="amountColumn" prefWidth="150.0" text="Amount">
+                        <cellValueFactory>
+                            <PropertyValueFactory property="amount"/>
+                        </cellValueFactory>
+                    </TableColumn>
+                </columns>
+            </TableView>
 
-        <AnchorPane layoutX="0.0" layoutY="200.0" prefHeight="100.0" prefWidth="300.0" style="-fx-background-color: lightgray;">
-            <children>
-                <TextField fx:id="medicineNameField" layoutX="10.0" layoutY="20.0" promptText="Medicine Name"/>
-                <Spinner fx:id="amountSpinner" layoutX="10.0" layoutY="50.0" promptText="Amount"/>
+            <AnchorPane layoutY="200.0" prefHeight="100.0" prefWidth="300.0">
+                <children>
+                    <TextField fx:id="medicineNameField" layoutY="10.0" promptText="Medicine Name"/>
+                    <Spinner fx:id="amountSpinner" layoutX="150.0" layoutY="10.0" promptText="Amount"/>
 
-                <Button layoutX="220.0" layoutY="20.0" mnemonicParsing="false" onAction="#addButtonClicked" text="Add"/>
-            </children>
-        </AnchorPane>
+                    <Button layoutY="40.0" mnemonicParsing="false" onAction="#addButtonClicked"
+                            text="Add"/>
+                </children>
+            </AnchorPane>
+        </HBox>
     </center>
 </BorderPane>
