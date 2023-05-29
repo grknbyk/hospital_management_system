@@ -41,6 +41,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import model.MedicineSupply;
 import model.Receipt;
+import model.Staff;
 
 
 public class PharmacistController {
@@ -61,8 +62,18 @@ public class PharmacistController {
     private MenuItem logoutMenuItem;
 
     @FXML
+    private TabPane pharmacistTabPane;
+
+    @FXML
+    private Tab stockTab;
+
+    @FXML
+    private Tab receiptsTab;
+
+    @FXML
     private TableView<MedicineSupply.SupplyItem> medicineTableView;
     private ObservableList<MedicineSupply.SupplyItem> medicine;
+
     @FXML
     private TableView<Receipt> receiptsTableView;
     private ObservableList<Receipt> receipts;
@@ -302,39 +313,188 @@ public class PharmacistController {
 
         Optional<ButtonType> result = dialog.showAndWait();
         if(result.isPresent() && result.get() == applyButton) {
-            applyButtonFunction(addMedicineController);
+            applyButtonFunctionAdd(addMedicineController);
         }else if(result.isPresent() && result.get() == cancelButton){
             dialog.close();
         }
     }
 
+    public void supplyMedicine() {
+        Tab selectedTab = pharmacistTabPane.getSelectionModel().getSelectedItem();
+        if (selectedTab != null) {
+            if (selectedTab.equals(stockTab)) {
 
-    private void errorDialog(){
+                MedicineSupply.SupplyItem selectedItem = medicineTableView.getSelectionModel().getSelectedItem();
+                if(selectedItem == null) {
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("No Item Selected");
+                    alert.setHeaderText(null);
+                    alert.setContentText("Select an item");
+                    alert.showAndWait();
+                    return;
+                }
+                SupplyMedicineController supplyMedicineController;
+
+                Dialog<ButtonType> dialog = new Dialog<>();
+                dialog.initOwner(pharmacistPanel.getScene().getWindow());
+                dialog.setTitle("Supply Medicine");
+                FXMLLoader fxmlLoader = new FXMLLoader();
+                fxmlLoader.setLocation(getClass().getResource("../scene/SupplyMedicine.fxml"));
+                try {
+                    dialog.getDialogPane().setContent(fxmlLoader.load());
+                    supplyMedicineController = fxmlLoader.getController();
+                    supplyMedicineController.updateFields(selectedItem);
+                } catch (IOException e) {
+                    System.out.println("Couldn't load the dialog");
+                    e.printStackTrace();
+                    return;
+                }
+                dialog.getDialogPane().getScene().getWindow().setOnCloseRequest(e -> {
+                    dialog.close();
+                });
+
+                ButtonType applyButton = new ButtonType("Apply");
+                ButtonType cancelButton = new ButtonType("Cancel");
+
+                dialog.getDialogPane().getButtonTypes().addAll(applyButton, cancelButton);
+
+                Optional<ButtonType> result = dialog.showAndWait();
+                if(result.isPresent() && result.get() == applyButton) {
+                    applyButtonFunctionSupply(selectedItem, supplyMedicineController);
+                }else if(result.isPresent() && result.get() == cancelButton){
+                    dialog.close();
+                }
+
+            }
+        }
+    }
+
+    private void errorDialogAdd(){
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Error");
         alert.setHeaderText("An error occured");
-        alert.setContentText("Enter medicine name and type");
+        alert.setContentText("Enter an amount");
         alert.showAndWait();
     }
 
-    private void applyButtonFunction(AddMedicineController addMedicineController){
+    private void errorDialogSupply(){
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error");
+        alert.setHeaderText("An error occured while giving an order.");
+        alert.setContentText("You can find our email in help button. \nPlease report us");
+        alert.showAndWait();
+    }
+
+    private void applyButtonFunctionAdd(AddMedicineController addMedicineController){
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Confirmation");
         alert.setHeaderText("Confirmation Dialog");
-        alert.setContentText("Are you sure you want add?");
+        alert.setContentText("Are you sure you want add selected amount?");
 
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
             if (!addMedicineController.addMedicine()){
-                errorDialog();
+                errorDialogAdd();
                 addMedicine();
             }
         } else if (result.isPresent() && result.get() == ButtonType.CANCEL) {
             addMedicine();
         }
-
         loadMedicine();
     }
+
+    private void applyButtonFunctionSupply(MedicineSupply.SupplyItem selectedItem, SupplyMedicineController supplyMedicineController){
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Confirmation");
+        alert.setHeaderText("Confirmation Dialog");
+        alert.setContentText("Are you sure you want add selected amount?");
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            if (!supplyMedicineController.increaseAmount(MedicineSupply.getInstance(), selectedItem)){
+                errorDialogSupply();
+                supplyMedicine();
+            }
+        } else if (result.isPresent() && result.get() == ButtonType.CANCEL) {
+            supplyMedicine();
+        }
+    }
+
+    public void reduceMedicine() {
+        Tab selectedTab = pharmacistTabPane.getSelectionModel().getSelectedItem();
+        if (selectedTab != null) {
+            if (selectedTab.equals(stockTab)) {
+
+                MedicineSupply.SupplyItem selectedItem = medicineTableView.getSelectionModel().getSelectedItem();
+                if(selectedItem == null) {
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("No Item Selected");
+                    alert.setHeaderText(null);
+                    alert.setContentText("Select an item");
+                    alert.showAndWait();
+                    return;
+                }
+                ReduceMedicineController reduceMedicineController;
+
+                Dialog<ButtonType> dialog = new Dialog<>();
+                dialog.initOwner(pharmacistPanel.getScene().getWindow());
+                dialog.setTitle("Reduce Medicine");
+                FXMLLoader fxmlLoader = new FXMLLoader();
+                fxmlLoader.setLocation(getClass().getResource("../scene/ReduceMedicine.fxml"));
+                try {
+                    dialog.getDialogPane().setContent(fxmlLoader.load());
+                    reduceMedicineController = fxmlLoader.getController();
+                    reduceMedicineController.updateFields(selectedItem);
+                } catch (IOException e) {
+                    System.out.println("Couldn't load the dialog");
+                    e.printStackTrace();
+                    return;
+                }
+                dialog.getDialogPane().getScene().getWindow().setOnCloseRequest(e -> {
+                    dialog.close();
+                });
+
+                ButtonType applyButton = new ButtonType("Apply");
+                ButtonType cancelButton = new ButtonType("Cancel");
+
+                dialog.getDialogPane().getButtonTypes().addAll(applyButton, cancelButton);
+
+                Optional<ButtonType> result = dialog.showAndWait();
+                if(result.isPresent() && result.get() == applyButton) {
+                    applyButtonFunctionReduce(selectedItem, reduceMedicineController);
+                }else if(result.isPresent() && result.get() == cancelButton){
+                    dialog.close();
+                }
+
+            }
+        }
+    }
+
+    private void errorDialogReduce(){
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error");
+        alert.setHeaderText("An error occurred during reduction.");
+        alert.setContentText("You can find our email in help button. \nPlease report us");
+        alert.showAndWait();
+    }
+
+    private void applyButtonFunctionReduce(MedicineSupply.SupplyItem selectedItem, ReduceMedicineController reduceMedicineController){
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Confirmation");
+        alert.setHeaderText("Confirmation Dialog");
+        alert.setContentText("Are you sure you want reduce selected amount?");
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            if (!reduceMedicineController.decreaseAmount(MedicineSupply.getInstance(), selectedItem)){
+                errorDialogReduce();
+                reduceMedicine();
+            }
+        } else if (result.isPresent() && result.get() == ButtonType.CANCEL) {
+            reduceMedicine();
+        }
+    }
+
 
     private void copyToClipboard(String text) {
         Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
