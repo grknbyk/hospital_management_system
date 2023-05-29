@@ -281,6 +281,15 @@ public class PharmacistController {
         }
     }
 
+
+    private void errorDialog(){
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error");
+        alert.setHeaderText("An error occured");
+        alert.setContentText("Enter medicine name and type");
+        alert.showAndWait();
+    }
+
     private void applyButtonFunction(AddMedicineController addMedicineController){
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Confirmation");
@@ -290,7 +299,7 @@ public class PharmacistController {
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
             if (!addMedicineController.addMedicine()){
-                //enters if selected personnel is not updated
+                errorDialog();
                 addMedicine();
             }
         } else if (result.isPresent() && result.get() == ButtonType.CANCEL) {
