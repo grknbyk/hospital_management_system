@@ -19,7 +19,7 @@
                     <menus>
                         <Menu mnemonicParsing="false" text="Patient">
                             <MenuItem mnemonicParsing="false" onAction="#registerPatient" text="Register" />
-                            <MenuItem mnemonicParsing="false" text="Deny" />
+                            <MenuItem mnemonicParsing="false" onAction="#denyPatient" text="Deny" />
                         </Menu>
                         <Menu mnemonicParsing="false" text="Dial">
                             <items>
@@ -28,7 +28,10 @@
                                 <MenuItem mnemonicParsing="false" text="Emergency" />
                             </items>
                         </Menu>
-                        <Menu mnemonicParsing="false" text="Help" />
+                        <Menu mnemonicParsing="false" text="Help">
+                     <items>
+                        <MenuItem mnemonicParsing="false" onAction="#showHelpDialog" text="Help" />
+                     </items></Menu>
                         <Menu mnemonicParsing="false" text="About">
                             <items>
                                 <MenuItem mnemonicParsing="false" onAction="#showAboutDialog" text="About" />
