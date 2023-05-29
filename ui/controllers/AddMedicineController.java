@@ -24,6 +24,9 @@ public class AddMedicineController {
     }
 
     public boolean addMedicine() {
+        if(typeChoiceBox.getValue() == null || medicineNameTextField.getText().equalsIgnoreCase("") )
+            return false;
+
         try {
             Datasource.getInstance().addNewMedicine(new Medicine(this.medicineNameTextField.getText(),typeChoiceBox.getValue()),Integer.parseInt(amountTextField.getText()));
             return true;
