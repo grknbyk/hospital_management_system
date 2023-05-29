@@ -25,6 +25,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Optional;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 import database.Datasource;
@@ -39,6 +40,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
+import model.Medicine;
 import model.MedicineSupply;
 import model.Receipt;
 import model.Staff;
@@ -81,6 +83,7 @@ public class PharmacistController {
     @FXML
     private MenuButton options;
 
+    private TreeMap<Medicine, MedicineSupply.SupplyItem> medicinesTreeMap;
 
     public void initialize() {
 
@@ -94,11 +97,13 @@ public class PharmacistController {
     public void loadMedicine() {
         //fill the table
         Datasource.getInstance().updateMedicineSupply(MedicineSupply.getInstance());
+        medicinesTreeMap = MedicineSupply.getInstance().getInventory();
         medicine = FXCollections.observableList(Arrays.stream(MedicineSupply.getInstance().toList().toArray()).map(obj -> (MedicineSupply.SupplyItem) obj).collect(Collectors.toList()));
         medicineTableView.setItems(medicine);
     }
 
     public void loadReceipts() {
+
         ArrayList<Receipt> arr = Datasource.getInstance().queryReceipts();
         receipts = FXCollections.observableList(arr);
         receiptsTableView.setItems(receipts);
@@ -118,7 +123,80 @@ public class PharmacistController {
     }
 
     public void dispenseMedicine() {
+        Tab selectedTab = pharmacistTabPane.getSelectionModel().getSelectedItem();
+        if (selectedTab != null) {
+            if (selectedTab.equals(receiptsTab)) {
 
+                Receipt selectedReceipt = receiptsTableView.getSelectionModel().getSelectedItem();
+                if(selectedReceipt == null) {
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("No Receipt Selected");
+                    alert.setHeaderText(null);
+                    alert.setContentText("Select a Receipt");
+                    alert.showAndWait();
+                    return;
+                }
+                DispenseMedicineController dispenseMedicineController;
+
+                Dialog<ButtonType> dialog = new Dialog<>();
+                dialog.initOwner(pharmacistPanel.getScene().getWindow());
+                dialog.setTitle("Dispense Medicine");
+                FXMLLoader fxmlLoader = new FXMLLoader();
+                fxmlLoader.setLocation(getClass().getResource("../scene/DispenseMedicine.fxml"));
+                try {
+                    dialog.getDialogPane().setContent(fxmlLoader.load());
+                    dispenseMedicineController = fxmlLoader.getController();
+                    dispenseMedicineController.updateFields(selectedReceipt,medicinesTreeMap);
+                } catch (IOException e) {
+                    System.out.println("Couldn't load the dialog");
+                    e.printStackTrace();
+                    return;
+                }
+                dialog.getDialogPane().getScene().getWindow().setOnCloseRequest(e -> {
+                    dialog.close();
+                });
+
+                ButtonType applyButton = new ButtonType("Apply");
+                ButtonType cancelButton = new ButtonType("Cancel");
+
+                dialog.getDialogPane().getButtonTypes().addAll(applyButton, cancelButton);
+
+                Optional<ButtonType> result = dialog.showAndWait();
+                if(result.isPresent() && result.get() == applyButton) {
+                    applyButtonFunctionDispense(selectedReceipt, dispenseMedicineController);
+                }else if(result.isPresent() && result.get() == cancelButton){
+                    dialog.close();
+                }
+
+            }
+        }
+    }
+
+    private void applyButtonFunctionDispense(Receipt selectedReceipt, DispenseMedicineController dispenseMedicineController){
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Confirmation");
+        alert.setHeaderText("Confirmation Dialog");
+        alert.setContentText("Are you sure you want to dispense?");
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+
+            if (!dispenseMedicineController.dispenseReceipt(selectedReceipt)){
+                errorDialogDispense();
+                dispenseMedicine();
+            }
+        } else if (result.isPresent() && result.get() == ButtonType.CANCEL) {
+            dispenseMedicine();
+        }
+        loadMedicine();
+    }
+
+    private void errorDialogDispense(){
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error");
+        alert.setHeaderText("An error occurred");
+        alert.setContentText("Check stocks or select medicine please.");
+        alert.showAndWait();
     }
 
     public void showReceiptDetails() {

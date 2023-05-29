@@ -24,6 +24,10 @@ public class MedicineSupply {
         return inventory.get(medicine).getStock();
     }
 
+    public TreeMap<Medicine, SupplyItem> getInventory() {
+        return inventory;
+    }
+
     public boolean checkStock(Medicine medicine) {
         return inventory.get(medicine).getStock() == 0;
     }
