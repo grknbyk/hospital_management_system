@@ -4,6 +4,7 @@ import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import model.MedicineSupply;
 
@@ -14,6 +15,9 @@ public class App extends Application {
 
         FXMLLoader loader = new FXMLLoader(getClass().getResource("ui/scene/LoginScene.fxml"));
         Parent root = loader.load();
+
+        Image icon = new Image(getClass().getResourceAsStream("ui/imgs/main-icon.png"));
+        primaryStage.getIcons().add(icon);
 
         primaryStage.setTitle("Hospital Management System");
         primaryStage.setScene(new Scene(root, 600, 400));
