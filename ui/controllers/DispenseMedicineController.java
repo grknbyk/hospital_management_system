@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.TreeMap;
 
 public class DispenseMedicineController {
-    private DispenseElement selectedItem;
 
     @FXML
     private BorderPane dispenseMedicineBorderPane;
@@ -40,25 +39,14 @@ public class DispenseMedicineController {
         dispenseTableView.setItems(dispenseElementObservableList);
     }
 
-    public boolean dispenseReceipt(Receipt selectedReceipt) {
+    public void dispenseReceipt(Receipt selectedReceipt) {
 
-        this.selectedItem = dispenseTableView.getSelectionModel().getSelectedItem();
-        if(selectedItem == null) {
-            return false;
+        ArrayList<DispenseElement> dispenseElements =new ArrayList<>(dispenseTableView.getItems());
+        for (DispenseElement element : dispenseElements) {
+            if (element.demand <= element.inStock) {
+                MedicineSupply.getInstance().consumeStock(element.medicine, element.demand);
+            }
         }
-        if(selectedItem.demand <= selectedItem.inStock){
-            MedicineSupply.getInstance().consumeStock(selectedItem.medicine,selectedItem.demand);
-            return true;
-        }
-        return false;
-    }
-
-    public DispenseElement getSelectedItem() {
-        return selectedItem;
-    }
-
-    public void setSelectedItem(DispenseElement selectedItem) {
-        this.selectedItem = selectedItem;
     }
 
     public class DispenseElement {
