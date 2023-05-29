@@ -744,6 +744,7 @@ public class Datasource {
                     LocalDateTime dateTime = LocalDateTime.parse(dateString, formatter);
                     patient.setAppointment(dateTime);
                 }
+                patient.setDoctorId(-1);
                 patient.setBloodType(BloodType.valueOf(results.getString(COLUMN_PATIENT_BLOOD_TYPE)));
                 patient.setEmergencyState(EmergencyState.valueOf(results.getString(COLUMN_PATIENT_EMERGENCY_STATE)));
                 patient.setPriority(Priority.valueOf(results.getString(COLUMN_PATIENT_PRIORITY)));
