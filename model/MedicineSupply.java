@@ -34,7 +34,7 @@ public class MedicineSupply {
 
     public void supplyStock(Medicine medicine, int amount) {
         SupplyItem oldStock = inventory.getOrDefault(medicine, null);
-        if(oldStock == null)
+        if (oldStock == null)
             oldStock = new SupplyItem(medicine, 0);
         oldStock.stock += amount;
 
@@ -43,7 +43,7 @@ public class MedicineSupply {
 
     public void setStock(Medicine medicine, int amount) {
         SupplyItem oldStock = inventory.getOrDefault(medicine, null);
-        if(oldStock == null)
+        if (oldStock == null)
             oldStock = new SupplyItem(medicine, 0);
         oldStock.stock = amount;
 
@@ -75,8 +75,8 @@ public class MedicineSupply {
     }
 
     public static class SupplyItem {
-        Medicine med;
-        int stock;
+        private Medicine med;
+        private int stock;
 
         public SupplyItem(Medicine med, int stock) {
             this.med = med;
@@ -97,6 +97,10 @@ public class MedicineSupply {
 
         public int getStock() {
             return stock;
+        }
+
+        public Medicine getMedicine() {
+            return med;
         }
     }
 }

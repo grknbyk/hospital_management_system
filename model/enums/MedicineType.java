@@ -1,5 +1,7 @@
 package model.enums;
 
+import java.util.Locale;
+
 public enum MedicineType {
     //https://www.gosh.nhs.uk/conditions-and-treatments/medicines-information/types-medicines/
     LIQUID,
@@ -15,6 +17,6 @@ public enum MedicineType {
 
     public String toString() {
         String n = name();
-        return n.substring(0, 1).toUpperCase() + n.substring(1).toLowerCase();
+        return n.substring(0, 1).toUpperCase(Locale.ROOT) + n.substring(1).toLowerCase(Locale.ROOT);
     }
 }
