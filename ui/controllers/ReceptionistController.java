@@ -164,7 +164,6 @@ public class ReceptionistController {
         window.show();
     }
 
-
     public void showHelpDialog() {
         // Create a new stage for the dialog
         Stage dialogStage = new Stage();
@@ -221,7 +220,6 @@ public class ReceptionistController {
         dialogStage.setScene(dialogScene);
         dialogStage.show();
     }
-
 
     public void showAboutDialog() {
         // Create a new stage for the dialog

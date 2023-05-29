@@ -21,8 +21,8 @@
               <menus>
                 <Menu mnemonicParsing="false" text="Personnel">
                   <items>
-                    <MenuItem mnemonicParsing="false" text="Add" />
-                        <MenuItem mnemonicParsing="false" text="Edit" />
+                    <MenuItem mnemonicParsing="false" onAction="#addPersonnel" text="Add" />
+                        <MenuItem mnemonicParsing="false" onAction="#editPersonnel" text="Edit" />
                         <MenuItem mnemonicParsing="false" text="Delete" />
                   </items>
                 </Menu>
@@ -58,9 +58,9 @@
       </FlowPane>
    </top>
    <center>
-      <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
+      <TabPane fx:id="managerTabPane" prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
         <tabs>
-          <Tab text="Doctors">
+          <Tab fx:id="doctorTab" text="Doctors">
                <content>
                   <TableView fx:id="doctorTableView" prefHeight="200.0" prefWidth="200.0">
                       <columnResizePolicy>
@@ -114,7 +114,7 @@
                   </TableView>
                </content>
           </Tab>
-            <Tab text="Nurses">
+            <Tab fx:id="nurseTab" text="Nurses">
                <content>
                   <TableView fx:id="nurseTableView" prefHeight="200.0" prefWidth="200.0">
                      <columnResizePolicy>
@@ -165,7 +165,7 @@
                   </TableView>
                </content>
             </Tab>
-            <Tab text="Pharmacists">
+            <Tab fx:id="pharmacistTab" text="Pharmacists">
                <content>
                   <TableView fx:id="pharmacistTableView" prefHeight="200.0" prefWidth="200.0">
                      <columnResizePolicy>
@@ -211,7 +211,7 @@
                   </TableView>
                </content>
             </Tab>
-            <Tab text="Receptionists">
+            <Tab fx:id="receptionistTab" text="Receptionists">
                <content>
                   <TableView fx:id="receptionistTableView" prefHeight="200.0" prefWidth="200.0">
                      <columnResizePolicy>
