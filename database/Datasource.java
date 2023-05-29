@@ -352,6 +352,8 @@ public class Datasource {
     private static final String QUERY_PERSON_BY_ID = "SELECT * FROM " + TABLE_PERSON +
             " WHERE " + COLUMN_PERSON_ID + " = ?";
 
+    private static final String QUERY_MEDICINE2 = "SELECT * FROM " + TABLE_MEDICINE;
+
     private Connection conn;
 
     private ArrayList<PreparedStatement> preparedStatements;
@@ -847,6 +849,27 @@ public class Datasource {
                 nurses.add(nurse);
             }
             return nurses;
+        } catch (SQLException e) {
+            System.out.println("Query failed: " + e.getMessage());
+            return null;
+        }
+    }
+
+        /**
+     * @return ArrayList of Medicine objects for information of all medicines.
+     */
+    public ArrayList<Medicine> queryMedicine() {
+        try (Statement statement = conn.createStatement()) {
+            ResultSet results = statement.executeQuery(QUERY_MEDICINE2);
+            ArrayList<Medicine> medicines = new ArrayList<>();
+            while (results.next()) {
+                Medicine medicine = new Medicine();
+                medicine.setId(results.getInt(COLUMN_MEDICINE_ID));
+                medicine.setName(results.getString(COLUMN_MEDICINE_NAME));
+                medicine.setType(MedicineType.valueOf(results.getString(COLUMN_MEDICINE_TYPE)));
+                medicines.add(medicine);
+            }
+            return medicines;
         } catch (SQLException e) {
             System.out.println("Query failed: " + e.getMessage());
             return null;
