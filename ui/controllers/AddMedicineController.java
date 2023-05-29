@@ -4,6 +4,7 @@ import database.Datasource;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import model.Medicine;
+import model.MedicineSupply;
 import model.enums.MedicineType;
 import model.enums.Status;
 
@@ -40,6 +41,7 @@ public class AddMedicineController {
             }
 
             Datasource.getInstance().addNewMedicine(med, amount);
+            MedicineSupply.getInstance().setStock(med, amount);
             return true;
         } catch (Exception e) {
             System.out.println("An error occured while adding medicine");

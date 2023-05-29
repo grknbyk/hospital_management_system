@@ -1,48 +1,59 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Spinner?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.cell.PropertyValueFactory?>
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0"
-            prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="ui.controllers.PatientPrescribeController">
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.controllers.PatientPrescribeController">
     <top>
         <AnchorPane prefHeight="140.0" prefWidth="600.0" BorderPane.alignment="CENTER">
             <children>
-                <TextArea fx:id="nameTextArea" editable="false" layoutX="10.0" layoutY="30.0" prefHeight="15.0"
-                          prefWidth="570.0"/>
-                <Label layoutX="10.0" layoutY="10.0" prefWidth="400.0" text="Name"/>
-                <TextArea fx:id="complaintTextArea" editable="false" layoutX="10.0" layoutY="95.0" prefHeight="15.0"
-                          prefWidth="570.0"/>
-                <Label layoutX="10.0" layoutY="78.0" prefWidth="400.0" text="Complaint"/>
+                <TextArea fx:id="nameTextArea" editable="false" layoutX="10.0" layoutY="30.0" prefHeight="15.0" prefWidth="570.0" />
+                <Label layoutX="10.0" layoutY="10.0" prefWidth="400.0" text="Name" />
+                <TextArea fx:id="complaintTextArea" editable="false" layoutX="10.0" layoutY="95.0" prefHeight="15.0" prefWidth="570.0" />
+                <Label layoutX="10.0" layoutY="78.0" prefWidth="400.0" text="Complaint" />
             </children>
         </AnchorPane>
     </top>
     <center>
-        <HBox spacing="10.0" alignment="CENTER">
-            <TableView fx:id="tableView" prefHeight="200.0" prefWidth="300.0">
-                <columns>
-                    <TableColumn fx:id="medicineColumn" prefWidth="150.0" text="Medicine Name">
-                        <cellValueFactory>
-                            <PropertyValueFactory property="name"/>
-                        </cellValueFactory>
-                    </TableColumn>
-                    <TableColumn fx:id="amountColumn" prefWidth="150.0" text="Amount">
-                        <cellValueFactory>
-                            <PropertyValueFactory property="amount"/>
-                        </cellValueFactory>
-                    </TableColumn>
-                </columns>
-            </TableView>
+        <HBox alignment="CENTER" spacing="10.0">
 
-            <AnchorPane layoutY="200.0" prefHeight="100.0" prefWidth="300.0">
+            <AnchorPane layoutY="200.0" prefHeight="260.0" prefWidth="217.0">
                 <children>
-                    <TextField fx:id="medicineNameField" layoutY="10.0" promptText="Medicine Name"/>
-                    <Spinner fx:id="amountSpinner" layoutX="150.0" layoutY="10.0" promptText="Amount"/>
-
-                    <Button layoutY="40.0" mnemonicParsing="false" onAction="#addButtonClicked"
-                            text="Add"/>
+                  <TableView fx:id="tableView" layoutX="-9.0" layoutY="47.0" prefHeight="167.0" prefWidth="567.0">
+                      <columns>
+                          <TableColumn fx:id="medicineColumn" prefWidth="182.0" resizable="false" text="Medicine Name">
+                              <cellValueFactory>
+                                  <PropertyValueFactory property="name" />
+                              </cellValueFactory>
+                          </TableColumn>
+                          <TableColumn fx:id="typeColumn" prefWidth="169.0" text="Type">
+                              <cellValueFactory>
+                                  <PropertyValueFactory property="type" />
+                              </cellValueFactory>
+                          </TableColumn>
+                     <TableColumn fx:id="amountColumn" prefWidth="215.0" text="Amount">
+                        <cellValueFactory>
+                           <PropertyValueFactory property="amount" />
+                        </cellValueFactory>
+                     </TableColumn>
+                      </columns>
+                  </TableView>
+                    <Spinner fx:id="amountSpinner" layoutX="349.0" layoutY="12.0" prefHeight="25.0" prefWidth="90.0" promptText="Amount" />
+      
+                    <Button layoutX="445.0" layoutY="12.0" mnemonicParsing="false" onAction="#addButtonClicked" text="Add" />
+               <ComboBox fx:id="medTypeComboBox" layoutX="-9.0" layoutY="12.0" prefHeight="25.0" prefWidth="177.0" promptText="Medicine Type" />
+               <Button layoutX="499.0" layoutY="12.0" mnemonicParsing="false" onAction="#removeButtonClicked" text="Remove" />
+               <Button layoutX="249.0" layoutY="221.0" mnemonicParsing="false" onAction="#prescribeButton" text="Prescribe" />
+               <ComboBox fx:id="medNameComboBox" layoutX="179.0" layoutY="12.0" prefHeight="25.0" prefWidth="164.0" promptText="Medicine Name" />
                 </children>
             </AnchorPane>
         </HBox>
