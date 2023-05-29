@@ -348,6 +348,9 @@ public class Datasource {
             " ON " + TABLE_RECEIPT_MEDICINE + "." + COLUMN_RECEIPT_MEDICINE_MEDICINE_ID + " = " +
             TABLE_MEDICINE + "." + COLUMN_MEDICINE_ID +
             " WHERE " + TABLE_RECEIPT_MEDICINE + "." + COLUMN_RECEIPT_MEDICINE_RECEIPT_ID + " = ?";
+    
+    private static final String QUERY_PERSON_BY_ID = "SELECT * FROM " + TABLE_PERSON +
+            " WHERE " + COLUMN_PERSON_ID + " = ?";
 
     private Connection conn;
 
@@ -358,6 +361,7 @@ public class Datasource {
     private PreparedStatement queryStaffIdByUsername;
     private PreparedStatement queryPatientsByStaffId;
     private PreparedStatement queryMedicine;
+    private PreparedStatement queryPersonById;
     private PreparedStatement queryMedicineByReceiptId;
     private PreparedStatement queryStaffById;
     private PreparedStatement queryDoctorExpretiseByStaffId;
@@ -409,6 +413,8 @@ public class Datasource {
             preparedStatements.add(queryLogin);
             queryStaffByUsername = conn.prepareStatement(QUERY_STAFF_BY_USERNAME);
             preparedStatements.add(queryStaffByUsername);
+            queryPersonById = conn.prepareStatement(QUERY_PERSON_BY_ID);
+            preparedStatements.add(queryPersonById);
             queryMedicineByReceiptId = conn.prepareStatement(QUERY_MEDICINE_BY_RECEIPT_ID);
             preparedStatements.add(queryMedicineByReceiptId);
             queryStaffUsernameById = conn.prepareStatement(QUERY_STAFF_USERNAME_BY_ID);
@@ -593,6 +599,26 @@ public class Datasource {
         }
     }
 
+    private Person queryPersonbyId(int person_id){
+        try {
+            queryPersonById.setInt(1, person_id);
+            ResultSet results = queryPersonById.executeQuery();
+            return new Person() {
+                {
+                    setId(person_id);
+                    setName(results.getString(COLUMN_PERSON_NAME));
+                    setSurname(results.getString(COLUMN_PERSON_SURNAME));
+                    setAge(results.getInt(COLUMN_PERSON_AGE));
+                    setGender(Gender.valueOf(results.getString(COLUMN_PERSON_GENDER)));
+                }
+            };
+
+        } catch (SQLException e) {
+            System.out.println("Query failed: " + e.getMessage());
+            return null;
+        }
+    }
+
     private String getWorkingAreaByStaffId(int id) {
         try {
             queryNurseWorkingAreaByStaffId.setInt(1, id);
@@ -733,17 +759,22 @@ public class Datasource {
             ResultSet results = statement.executeQuery(QUERY_PATIENTS_NULL_STAFF);
             ArrayList<Patient> patients = new ArrayList<>();
             while(results.next()){
+                Person person = queryPersonbyId(results.getInt(COLUMN_PATIENT_PERSON_ID));
                 Patient patient = new Patient();
                 patient.setId(results.getInt(COLUMN_PATIENT_PERSON_ID));
                 patient.setReceiptId(results.getInt(COLUMN_PATIENT_RECEIPT_ID));
                 patient.setComplaint(results.getString(COLUMN_PATIENT_COMPLAINT));
-
                 String dateString = results.getString(COLUMN_PATIENT_APPOINTMENT);
                 if (dateString != null) {
                     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
                     LocalDateTime dateTime = LocalDateTime.parse(dateString, formatter);
                     patient.setAppointment(dateTime);
                 }
+                patient.setId(person.getId());
+                patient.setName(person.getName());
+                patient.setSurname(person.getSurname());
+                patient.setAge(person.getAge());
+                patient.setGender(person.getGender());
                 patient.setDoctorId(-1);
                 patient.setBloodType(BloodType.valueOf(results.getString(COLUMN_PATIENT_BLOOD_TYPE)));
                 patient.setEmergencyState(EmergencyState.valueOf(results.getString(COLUMN_PATIENT_EMERGENCY_STATE)));
