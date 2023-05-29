@@ -18,7 +18,7 @@
                 <MenuBar prefWidth="1230.0">
                     <menus>
                         <Menu mnemonicParsing="false" text="Patient">
-                            <MenuItem mnemonicParsing="false" text="Data" />
+                            <MenuItem mnemonicParsing="false" text="Data" onAction="#showPatientData"/>
                         </Menu>
                         <Menu mnemonicParsing="false" text="Dial">
                             <items>
