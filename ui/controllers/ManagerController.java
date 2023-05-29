@@ -135,6 +135,7 @@ public class ManagerController {
                     alert.showAndWait();
                     return;
                 }
+                EditPersonnelController editPersonnelController;
 
                 Dialog<ButtonType> dialog = new Dialog<>();
                 dialog.initOwner(managerPanel.getScene().getWindow());
@@ -143,7 +144,7 @@ public class ManagerController {
                 fxmlLoader.setLocation(getClass().getResource("../scene/EditPersonnel.fxml"));
                 try {
                     dialog.getDialogPane().setContent(fxmlLoader.load());
-                    EditPersonnelController editPersonnelController = fxmlLoader.getController();
+                    editPersonnelController = fxmlLoader.getController();
                     editPersonnelController.updateFields(selectedPersonnel);
                 } catch (IOException e) {
                     System.out.println("Couldn't load the dialog");
@@ -161,7 +162,7 @@ public class ManagerController {
 
                 Optional<ButtonType> result = dialog.showAndWait();
                 if(result.isPresent() && result.get() == applyButton) {
-                    applyButtonFunction(selectedPersonnel);
+                    applyButtonFunction(selectedPersonnel, editPersonnelController);
                 }else if(result.isPresent() && result.get() == cancelButton){
                     dialog.close();
                 }
@@ -170,7 +171,7 @@ public class ManagerController {
         }
     }
 
-    private void applyButtonFunction(Staff selectedPersonnel){
+    private void applyButtonFunction(Staff selectedPersonnel, EditPersonnelController editPersonnelController){
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Confirmation");
         alert.setHeaderText("Confirmation Dialog");
@@ -178,7 +179,10 @@ public class ManagerController {
 
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
-            //update staff here
+            if (!editPersonnelController.saveChanges(selectedPersonnel)){
+                //enters if selected personnel is not updated
+                editPersonnel();
+            }
         } else if (result.isPresent() && result.get() == ButtonType.CANCEL) {
             editPersonnel();
         }
