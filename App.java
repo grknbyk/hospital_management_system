@@ -5,6 +5,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import model.MedicineSupply;
 
 public class App extends Application {
 
@@ -31,6 +32,7 @@ public class App extends Application {
 
     @Override
     public void stop() throws Exception {
+        Datasource.getInstance().saveMedicineSupply(MedicineSupply.getInstance());
         Datasource.getInstance().close();
         super.stop();
     }

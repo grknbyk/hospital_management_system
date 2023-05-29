@@ -13,15 +13,18 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.stream.Collectors;
 
 import model.Contact;
 import model.Doctor;
 import model.Manager;
 import model.Medicine;
 import model.MedicineSupply;
+import model.MedicineSupply.SupplyItem;
 import model.Nurse;
 import model.Patient;
 import model.Person;
@@ -354,6 +357,9 @@ public class Datasource {
 
     private static final String QUERY_MEDICINE2 = "SELECT * FROM " + TABLE_MEDICINE;
 
+    private static final String QUERY_MEDICINE_BY_NAME = "SELECT * FROM " + TABLE_MEDICINE +
+            " WHERE " + COLUMN_MEDICINE_NAME + " = ?";
+
     private Connection conn;
 
     private ArrayList<PreparedStatement> preparedStatements;
@@ -364,6 +370,7 @@ public class Datasource {
     private PreparedStatement queryPatientsByStaffId;
     private PreparedStatement queryMedicine;
     private PreparedStatement queryPersonById;
+    private PreparedStatement queryMedicineByName;
     private PreparedStatement queryMedicineByReceiptId;
     private PreparedStatement queryStaffById;
     private PreparedStatement queryDoctorExpretiseByStaffId;
@@ -415,6 +422,8 @@ public class Datasource {
             preparedStatements.add(queryLogin);
             queryStaffByUsername = conn.prepareStatement(QUERY_STAFF_BY_USERNAME);
             preparedStatements.add(queryStaffByUsername);
+            queryMedicineByName = conn.prepareStatement(QUERY_MEDICINE_BY_NAME);
+            preparedStatements.add(queryMedicineByName);
             queryPersonById = conn.prepareStatement(QUERY_PERSON_BY_ID);
             preparedStatements.add(queryPersonById);
             queryMedicineByReceiptId = conn.prepareStatement(QUERY_MEDICINE_BY_RECEIPT_ID);
@@ -756,6 +765,25 @@ public class Datasource {
         }
     }
 
+    private Medicine queryMedicineByName(String medName){
+       try{
+           queryMedicineByName.setString(1, medName);
+           ResultSet results = queryMedicineByName.executeQuery();
+           if(results.next()){
+               int medicine_id = results.getInt(1);
+               String medicine_name = results.getString(2);
+               MedicineType medicine_type = MedicineType.valueOf(results.getString(3));
+               Medicine medicine = new Medicine(medicine_name, medicine_type);
+               medicine.setId(medicine_id);
+               return medicine;
+           }
+           return null;
+       } catch (SQLException e) {
+           System.out.println("Query failed: " + e.getMessage());
+           return null;
+       }
+    }
+
     public ArrayList<Patient> queryPatientsNullStaff(){
         try(Statement statement = conn.createStatement()){
             ResultSet results = statement.executeQuery(QUERY_PATIENTS_NULL_STAFF);
@@ -910,7 +938,7 @@ public class Datasource {
     }
 
     /**
-     * @param medicine_supply the supply object to update
+     * @param medicine_supply the supply object to fill from database
      */
     public void updateMedicineSupply(MedicineSupply medicine_supply) {
         try {
@@ -926,6 +954,43 @@ public class Datasource {
             System.out.println("Update failed: " + e.getMessage());
         }
     }
+
+    /**
+     * @param medicine_supply the supply object to update and insert records
+     */
+public void saveMedicineSupply(MedicineSupply medicine_supply){
+        try{
+            conn.setAutoCommit(false);
+            ArrayList<MedicineSupply.SupplyItem> items = (ArrayList<SupplyItem>) Arrays.stream(MedicineSupply.getInstance().toList().toArray()).map(obj -> (MedicineSupply.SupplyItem) obj).collect(Collectors.toList());
+            for(MedicineSupply.SupplyItem item : items){
+                Medicine medicine = queryMedicineByName(item.getMedicine().getName());
+                if(medicine == null){
+                    int med_id = insertMedicine(item.getMedicine());
+                    insertMedicineStock(med_id,item.getStock());
+                }else{
+                    updateMedicineStock(item.getId(),item.getStock());
+                }
+            }
+            
+            conn.commit();
+        }catch (SQLException e){
+            System.out.println("Save failed: " + e.getMessage());
+            try{
+                System.out.println("Performing rollback");
+                conn.rollback();
+            }catch (SQLException e2){
+                System.out.println("Rollback failed: " + e2.getMessage());
+            }
+        }finally {
+            try{
+                System.out.println("Resetting default commit behavior");
+                conn.setAutoCommit(true);
+            }catch (SQLException e){
+                System.out.println("Reset failed: " + e.getMessage());
+            }
+        }
+    }
+    
 
     /**
      * @param staff_id the id of the staff
@@ -1464,7 +1529,7 @@ public class Datasource {
         }
     }
 
-    public boolean updateMedicineStock(int medicineId, int quantity) {
+    private boolean updateMedicineStock(int medicineId, int quantity) {
         try {
             conn.setAutoCommit(false);
             updateMedicineStockByMedicineId.setInt(1, quantity);
