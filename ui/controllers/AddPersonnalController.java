@@ -1,6 +1,5 @@
 package ui.controllers;
 
-import java.beans.Expression;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.ChoiceBox;
@@ -10,10 +9,16 @@ import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import model.*;
-import model.enums.*;
+import model.Contact;
+import model.Doctor;
+import model.Nurse;
+import model.Staff;
+import model.enums.Expertise;
+import model.enums.Gender;
+import model.enums.Status;
+import model.enums.WorkingArea;
 
-public class UserController {
+public class AddPersonnalController {
     @FXML
     private ImageView imageField;
 
@@ -50,6 +55,12 @@ public class UserController {
     @FXML
     private Label expertiseLabel;
 
+    @FXML
+    private TextField usernameTextField;
+
+    @FXML
+    private TextField passwordTextField;
+
     public void initialize() {
         Image menuImg = new Image("ui/imgs/default_person.png");
         ImageView imageView = new ImageView(menuImg);
@@ -67,8 +78,7 @@ public class UserController {
         workingAreaLabel.setVisible(false);
         expertiseLabel.setVisible(false);
         statusChoiceBox2.setVisible(false);
-        statusChoiceBox.getItems().addAll(Status.values());
-        statusChoiceBox.setValue(Status.DOCTOR);
+
         
         statusChoiceBox.getSelectionModel().selectedItemProperty().addListener((v, oldValue, newValue) -> {
             if (newValue == Status.DOCTOR) {
@@ -93,21 +103,41 @@ public class UserController {
                 statusChoiceBox2.setVisible(false);
             }
         });
-    }
 
-    public void fillTheFields(Staff staff) {
-        nameTextField.setText(staff.getName());
-        surnameTextField.setText(staff.getSurname());
-        phoneTextField.setText(staff.getContact().getPhone());
-        emailTextField.setText(staff.getContact().getEmail());
-        addressTextField.setText(staff.getContact().getAddress());
-        ageSpinner.getValueFactory().setValue(staff.getAge());
-        genderChoiceBox.setValue(staff.getGender());
-        statusChoiceBox.setValue(staff.getStatus());
+        statusChoiceBox.getItems().addAll(Status.values());
+        statusChoiceBox.setValue(Status.DOCTOR);
     }
 
     public Staff returnStaff(){
-        return null;
+        Staff staff;
+        Status status = statusChoiceBox.getValue();
+        if(status == Status.DOCTOR){
+            Doctor doctor = new Doctor();
+            doctor.setExpertise(statusChoiceBox2.getValue());
+            staff = doctor;
+        } else if(status == Status.NURSE){
+            Nurse nurse = new Nurse();
+            nurse.setWorkingArea(statusChoiceBox2.getValue());
+            staff = nurse;
+        }
+        else{
+            staff = new Staff(){};
+        }
+
+        staff.setName(nameTextField.getText());
+        staff.setSurname(surnameTextField.getText());
+        staff.setGender(genderChoiceBox.getValue());
+        staff.setAge(ageSpinner.getValue());
+        Contact contact = new Contact();
+        contact.setAddress(addressTextField.getText());
+        contact.setEmail(emailTextField.getText());
+        contact.setPhone(phoneTextField.getText());
+        staff.setContact(contact);
+        staff.setStatus(statusChoiceBox.getValue());
+        staff.setUsername(usernameTextField.getText());
+        staff.setPassword(passwordTextField.getText());
+        
+        return staff;
     }
 
 }

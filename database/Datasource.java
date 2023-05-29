@@ -281,7 +281,8 @@ public class Datasource {
 
     private static final String UPDATE_STAFF_BY_STAFF_ID = "UPDATE " + TABLE_STAFF + " SET " +
             COLUMN_STAFF_USERNAME + " = ?, " +
-            COLUMN_STAFF_PASSWORD + " = ? " +
+            COLUMN_STAFF_PASSWORD + " = ?, " +
+            COLUMN_STAFF_STATUS + " = ? " +
             " WHERE " + COLUMN_STAFF_ID + " = ?";
 
     private static final String UPDATE_DOCTOR_BY_STAFF_ID = "UPDATE " + TABLE_DOCTOR + " SET " +
@@ -979,7 +980,7 @@ public class Datasource {
     }
 
     /**
-     * updates personal information as well as username,password of the staff.
+     * updates username,password, optionally workingarea or expretise of the staff.
      * 
      * @param staff a new staff object to update existing staff by id.
      * @return message that shows the result of the operation.
@@ -994,19 +995,17 @@ public class Datasource {
                 return "Couldn't find the staff by id: " + staff.getId();
             } else {
                 ArrayList<Boolean> affectedRows = new ArrayList<>();
-                affectedRows.add(updateStaff(staff));
+                affectedRows.add(updateStaffById(staff));
                 if (staff.getStatus() == Status.DOCTOR)
                     affectedRows.add(updateDoctor((Doctor) staff));
                 else if (staff.getStatus() == Status.NURSE)
                     affectedRows.add(updateNurse((Nurse) staff));
                 staff.setId(personId);
-                affectedRows.add(updatePerson(staff));
-                affectedRows.add(updateContact(personId, staff.getContact()));
                 if (!affectedRows.contains(false)) {
                     conn.commit();
                     return "Staff updated successfully";
                 } else {
-                    return "Couldn't update the staff";
+                    return "Couldn't update the staff completely";
                 }
             }
 
@@ -1219,11 +1218,25 @@ public class Datasource {
         }
     }
 
-    private boolean updateStaff(Staff staff) {
+    public void updateStaff(Staff staff) {
+        try {
+            updateStaffById(staff);
+            if (staff instanceof Doctor) {
+                updateDoctor((Doctor) staff);
+            } else if (staff instanceof Nurse) {
+                updateNurse((Nurse) staff);
+            }
+        } catch (Exception e) {
+            System.out.println("Update staff failed: " + e.getMessage());
+        }
+    }
+
+    private boolean updateStaffById(Staff staff) {
         try {
             updateStaffByStaffId.setString(1, staff.getUsername());
             updateStaffByStaffId.setString(2, staff.getPassword());
-            updateStaffByStaffId.setInt(3, staff.getId());
+            updateStaffByStaffId.setString(3, staff.getStatus().name().toLowerCase());
+            updateStaffByStaffId.setInt(4, staff.getId());
             int affectedRows = updateStaffByStaffId.executeUpdate();
             if (affectedRows == 1) {
                 return true;
