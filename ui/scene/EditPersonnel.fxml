@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="300.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.controllers.EditPersonnelController">
+    <left>
+        <ImageView fx:id="imageField" fitHeight="150.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="TOP_LEFT">
+            <BorderPane.margin>
+                <Insets left="25.0" right="20.0" top="30.0" />
+            </BorderPane.margin>
+        </ImageView>
+    </left>
+    <center>
+        <GridPane prefHeight="174.0" prefWidth="400.0" BorderPane.alignment="CENTER">
+            <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="185.0" minWidth="100.0" prefWidth="80.0" />
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="309.0" minWidth="10.0" prefWidth="299.0" />
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="309.0" minWidth="10.0" prefWidth="30.0" />
+            </columnConstraints>
+            <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            </rowConstraints>
+            <BorderPane.margin>
+                <Insets top="30.0" />
+            </BorderPane.margin>
+            <children>
+                <Label prefHeight="17.0" prefWidth="221.0" text="Set Staff ID:" />
+                <Label text="Set Status:" GridPane.rowIndex="1" />
+                <Label text="Set Username:" GridPane.rowIndex="2" />
+                <ChoiceBox fx:id="staffChoiceBox" prefHeight="25.0" prefWidth="94.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                <TextField fx:id="staffIdTextField" GridPane.columnIndex="1" />
+            <Label text="Set Password:" GridPane.rowIndex="3" />
+            <TextField fx:id="userNameTextField" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+            <TextField fx:id="passwordTextField" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+            </children>
+        </GridPane>
+    </center>
+    <bottom>
+        <GridPane prefHeight="109.0" prefWidth="570.0" BorderPane.alignment="CENTER">
+            <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="295.0" minWidth="50.0" prefWidth="80.0" />
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="520.0" minWidth="215.0" prefWidth="211.0" />
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="200.0" minWidth="110.0" prefWidth="303.0" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="520.0" minWidth="10.0" prefWidth="303.0" />
+            </columnConstraints>
+            <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            </rowConstraints>
+            <children>
+                <Label prefHeight="17.0" prefWidth="192.0" text="Contact" />
+                <Label prefHeight="17.0" prefWidth="168.0" text="Phone:" GridPane.rowIndex="1" />
+                <Label prefHeight="17.0" prefWidth="191.0" text="Email:" GridPane.rowIndex="2" />
+                <Label prefHeight="17.0" prefWidth="194.0" text="Address:" GridPane.rowIndex="3" />
+            <Label fx:id="phoneLabel" prefHeight="17.0" prefWidth="169.0" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <Label fx:id="emailLabel" prefHeight="17.0" prefWidth="207.0" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+            <Label fx:id="addressLabel" prefHeight="17.0" prefWidth="176.0" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+            <Label prefHeight="17.0" prefWidth="278.0" text="Information" GridPane.columnIndex="2" />
+            <Label prefHeight="17.0" prefWidth="249.0" text="Name &amp; Surname:" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+            <Label prefHeight="17.0" prefWidth="267.0" text="Gender:" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+            <Label prefHeight="17.0" prefWidth="259.0" text="Age:" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+            <Label fx:id="nameSurnameLabel" prefHeight="17.0" prefWidth="277.0" text="Label" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+            <Label fx:id="genderLabel" prefHeight="17.0" prefWidth="336.0" text="Label" GridPane.columnIndex="3" GridPane.rowIndex="2" />
+            <Label fx:id="ageLabel" prefHeight="17.0" prefWidth="276.0" text="Label" GridPane.columnIndex="3" GridPane.rowIndex="3" />
+            </children>
+            <BorderPane.margin>
+                <Insets left="30.0" />
+            </BorderPane.margin>
+        </GridPane>
+    </bottom>
+</BorderPane>

@@ -22,7 +22,7 @@ public class RegisterPatientController {
 
     @FXML
     private ChoiceBox<String> policlinicBox;
-    private String[] policlinicks = {"Cardiology", "Neurology", "Orthopedic Surgery", "Oncology", "Pediatrics", "Psychiatry", "Dermatology", "Ophthalmology", "Anesthesiology", "Cardiology"};
+    private String[] policlinicks = {"Cardiology", "Neurology", "Orthopedic Surgery", "Oncology", "Pediatrics", "Psychiatry", "Dermatology", "Ophthalmology", "Anesthesiology"};
 
     @FXML
     private ChoiceBox<String> serviceBox;

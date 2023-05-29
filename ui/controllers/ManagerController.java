@@ -6,11 +6,9 @@ import java.awt.datatransfer.StringSelection;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
 import java.util.Optional;
 
 import database.Datasource;
-import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -25,19 +23,15 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import model.*;
-import javafx.application.Application;
 
 public class ManagerController {
     String username;
@@ -51,8 +45,19 @@ public class ManagerController {
     }
 
     @FXML
-    private TableView<Doctor> tableView;
+    private TabPane managerTabPane;
 
+    @FXML
+    private Tab doctorTab;
+
+    @FXML
+    private Tab nurseTab;
+
+    @FXML
+    private Tab pharmacistTab;
+
+    @FXML
+    private Tab receptionistTab;
 
     @FXML
     private BorderPane managerPanel;
@@ -101,6 +106,86 @@ public class ManagerController {
 
     }
 
+    public void addPersonnel() {
+
+    }
+
+    public void editPersonnel() {
+        Tab selectedTab = managerTabPane.getSelectionModel().getSelectedItem();
+        if (selectedTab != null) {
+            TableView<?> selectedTableView = null;
+            if (selectedTab.equals(doctorTab)) {
+                selectedTableView = doctorTableView;
+            } else if (selectedTab.equals(nurseTab)) {
+                selectedTableView = nurseTableView;
+            } else if (selectedTab.equals(pharmacistTab)) {
+                selectedTableView = pharmacistTableView;
+            } else if (selectedTab.equals(receptionistTab)) {
+                selectedTableView = receptionistTableView;
+            }
+
+            if (selectedTableView != null) {
+
+                Staff selectedPersonnel = (Staff) selectedTableView.getSelectionModel().getSelectedItem();
+                if(selectedPersonnel == null) {
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("No Personnel Selected");
+                    alert.setHeaderText(null);
+                    alert.setContentText("Select a personnel");
+                    alert.showAndWait();
+                    return;
+                }
+
+                Dialog<ButtonType> dialog = new Dialog<>();
+                dialog.initOwner(managerPanel.getScene().getWindow());
+                dialog.setTitle("Edit Personnel");
+                FXMLLoader fxmlLoader = new FXMLLoader();
+                fxmlLoader.setLocation(getClass().getResource("../scene/EditPersonnel.fxml"));
+                try {
+                    dialog.getDialogPane().setContent(fxmlLoader.load());
+                    EditPersonnelController editPersonnelController = fxmlLoader.getController();
+                    editPersonnelController.updateFields(selectedPersonnel);
+                } catch (IOException e) {
+                    System.out.println("Couldn't load the dialog");
+                    e.printStackTrace();
+                    return;
+                }
+                dialog.getDialogPane().getScene().getWindow().setOnCloseRequest(e -> {
+                    dialog.close();
+                });
+
+                ButtonType applyButton = new ButtonType("Apply");
+                ButtonType cancelButton = new ButtonType("Cancel");
+
+                dialog.getDialogPane().getButtonTypes().addAll(applyButton, cancelButton);
+
+                Optional<ButtonType> result = dialog.showAndWait();
+                if(result.isPresent() && result.get() == applyButton) {
+                    applyButtonFunction(selectedPersonnel);
+                }else if(result.isPresent() && result.get() == cancelButton){
+                    dialog.close();
+                }
+
+            }
+        }
+    }
+
+    private void applyButtonFunction(Staff selectedPersonnel){
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Confirmation");
+        alert.setHeaderText("Confirmation Dialog");
+        alert.setContentText("Are you sure you want to save the changes");
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            //update staff here
+        } else if (result.isPresent() && result.get() == ButtonType.CANCEL) {
+            editPersonnel();
+        }
+    }
+
+
+
     public void logout(ActionEvent event) throws IOException {
         Parent root = FXMLLoader.load(getClass().getResource("../scene/LoginScene.fxml"));
         Scene scene = new Scene(root);
@@ -109,7 +194,6 @@ public class ManagerController {
         window.setScene(scene);
         window.show();
     }
-
 
     public void showAboutDialog() {
         // Create a new stage for the dialog
@@ -127,7 +211,7 @@ public class ManagerController {
         emailField.setPrefWidth(200);
         emailField.setOnMouseClicked(event -> {
             copyToClipboard(emailField.getText());
-            showAlert(Alert.AlertType.INFORMATION, "Copied", "Email address copied to clipboard.");
+            showAlert(AlertType.INFORMATION, "Copied", "Email address copied to clipboard.");
         });
 
         Label emailLabel2 = new Label("Can Çelenay:");
@@ -135,7 +219,7 @@ public class ManagerController {
         emailField2.setPrefWidth(200);
         emailField2.setOnMouseClicked(event -> {
             copyToClipboard(emailField2.getText());
-            showAlert(Alert.AlertType.INFORMATION, "Copied", "Email address copied to clipboard.");
+            showAlert(AlertType.INFORMATION, "Copied", "Email address copied to clipboard.");
         });
 
         Label emailLabel3 = new Label("Gürkan Bıyık:");
@@ -143,7 +227,7 @@ public class ManagerController {
         emailField3.setPrefWidth(200);
         emailField3.setOnMouseClicked(event -> {
             copyToClipboard(emailField3.getText());
-            showAlert(Alert.AlertType.INFORMATION, "Copied", "Email address copied to clipboard.");
+            showAlert(AlertType.INFORMATION, "Copied", "Email address copied to clipboard.");
         });
 
         Label phoneLabel = new Label("Phone:");
@@ -156,7 +240,7 @@ public class ManagerController {
             } catch (IOException | URISyntaxException e) {
                 // Handle any errors that occur while trying to open the link
                 e.printStackTrace();
-                showAlert(Alert.AlertType.ERROR, "Error", "Failed to open website.");
+                showAlert(AlertType.ERROR, "Error", "Failed to open website.");
             }
         });
 
@@ -188,7 +272,6 @@ public class ManagerController {
         dialogStage.show();
     }
 
-
     public void showHelpDialog() {
         // Create a new stage for the dialog
         Stage dialogStage = new Stage();
@@ -205,7 +288,7 @@ public class ManagerController {
         emailField.setPrefWidth(200);
         emailField.setOnMouseClicked(event -> {
             copyToClipboard(emailField.getText());
-            showAlert(Alert.AlertType.INFORMATION, "Copied", "Email address copied to clipboard.");
+            showAlert(AlertType.INFORMATION, "Copied", "Email address copied to clipboard.");
         });
 
         Label phoneLabel = new Label("Phone:");
@@ -218,7 +301,7 @@ public class ManagerController {
             } catch (IOException | URISyntaxException e) {
                 // Handle any errors that occur while trying to open the link
                 e.printStackTrace();
-                showAlert(Alert.AlertType.ERROR, "Error", "Failed to open website.");
+                showAlert(AlertType.ERROR, "Error", "Failed to open website.");
             }
         });
 
@@ -251,7 +334,7 @@ public class ManagerController {
         clipboard.setContents(new StringSelection(text), null);
     }
 
-    private void showAlert(Alert.AlertType alertType, String title, String content) {
+    private void showAlert(AlertType alertType, String title, String content) {
         Alert alert = new Alert(alertType);
         alert.setTitle(title);
         alert.setHeaderText(null);
