@@ -28,10 +28,9 @@ public class SupplyMedicineController {
         amountSpinner.getValueFactory().setValue(20);
     }
 
-    public boolean increaseAmount(MedicineSupply.SupplyItem selectedItem) {
+    public boolean increaseAmount(MedicineSupply supply, MedicineSupply.SupplyItem selectedItem) {
+        supply.supplyStock(selectedItem.getMedicine(), amountSpinner.getValue());
 
-        //işlem başarılı olursa true returnlicek
-        //olmazsa false returnlicek
         return true;
     }
 }

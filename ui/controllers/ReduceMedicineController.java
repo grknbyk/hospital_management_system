@@ -26,9 +26,6 @@ public class ReduceMedicineController {
     }
 
     public boolean decreaseAmount(MedicineSupply supply, MedicineSupply.SupplyItem selectedItem) {
-
-        //işlem başarılı olursa true returnlicek
-        //olmazsa false returnlicek
-        return true;
+        return supply.consumeStock(selectedItem.getMedicine(), amountSpinner.getValue());
     }
 }
