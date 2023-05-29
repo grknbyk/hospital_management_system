@@ -7,10 +7,13 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -83,6 +86,7 @@ public class Datasource {
     private static final String COLUMN_RECEIPT_STAFF_ID = "staff_id";
     private static final String COLUMN_RECEIPT_GIVEN_DATE = "given_date";
     private static final String COLUMN_RECEIPT_EXPIRE_DATE = "expire_date";
+    private static final String COLUMN_RECEIPT_IS_GIVEN = "is_given";
 
     private static final String TABLE_MEDICINE = "medicine";
     private static final String COLUMN_MEDICINE_ID = "id";
@@ -226,6 +230,8 @@ public class Datasource {
             " INNER JOIN " + TABLE_PERSON +
             " ON " + TABLE_PATIENT + "." + COLUMN_PATIENT_PERSON_ID + " = " + TABLE_PERSON + "." + COLUMN_PERSON_ID +
             " WHERE " + COLUMN_PATIENT_STAFF_ID + " = ?";
+    
+    private static final String QUERY_RECEIPTS = " SELECT * FROM " + TABLE_RECEIPT;
 
     private static final String DELETE_CONTACT_BY_PERSON_ID = "DELETE FROM " + TABLE_CONTACT +
             " WHERE " + COLUMN_CONTACT_PERSON_ID + " = ?";
@@ -331,6 +337,17 @@ public class Datasource {
 
     private static final String QUERY_PATIENTS_NULL_STAFF = "SELECT * FROM " + TABLE_PATIENT +
             " WHERE " + COLUMN_PATIENT_STAFF_ID + " IS NULL";
+    
+    private static final String QUERY_MEDICINE_BY_RECEIPT_ID = "SELECT " + 
+            TABLE_MEDICINE + "." + COLUMN_MEDICINE_ID + ", " +
+            TABLE_MEDICINE + "." + COLUMN_MEDICINE_NAME + ", " +
+            TABLE_MEDICINE + "." + COLUMN_MEDICINE_TYPE + ", " +
+            TABLE_RECEIPT_MEDICINE + "." + COLUMN_RECEIPT_MEDICINE_AMOUNT + " " +
+            " FROM " + TABLE_RECEIPT_MEDICINE +
+            " INNER JOIN " + TABLE_MEDICINE +
+            " ON " + TABLE_RECEIPT_MEDICINE + "." + COLUMN_RECEIPT_MEDICINE_MEDICINE_ID + " = " +
+            TABLE_MEDICINE + "." + COLUMN_MEDICINE_ID +
+            " WHERE " + TABLE_RECEIPT_MEDICINE + "." + COLUMN_RECEIPT_MEDICINE_RECEIPT_ID + " = ?";
 
     private Connection conn;
 
@@ -341,6 +358,7 @@ public class Datasource {
     private PreparedStatement queryStaffIdByUsername;
     private PreparedStatement queryPatientsByStaffId;
     private PreparedStatement queryMedicine;
+    private PreparedStatement queryMedicineByReceiptId;
     private PreparedStatement queryStaffById;
     private PreparedStatement queryDoctorExpretiseByStaffId;
     private PreparedStatement queryNurseWorkingAreaByStaffId;
@@ -391,6 +409,8 @@ public class Datasource {
             preparedStatements.add(queryLogin);
             queryStaffByUsername = conn.prepareStatement(QUERY_STAFF_BY_USERNAME);
             preparedStatements.add(queryStaffByUsername);
+            queryMedicineByReceiptId = conn.prepareStatement(QUERY_MEDICINE_BY_RECEIPT_ID);
+            preparedStatements.add(queryMedicineByReceiptId);
             queryStaffUsernameById = conn.prepareStatement(QUERY_STAFF_USERNAME_BY_ID);
             preparedStatements.add(queryStaffUsernameById);
             queryStaffIdByUsername = conn.prepareStatement(QUERY_STAFF_ID_BY_USERNAME);
@@ -597,6 +617,78 @@ public class Datasource {
             queryLogin.setString(1, username);
             queryLogin.setString(2, password);
             return queryLogin.executeQuery().getString(1);
+        } catch (SQLException e) {
+            System.out.println("Query failed: " + e.getMessage());
+            return null;
+        }
+    }
+
+    /**
+     * @return ArrayList of Medicine objects relevant to receipt_id
+     * @param receipt_id the id of the receipt
+     */
+    public HashMap<Medicine,Integer> queryMedicineByReceiptId(int receipt_id){
+        try{
+            queryMedicineByReceiptId.setInt(1, receipt_id);
+            ResultSet results = queryMedicineByReceiptId.executeQuery();
+            HashMap<Medicine,Integer> medicines = new HashMap<>();
+            while(results.next()){
+                int medicine_id = results.getInt(1);
+                String medicine_name = results.getString(2);
+                MedicineType medicine_type = MedicineType.valueOf(results.getString(3));
+                int medicine_amount = results.getInt(4);
+                Medicine medicine = new Medicine(medicine_name, medicine_type);
+                medicine.setId(medicine_id);
+                medicines.put(medicine,medicine_amount);
+            }
+            return medicines;
+        } catch (SQLException e) {
+            System.out.println("Query failed: " + e.getMessage());
+            return null;
+        }
+    }
+
+    /**
+     * @return ArrayList of Receipts objects for information of all
+     *         receipts.
+     * @throws ParseException
+     */
+    public ArrayList<Receipt> queryReceipts(){
+        try (Statement statement = conn.createStatement()) {
+            ResultSet results = statement.executeQuery(QUERY_RECEIPTS);
+            ArrayList<Receipt> receipts = new ArrayList<>();
+            while (results.next()) {
+                String givenDateString = results.getString(COLUMN_RECEIPT_GIVEN_DATE);
+                String expireDateString = results.getString(COLUMN_RECEIPT_EXPIRE_DATE);
+                DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                Date givenDate = null;
+                Date expireDate = null;
+                try {
+                    java.util.Date date1 = dateFormat.parse(givenDateString);
+                    java.util.Date date2 = dateFormat.parse(expireDateString);
+                    givenDate = new Date(date1.getTime());
+                    expireDate = new Date(date2.getTime());
+                } catch (ParseException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+
+                int receipt_id = results.getInt(COLUMN_RECEIPT_ID);
+                int staff_id = results.getInt(COLUMN_RECEIPT_STAFF_ID);
+                int patient_id = results.getInt(COLUMN_RECEIPT_PATIENT_ID);
+
+
+                Receipt receipt = new Receipt(receipt_id, patient_id, staff_id, givenDate, expireDate);
+                Boolean isGiven = results.getString(COLUMN_RECEIPT_IS_GIVEN).equalsIgnoreCase("true") ? true : false;
+                receipt.setGiven(isGiven);
+                
+                HashMap<Medicine,Integer> medicines = queryMedicineByReceiptId(receipt_id);
+                for(Medicine medicine : medicines.keySet()){
+                    receipt.add(medicine, patient_id);
+                }
+                receipts.add(receipt);
+            }
+            return receipts;
         } catch (SQLException e) {
             System.out.println("Query failed: " + e.getMessage());
             return null;
