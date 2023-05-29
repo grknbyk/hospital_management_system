@@ -2,6 +2,7 @@ package ui.controllers;
 
 import database.Datasource;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
 import model.Medicine;
@@ -25,10 +26,19 @@ public class AddMedicineController {
 
     public boolean addMedicine() {
         try {
-            Datasource.getInstance().addNewMedicine(new Medicine(this.medicineNameTextField.getText(),typeChoiceBox.getValue()),Integer.parseInt(amountTextField.getText()));
+            Medicine med = new Medicine(this.medicineNameTextField.getText().trim(), typeChoiceBox.getValue());
+            int amount = Integer.parseInt(amountTextField.getText());
+
+            if (med.getName().equals("") || med.getType() == null) {
+                new Alert(Alert.AlertType.ERROR, "An error occurred while adding medicine").showAndWait();
+                return false;
+            }
+
+            Datasource.getInstance().addNewMedicine(med, amount);
             return true;
-        }catch (Exception e) {
+        } catch (Exception e) {
             System.out.println("An error occured while adding medicine");
+            new Alert(Alert.AlertType.ERROR, "An error occurred while adding medicine").showAndWait();
             return false;
         }
     }
