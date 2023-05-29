@@ -1,18 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TextArea?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 
+<?import javafx.scene.control.cell.PropertyValueFactory?>
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.controllers.PatientPrescribeController">
+    <top>
+        <AnchorPane prefHeight="140.0" prefWidth="600.0" BorderPane.alignment="CENTER">
+            <children>
+                <TextArea fx:id="nameTextArea" editable="false" layoutX="10.0" layoutY="30.0" prefHeight="15.0" prefWidth="570.0" />
+                <Label layoutX="10.0" layoutY="10.0" prefWidth="400.0" text="Name" />
+                <TextArea fx:id="complaintTextArea" editable="false" layoutX="10.0" layoutY="95.0" prefHeight="15.0" prefWidth="570.0" />
+                <Label layoutX="10.0" layoutY="78.0" prefWidth="400.0" text="Complaint" />
+            </children>
+        </AnchorPane>
+    </top>
+    <center>
+        <TableView fx:id="tableView" prefHeight="200.0" prefWidth="300.0">
+            <columns>
+                <TableColumn fx:id="medicineColumn" prefWidth="150.0" text="Medicine Name">
+                    <cellValueFactory>
+                        <PropertyValueFactory property="name" />
+                    </cellValueFactory>
+                </TableColumn>
+                <TableColumn fx:id="amountColumn" prefWidth="150.0" text="Amount">
+                    <cellValueFactory>
+                        <PropertyValueFactory property="amount" />
+                    </cellValueFactory>
+                </TableColumn>
+            </columns>
+        </TableView>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.controllers.PatientPrescribeController">
-   <top>
-      <AnchorPane prefHeight="140.0" prefWidth="600.0" BorderPane.alignment="CENTER">
-         <children>
-            <TextArea fx:id="complaintTextArea" layoutX="10.0" layoutY="30.0" prefHeight="100.0" prefWidth="570.0" />
-            <Label layoutX="10.0" layoutY="10.0" prefWidth="400.0" text="Complaint" />
-         </children>
-      </AnchorPane>
-   </top>
+        <AnchorPane layoutX="0.0" layoutY="200.0" prefHeight="100.0" prefWidth="300.0" style="-fx-background-color: lightgray;">
+            <children>
+                <TextField fx:id="medicineNameField" layoutX="10.0" layoutY="20.0" promptText="Medicine Name"/>
+                <Spinner fx:id="amountSpinner" layoutX="10.0" layoutY="50.0" promptText="Amount"/>
+
+                <Button layoutX="220.0" layoutY="20.0" mnemonicParsing="false" onAction="#addButtonClicked" text="Add"/>
+            </children>
+        </AnchorPane>
+    </center>
 </BorderPane>
