@@ -38,7 +38,7 @@
                 <Label prefHeight="17.0" prefWidth="221.0" text="Set Staff ID:" />
                 <Label text="Set Status:" GridPane.rowIndex="1" />
                 <Label text="Set Username:" GridPane.rowIndex="2" />
-                <ChoiceBox fx:id="staffChoiceBox" prefHeight="25.0" prefWidth="94.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                <ChoiceBox fx:id="staffChoiceBox" prefHeight="25.0" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                 <TextField fx:id="staffIdTextField" GridPane.columnIndex="1" />
             <Label text="Set Password:" GridPane.rowIndex="3" />
             <TextField fx:id="userNameTextField" GridPane.columnIndex="1" GridPane.rowIndex="2" />
