@@ -281,7 +281,6 @@ public class PharmacistController {
         }
     }
 
-
     private void errorDialog(){
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Error");
