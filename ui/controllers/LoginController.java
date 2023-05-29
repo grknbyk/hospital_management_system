@@ -50,8 +50,8 @@ public class LoginController {
         String username = usernameTextField.getText();
         String password = passwordTextField.getText();
 
-        //username = "admin";
-        //password = "admin";
+        username = "pharmacist";
+        password = "pharmacist";
 
 		String status = Datasource.getInstance().queryLogin(username, password);
 
