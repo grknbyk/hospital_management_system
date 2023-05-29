@@ -28,6 +28,12 @@
                                 <MenuItem mnemonicParsing="false" text="Update" />
                             </items>
                         </Menu>
+                        <Menu mnemonicParsing="false" text="Receipts">
+                            <items>
+                                <MenuItem mnemonicParsing="false" text="Details"/>
+                                <MenuItem mnemonicParsing="false" text="Dispense" onAction="#dispenseMedicine"/>
+                            </items>
+                        </Menu>
                         <Menu mnemonicParsing="false" text="Dial">
                             <items>
                                 <MenuItem mnemonicParsing="false" text="Secretary" />
