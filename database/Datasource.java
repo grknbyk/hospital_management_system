@@ -71,7 +71,7 @@ public class Datasource {
 
     private static final String TABLE_DOCTOR = "doctor";
     private static final String COLUMN_DOCTOR_STAFF_ID = "staff_id";
-    private static final String COLUMN_DOCTOR_EXPRETISE = "expretise";
+    private static final String COLUMN_DOCTOR_EXPERTISE = "expertise";
 
     private static final String TABLE_NURSE = "nurse";
     private static final String COLUMN_NURSE_STAFF_ID = "staff_id";
@@ -122,7 +122,7 @@ public class Datasource {
             TABLE_STAFF + "." + COLUMN_STAFF_USERNAME + ", " +
             TABLE_STAFF + "." + COLUMN_STAFF_PASSWORD + ", " +
             TABLE_STAFF + "." + COLUMN_STAFF_STATUS + ", " +
-            TABLE_DOCTOR + "." + COLUMN_DOCTOR_EXPRETISE + ", " +
+            TABLE_DOCTOR + "." + COLUMN_DOCTOR_EXPERTISE + ", " +
             TABLE_PERSON + "." + COLUMN_PERSON_NAME + ", " +
             TABLE_PERSON + "." + COLUMN_PERSON_SURNAME + ", " +
             TABLE_PERSON + "." + COLUMN_PERSON_AGE + ", " +
@@ -214,7 +214,7 @@ public class Datasource {
             " FROM " + TABLE_STAFF +
             " WHERE " + COLUMN_STAFF_USERNAME + " = ?";
 
-    private static final String QUERY_DOCTOR_EXPRETISE_BY_STAFF_ID = " SELECT " + COLUMN_DOCTOR_EXPRETISE +
+    private static final String QUERY_DOCTOR_EXPRETISE_BY_STAFF_ID = " SELECT " + COLUMN_DOCTOR_EXPERTISE +
             " FROM " + TABLE_DOCTOR +
             " WHERE " + COLUMN_DOCTOR_STAFF_ID + " = ?";
 
@@ -285,7 +285,7 @@ public class Datasource {
             " WHERE " + COLUMN_STAFF_ID + " = ?";
 
     private static final String UPDATE_DOCTOR_BY_STAFF_ID = "UPDATE " + TABLE_DOCTOR + " SET " +
-            COLUMN_DOCTOR_EXPRETISE + " = ? " +
+            COLUMN_DOCTOR_EXPERTISE + " = ? " +
             " WHERE " + COLUMN_DOCTOR_STAFF_ID + " = ?";
 
     private static final String UPDATE_NURSE_BY_STAFF_ID = "UPDATE " + TABLE_NURSE + " SET " +
@@ -562,7 +562,7 @@ public class Datasource {
             queryDoctorExpretiseByStaffId.setInt(1, id);
             ResultSet results = queryDoctorExpretiseByStaffId.executeQuery();
             if (results != null) {
-                return results.getString(COLUMN_DOCTOR_EXPRETISE);
+                return results.getString(COLUMN_DOCTOR_EXPERTISE);
             } else {
                 throw new IllegalStateException("Unexpected value: id-> " + id);
             }
@@ -741,7 +741,7 @@ public class Datasource {
                 doctor.setUsername(results.getString(COLUMN_STAFF_USERNAME));
                 doctor.setPassword(results.getString(COLUMN_STAFF_PASSWORD));
                 doctor.setStatus(Status.DOCTOR);
-                doctor.setExpertise(results.getString(COLUMN_DOCTOR_EXPRETISE));
+                doctor.setExpertise(results.getString(COLUMN_DOCTOR_EXPERTISE));
                 doctor.setName(results.getString(COLUMN_PERSON_NAME));
                 doctor.setSurname(results.getString(COLUMN_PERSON_SURNAME));
                 doctor.setAge(results.getInt(COLUMN_PERSON_AGE));

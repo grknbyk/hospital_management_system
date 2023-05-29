@@ -100,6 +100,22 @@ public class ManagerController {
         receptionistTableView.setItems(receptionists);
 
     }
+    
+    public void showAddUser(){
+        new UserViewBuilder(username, managerPanel).showAddUserView();
+    }
+
+    public void showEditUse(){
+
+    }
+
+    public void authorize(){
+
+    }
+
+    public void restrict(){
+
+    }
 
     public void logout(ActionEvent event) throws IOException {
         Parent root = FXMLLoader.load(getClass().getResource("../scene/LoginScene.fxml"));
