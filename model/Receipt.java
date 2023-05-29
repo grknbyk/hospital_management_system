@@ -114,6 +114,10 @@ public class Receipt {
             return med.getName();
         }
 
+        public Medicine getMed() {
+            return med;
+        }
+
         public MedicineType getType() {
             return med.getType();
         }
