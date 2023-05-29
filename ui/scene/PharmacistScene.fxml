@@ -23,15 +23,15 @@
                             <items>
                                 <MenuItem mnemonicParsing="false" onAction="#addMedicine" text="Add New" />
                                 <MenuItem mnemonicParsing="false" text="Remove" />
-                                <MenuItem mnemonicParsing="false" text="Supply" />
+                                <MenuItem mnemonicParsing="false" onAction="#supplyMedicine" text="Supply" />
                                 <MenuItem mnemonicParsing="false" text="Consume" />
                                 <MenuItem mnemonicParsing="false" text="Update" />
                             </items>
                         </Menu>
                         <Menu mnemonicParsing="false" text="Receipts">
                             <items>
-                                <MenuItem mnemonicParsing="false" text="Details" onAction="#showReceiptDetails"/>
-                                <MenuItem mnemonicParsing="false" text="Dispense" onAction="#dispenseMedicine"/>
+                                <MenuItem mnemonicParsing="false" onAction="#showReceiptDetails" text="Details" />
+                                <MenuItem mnemonicParsing="false" onAction="#dispenseMedicine" text="Dispense" />
                             </items>
                         </Menu>
                         <Menu mnemonicParsing="false" text="Dial">
@@ -65,8 +65,8 @@
         </FlowPane>
     </top>
     <center>
-        <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
-            <Tab text="Stock">
+        <TabPane fx:id="pharmacistTabPane" prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
+            <Tab fx:id="stockTab" text="Stock">
                 <TableView fx:id="medicineTableView" prefHeight="200.0" prefWidth="200.0">
                     <columnResizePolicy>
                         <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
@@ -95,7 +95,7 @@
                     </columns>
                 </TableView>
             </Tab>
-            <Tab text="Receipts">
+            <Tab fx:id="receiptsTab" text="Receipts">
                 <TableView fx:id="receiptsTableView" prefHeight="200.0" prefWidth="200.0">
                     <columnResizePolicy>
                         <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
