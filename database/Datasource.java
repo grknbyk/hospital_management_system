@@ -684,7 +684,7 @@ public class Datasource {
                 
                 HashMap<Medicine,Integer> medicines = queryMedicineByReceiptId(receipt_id);
                 for(Medicine medicine : medicines.keySet()){
-                    receipt.add(medicine, patient_id);
+                    receipt.add(medicine, medicines.get(medicine));
                 }
                 receipts.add(receipt);
             }
