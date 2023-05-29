@@ -22,7 +22,16 @@
                         <Menu mnemonicParsing="false" text="Stock">
                             <items>
                                 <MenuItem mnemonicParsing="false" onAction="#addMedicine" text="Add New" />
+                                <MenuItem mnemonicParsing="false" text="Remove" />
                                 <MenuItem mnemonicParsing="false" onAction="#supplyMedicine" text="Supply" />
+                                <MenuItem mnemonicParsing="false" text="Consume" />
+                                <MenuItem mnemonicParsing="false" text="Update" />
+                            </items>
+                        </Menu>
+                        <Menu mnemonicParsing="false" text="Receipts">
+                            <items>
+                                <MenuItem mnemonicParsing="false" onAction="#showReceiptDetails" text="Details" />
+                                <MenuItem mnemonicParsing="false" onAction="#dispenseMedicine" text="Dispense" />
                             </items>
                         </Menu>
                         <Menu mnemonicParsing="false" text="Dial">
