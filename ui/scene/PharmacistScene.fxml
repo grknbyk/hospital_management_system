@@ -23,6 +23,8 @@
                             <items>
                                 <MenuItem mnemonicParsing="false" text="Add New" />
                                 <MenuItem mnemonicParsing="false" text="Remove" />
+                                <MenuItem mnemonicParsing="false" text="Supply" />
+                                <MenuItem mnemonicParsing="false" text="Consume" />
                                 <MenuItem mnemonicParsing="false" text="Update" />
                             </items>
                         </Menu>
