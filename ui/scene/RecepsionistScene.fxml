@@ -19,7 +19,7 @@
                     <menus>
                         <Menu mnemonicParsing="false" text="Patient">
                             <MenuItem mnemonicParsing="false" onAction="#registerPatient" text="Register" />
-                            <MenuItem mnemonicParsing="false" text="Deny" />
+                            <MenuItem mnemonicParsing="false" onAction="#denyPatient" text="Deny" />
                         </Menu>
                         <Menu mnemonicParsing="false" text="Dial">
                             <items>
