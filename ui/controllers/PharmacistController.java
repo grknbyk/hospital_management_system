@@ -296,6 +296,8 @@ public class PharmacistController {
         } else if (result.isPresent() && result.get() == ButtonType.CANCEL) {
             addMedicine();
         }
+
+        loadMedicine();
     }
 
     private void copyToClipboard(String text) {
