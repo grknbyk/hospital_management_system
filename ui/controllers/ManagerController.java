@@ -6,11 +6,9 @@ import java.awt.datatransfer.StringSelection;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
 import java.util.Optional;
 
 import database.Datasource;
-import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -25,19 +23,15 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import model.*;
-import javafx.application.Application;
 
 public class ManagerController {
     String username;
@@ -51,8 +45,19 @@ public class ManagerController {
     }
 
     @FXML
-    private TableView<Doctor> tableView;
+    private TabPane managerTabPane;
 
+    @FXML
+    private Tab doctorTab;
+
+    @FXML
+    private Tab nurseTab;
+
+    @FXML
+    private Tab pharmacistTab;
+
+    @FXML
+    private Tab receptionistTab;
 
     @FXML
     private BorderPane managerPanel;
@@ -117,6 +122,90 @@ public class ManagerController {
 
     }
 
+    public void addPersonnel() {
+
+    }
+
+    public void editPersonnel() {
+        Tab selectedTab = managerTabPane.getSelectionModel().getSelectedItem();
+        if (selectedTab != null) {
+            TableView<?> selectedTableView = null;
+            if (selectedTab.equals(doctorTab)) {
+                selectedTableView = doctorTableView;
+            } else if (selectedTab.equals(nurseTab)) {
+                selectedTableView = nurseTableView;
+            } else if (selectedTab.equals(pharmacistTab)) {
+                selectedTableView = pharmacistTableView;
+            } else if (selectedTab.equals(receptionistTab)) {
+                selectedTableView = receptionistTableView;
+            }
+
+            if (selectedTableView != null) {
+
+                Staff selectedPersonnel = (Staff) selectedTableView.getSelectionModel().getSelectedItem();
+                if(selectedPersonnel == null) {
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("No Personnel Selected");
+                    alert.setHeaderText(null);
+                    alert.setContentText("Select a personnel");
+                    alert.showAndWait();
+                    return;
+                }
+                EditPersonnelController editPersonnelController;
+
+                Dialog<ButtonType> dialog = new Dialog<>();
+                dialog.initOwner(managerPanel.getScene().getWindow());
+                dialog.setTitle("Edit Personnel");
+                FXMLLoader fxmlLoader = new FXMLLoader();
+                fxmlLoader.setLocation(getClass().getResource("../scene/EditPersonnel.fxml"));
+                try {
+                    dialog.getDialogPane().setContent(fxmlLoader.load());
+                    editPersonnelController = fxmlLoader.getController();
+                    editPersonnelController.updateFields(selectedPersonnel);
+                } catch (IOException e) {
+                    System.out.println("Couldn't load the dialog");
+                    e.printStackTrace();
+                    return;
+                }
+                dialog.getDialogPane().getScene().getWindow().setOnCloseRequest(e -> {
+                    dialog.close();
+                });
+
+                ButtonType applyButton = new ButtonType("Apply");
+                ButtonType cancelButton = new ButtonType("Cancel");
+
+                dialog.getDialogPane().getButtonTypes().addAll(applyButton, cancelButton);
+
+                Optional<ButtonType> result = dialog.showAndWait();
+                if(result.isPresent() && result.get() == applyButton) {
+                    applyButtonFunction(selectedPersonnel, editPersonnelController);
+                }else if(result.isPresent() && result.get() == cancelButton){
+                    dialog.close();
+                }
+
+            }
+        }
+    }
+
+    private void applyButtonFunction(Staff selectedPersonnel, EditPersonnelController editPersonnelController){
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Confirmation");
+        alert.setHeaderText("Confirmation Dialog");
+        alert.setContentText("Are you sure you want to save the changes");
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            if (!editPersonnelController.saveChanges(selectedPersonnel)){
+                //enters if selected personnel is not updated
+                editPersonnel();
+            }
+        } else if (result.isPresent() && result.get() == ButtonType.CANCEL) {
+            editPersonnel();
+        }
+    }
+
+
+
     public void logout(ActionEvent event) throws IOException {
         Parent root = FXMLLoader.load(getClass().getResource("../scene/LoginScene.fxml"));
         Scene scene = new Scene(root);
@@ -130,15 +219,35 @@ public class ManagerController {
         // Create a new stage for the dialog
         Stage dialogStage = new Stage();
         dialogStage.initModality(Modality.APPLICATION_MODAL);
-        dialogStage.setTitle("Help");
+        dialogStage.setTitle("About");
+
+        // Create a text area for additional instructions or information
+        Label additionalInfoLabel = new Label();
+        additionalInfoLabel.setText("Who are we?\nWe are computer engineering students at Dokuz Eylül University. \nWe developed this project for our school's OOP class. You can contact us via the following e-mail addresses.");
 
         // Create labels and fields for email, phone, and website
-        Label emailLabel = new Label("Email:");
-        Hyperlink emailField = new Hyperlink("group1_oop@email.com");
+        Label emailLabel = new Label("Abdulkadir Öksüz:");
+        Hyperlink emailField = new Hyperlink("abdulkadir.oksuz@outlook.com");
         emailField.setPrefWidth(200);
         emailField.setOnMouseClicked(event -> {
             copyToClipboard(emailField.getText());
-            showAlert(Alert.AlertType.INFORMATION, "Copied", "Email address copied to clipboard.");
+            showAlert(AlertType.INFORMATION, "Copied", "Email address copied to clipboard.");
+        });
+
+        Label emailLabel2 = new Label("Can Çelenay:");
+        Hyperlink emailField2 = new Hyperlink("brogolem35@protonmail.com");
+        emailField2.setPrefWidth(200);
+        emailField2.setOnMouseClicked(event -> {
+            copyToClipboard(emailField2.getText());
+            showAlert(AlertType.INFORMATION, "Copied", "Email address copied to clipboard.");
+        });
+
+        Label emailLabel3 = new Label("Gürkan Bıyık:");
+        Hyperlink emailField3 = new Hyperlink("email");
+        emailField3.setPrefWidth(200);
+        emailField3.setOnMouseClicked(event -> {
+            copyToClipboard(emailField3.getText());
+            showAlert(AlertType.INFORMATION, "Copied", "Email address copied to clipboard.");
         });
 
         Label phoneLabel = new Label("Phone:");
@@ -151,13 +260,9 @@ public class ManagerController {
             } catch (IOException | URISyntaxException e) {
                 // Handle any errors that occur while trying to open the link
                 e.printStackTrace();
-                showAlert(Alert.AlertType.ERROR, "Error", "Failed to open website.");
+                showAlert(AlertType.ERROR, "Error", "Failed to open website.");
             }
         });
-
-        // Create a text area for additional instructions or information
-        Label additionalInfoLabel = new Label();
-        additionalInfoLabel.setText("This project is designed for OOP lecture in Dokuz Eylul University");
 
         // Create a button to close the dialog
         Button closeButton = new Button("Close");
@@ -169,13 +274,74 @@ public class ManagerController {
         gridPane.setVgap(10);
         gridPane.setPadding(new Insets(10));
         gridPane.setAlignment(Pos.CENTER);
-        gridPane.add(emailLabel, 0, 0);
-        gridPane.add(emailField, 1, 0);
-        gridPane.add(phoneLabel, 0, 1);
-        gridPane.add(phoneField, 1, 1);
-        gridPane.add(websiteLink, 0, 2, 2, 1);
-        gridPane.add(additionalInfoLabel, 0, 3, 2, 1);
-        gridPane.add(closeButton, 0, 4, 2, 1);
+        gridPane.add(additionalInfoLabel, 0, 0, 2, 1);
+        gridPane.add(emailLabel, 0, 1);
+        gridPane.add(emailField, 1, 1);
+        gridPane.add(emailLabel2, 0, 2);
+        gridPane.add(emailField2, 1, 2);
+        gridPane.add(emailLabel3, 0, 3);
+        gridPane.add(emailField3, 1, 3);
+        gridPane.add(phoneLabel, 0, 4);
+        gridPane.add(phoneField, 1, 4);
+        gridPane.add(websiteLink, 0, 5, 2, 1);
+        gridPane.add(closeButton, 5, 6, 2, 1);
+
+        // Set the scene for the dialog and show it
+        Scene dialogScene = new Scene(gridPane);
+        dialogStage.setScene(dialogScene);
+        dialogStage.show();
+    }
+
+    public void showHelpDialog() {
+        // Create a new stage for the dialog
+        Stage dialogStage = new Stage();
+        dialogStage.initModality(Modality.APPLICATION_MODAL);
+        dialogStage.setTitle("Help");
+
+        // Create a text area for additional instructions or information
+        Label additionalInfoLabel = new Label();
+        additionalInfoLabel.setText("Contact us via our contact addresses for error reporting. \nCheck out our tutorial content on our website.");
+
+        // Create labels and fields for email, phone, and website
+        Label emailLabel = new Label("Email:");
+        Hyperlink emailField = new Hyperlink("group1_oop@email.com");
+        emailField.setPrefWidth(200);
+        emailField.setOnMouseClicked(event -> {
+            copyToClipboard(emailField.getText());
+            showAlert(AlertType.INFORMATION, "Copied", "Email address copied to clipboard.");
+        });
+
+        Label phoneLabel = new Label("Phone:");
+        Label phoneField = new Label("+1 123-456-7890");
+
+        Hyperlink websiteLink = new Hyperlink("Website: https://ceng.deu.edu.tr");
+        websiteLink.setOnAction(event -> {
+            try {
+                Desktop.getDesktop().browse(new URI("https://ceng.deu.edu.tr"));
+            } catch (IOException | URISyntaxException e) {
+                // Handle any errors that occur while trying to open the link
+                e.printStackTrace();
+                showAlert(AlertType.ERROR, "Error", "Failed to open website.");
+            }
+        });
+
+        // Create a button to close the dialog
+        Button closeButton = new Button("Close");
+        closeButton.setOnAction(event -> dialogStage.close());
+
+        // Create a grid pane to hold the dialog content
+        GridPane gridPane = new GridPane();
+        gridPane.setHgap(10);
+        gridPane.setVgap(10);
+        gridPane.setPadding(new Insets(10));
+        gridPane.setAlignment(Pos.CENTER);
+        gridPane.add(additionalInfoLabel, 0, 0, 2, 1);
+        gridPane.add(emailLabel, 0, 1);
+        gridPane.add(emailField, 1, 1);
+        gridPane.add(phoneLabel, 0, 2);
+        gridPane.add(phoneField, 1, 2);
+        gridPane.add(websiteLink, 0, 3, 2, 1);
+        gridPane.add(closeButton, 5, 4, 2, 1);
 
         // Set the scene for the dialog and show it
         Scene dialogScene = new Scene(gridPane);
@@ -188,7 +354,7 @@ public class ManagerController {
         clipboard.setContents(new StringSelection(text), null);
     }
 
-    private void showAlert(Alert.AlertType alertType, String title, String content) {
+    private void showAlert(AlertType alertType, String title, String content) {
         Alert alert = new Alert(alertType);
         alert.setTitle(title);
         alert.setHeaderText(null);

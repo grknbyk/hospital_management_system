@@ -4,6 +4,8 @@
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuButton?>
 <?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.cell.PropertyValueFactory?>
@@ -11,8 +13,6 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.FlowPane?>
 
-<?import javafx.scene.control.TabPane?>
-<?import javafx.scene.control.Tab?>
 <BorderPane fx:id="pharmacistPanel" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.controllers.PharmacistController">
     <top>
         <FlowPane prefHeight="10.0" prefWidth="1280.0" BorderPane.alignment="CENTER">
@@ -23,6 +23,8 @@
                             <items>
                                 <MenuItem mnemonicParsing="false" text="Add New" />
                                 <MenuItem mnemonicParsing="false" text="Remove" />
+                                <MenuItem mnemonicParsing="false" text="Supply" />
+                                <MenuItem mnemonicParsing="false" text="Consume" />
                                 <MenuItem mnemonicParsing="false" text="Update" />
                             </items>
                         </Menu>
@@ -33,7 +35,10 @@
                                 <MenuItem mnemonicParsing="false" text="Emergency" />
                             </items>
                         </Menu>
-                        <Menu mnemonicParsing="false" text="Help" />
+                        <Menu mnemonicParsing="false" text="Help">
+                     <items>
+                        <MenuItem mnemonicParsing="false" onAction="#showHelpDialog" text="Help" />
+                     </items></Menu>
                   <Menu mnemonicParsing="false" text="About">
                      <items>
                         <MenuItem mnemonicParsing="false" onAction="#showAboutDialog" text="About" />
@@ -63,22 +68,22 @@
                     <columns>
                         <TableColumn maxWidth="3000.0" prefWidth="75.0" text="id">
                             <cellValueFactory>
-                                <PropertyValueFactory property="id"/>
+                                <PropertyValueFactory property="id" />
                             </cellValueFactory>
                         </TableColumn>
                         <TableColumn maxWidth="3000.0" prefWidth="307.0" text="Name">
                             <cellValueFactory>
-                                <PropertyValueFactory property="name"/>
+                                <PropertyValueFactory property="name" />
                             </cellValueFactory>
                         </TableColumn>
                         <TableColumn maxWidth="4000.0" prefWidth="308.0" text="Type">
                             <cellValueFactory>
-                                <PropertyValueFactory property="type"/>
+                                <PropertyValueFactory property="type" />
                             </cellValueFactory>
                         </TableColumn>
                         <TableColumn maxWidth="4000.0" prefWidth="75.0" text="In Stock">
                             <cellValueFactory>
-                                <PropertyValueFactory property="stock"/>
+                                <PropertyValueFactory property="stock" />
                             </cellValueFactory>
                         </TableColumn>
                     </columns>
@@ -92,27 +97,27 @@
                     <columns>
                         <TableColumn maxWidth="3000.0" prefWidth="75.0" text="id">
                             <cellValueFactory>
-                                <PropertyValueFactory property="id"/>
+                                <PropertyValueFactory property="id" />
                             </cellValueFactory>
                         </TableColumn>
                         <TableColumn maxWidth="3000.0" prefWidth="75.0" text="Patient id">
                             <cellValueFactory>
-                                <PropertyValueFactory property="patientId"/>
+                                <PropertyValueFactory property="patientId" />
                             </cellValueFactory>
                         </TableColumn>
                         <TableColumn maxWidth="3000.0" prefWidth="75.0" text="Doctor id">
                             <cellValueFactory>
-                                <PropertyValueFactory property="staffId"/>
+                                <PropertyValueFactory property="staffId" />
                             </cellValueFactory>
                         </TableColumn>
                         <TableColumn maxWidth="4000.0" prefWidth="308.0" text="Given Date">
                             <cellValueFactory>
-                                <PropertyValueFactory property="givenDate"/>
+                                <PropertyValueFactory property="givenDate" />
                             </cellValueFactory>
                         </TableColumn>
                         <TableColumn maxWidth="4000.0" prefWidth="308.0" text="Expire Date">
                             <cellValueFactory>
-                                <PropertyValueFactory property="expireDate"/>
+                                <PropertyValueFactory property="expireDate" />
                             </cellValueFactory>
                         </TableColumn>
                     </columns>

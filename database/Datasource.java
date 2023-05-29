@@ -1583,7 +1583,7 @@ public class Datasource {
     /**
      * required fields: medicine, MedicineType
      * 
-     * @param medince pass the required fields mentioned above
+     * @param medicine pass the required fields mentioned above
      * @param amount  quantity of the medicine
      * @return message that shows the result of the operation.
      */
