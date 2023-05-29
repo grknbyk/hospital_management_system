@@ -73,6 +73,28 @@ public class ReceptionistController {
         patientTableView.setItems(patients);
     }
 
+    public void denyPatient() {
+        Patient selectedPatient = patientTableView.getSelectionModel().getSelectedItem();
+        if(selectedPatient == null) {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("No Patient Selected");
+            alert.setHeaderText(null);
+            alert.setContentText("Select a patient to delete.");
+            alert.showAndWait();
+            return;
+        }
+
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Confirmation");
+        alert.setHeaderText("Confirmation Dialog");
+        alert.setContentText("Are you sure you want to delete?");
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            // hasta silme
+        }
+    }
+
     public void registerPatient() {
         Patient selectedPatient = patientTableView.getSelectionModel().getSelectedItem();
         if(selectedPatient == null) {
