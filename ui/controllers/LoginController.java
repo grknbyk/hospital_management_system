@@ -1,6 +1,7 @@
 package ui.controllers;
 
-import java.awt.*;
+import java.awt.Desktop;
+import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.io.IOException;
@@ -16,10 +17,13 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
@@ -40,53 +44,73 @@ public class LoginController {
     @FXML
     private Button loginButton;
 
+    @FXML ImageView imgView;
+
     private Stage stage;
     private Scene scene;
     private Parent root;
 
+    
     @FXML
     private void login(ActionEvent event) throws IOException {
-
+        
         String username = usernameTextField.getText();
         String password = passwordTextField.getText();
-
-        username = "pharmacist";
-        password = "pharmacist";
-
+        
+        username = "doctor";
+        password = "doctor";
+        
 		String status = Datasource.getInstance().queryLogin(username, password);
-
+        
 		if (status == null) {
-			System.out.println("Invalid username or password");
+            System.out.println("Invalid username or password");
 			loginErrorLabel.setVisible(true);
 			return;
 		} else {
-			status = status.toLowerCase();
+            status = status.toLowerCase();
 			switch (status) {
-				case "manager":
-					showManagerPanel(event,username);
-					break;
+                case "manager":
+                showManagerPanel(event,username);
+                break;
 				case "doctor":
-					showDoctorPanel(event, username);
-					break;
+                showDoctorPanel(event, username);
+                break;
 				case "nurse":
-					showNursePanel(event, username);
-					break;
+                showNursePanel(event, username);
+                break;
 				case "receptionist":
-					showReceptionistPanel(event, username);
-					break;
+                showReceptionistPanel(event, username);
+                break;
 				case "pharmacist":
-					showPharmacistPanel(event, username);
-					break;
+                showPharmacistPanel(event, username);
+                break;
 				default:
-					// label.setText("You don't have access to this system");
-					System.out.println("Invalid status: " + status);
-					System.out.println("You don't have access to this system");
-					break;
+                // label.setText("You don't have access to this system");
+                System.out.println("Invalid status: " + status);
+                System.out.println("You don't have access to this system");
+                break;
 			}
 		}
-
+        
     }
 
+    public void initialize() {
+        imgView.setImage(new javafx.scene.image.Image("ui/imgs/login-icon.png"));
+
+        ImageView imgView = new ImageView(new javafx.scene.image.Image("ui/imgs/login-button.png"));       
+        imgView.setFitWidth(105);
+        imgView.setFitHeight(35);
+        loginButton.setOnMousePressed(e -> {
+            imgView.setStyle("-fx-effect: dropshadow(gaussian, #000000, 3, 0.5, 0, 0);");
+            
+        });
+        loginButton.setStyle("-fx-background-color: rgba(0, 0, 0, 0);");
+        loginButton.setText(null);
+        loginButton.setLayoutX(245);
+        loginButton.setGraphic(imgView);
+
+    }
+    
     @FXML
     private void usernameKeyPress(KeyEvent event) {
         if (event.getCode() == KeyCode.ENTER)
@@ -112,6 +136,8 @@ public class LoginController {
         Scene scene = new Scene(root);
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         stage.setTitle("Hospital Management System - Manager");
+        stage.setX(300);
+        stage.setX(300);
         stage.setScene(scene);
         stage.show();
 
@@ -129,6 +155,7 @@ public class LoginController {
         Scene scene = new Scene(root);
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         stage.setTitle("Hospital Management System - Doctor");
+        stage.setX(300);
         stage.setScene(scene);
         stage.show();
     }
@@ -145,6 +172,7 @@ public class LoginController {
         Scene scene = new Scene(root);
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         stage.setTitle("Hospital Management System - Nurse");
+        stage.setX(300);
         stage.setScene(scene);
         stage.show();
     }
@@ -160,6 +188,7 @@ public class LoginController {
         scene = new Scene(root);
         stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         stage.setTitle("Hospital Management System - Receptionist");
+        stage.setX(300);
         stage.setScene(scene);
         stage.show();
     }
@@ -176,6 +205,7 @@ public class LoginController {
         stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         scene = new Scene(root);
         stage.setTitle("Hospital Management System - Pharmacist");
+        stage.setX(300);
         stage.setScene(scene);
         stage.show();
     }
