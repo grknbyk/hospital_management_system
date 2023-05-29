@@ -157,7 +157,7 @@ public class NurseController {
         });
 
         Label emailLabel2 = new Label("Can Çelenay:");
-        Hyperlink emailField2 = new Hyperlink("email");
+        Hyperlink emailField2 = new Hyperlink("brogolem35@protonmail.com");
         emailField2.setPrefWidth(200);
         emailField2.setOnMouseClicked(event -> {
             copyToClipboard(emailField2.getText());
