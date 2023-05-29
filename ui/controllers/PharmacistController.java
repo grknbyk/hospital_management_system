@@ -3,6 +3,7 @@ package ui.controllers;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.chart.PieChart.Data;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Hyperlink;
@@ -20,6 +21,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.sql.Date;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Optional;
@@ -37,7 +39,6 @@ import javafx.scene.control.TableView;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
-import model.Medicine;
 import model.MedicineSupply;
 import model.Receipt;
 import model.Staff;
@@ -92,18 +93,13 @@ public class PharmacistController {
 
     public void loadMedicine() {
         //fill the table
-        int staffId = Datasource.getInstance().queryStaffId(username);
         Datasource.getInstance().updateMedicineSupply(MedicineSupply.getInstance());
         medicine = FXCollections.observableList(Arrays.stream(MedicineSupply.getInstance().toList().toArray()).map(obj -> (MedicineSupply.SupplyItem) obj).collect(Collectors.toList()));
         medicineTableView.setItems(medicine);
     }
 
     public void loadReceipts() {
-        //fill the table
-        int staffId = Datasource.getInstance().queryStaffId(username);
-        Datasource.getInstance().updateMedicineSupply(MedicineSupply.getInstance());
-        ArrayList<Receipt> arr = new ArrayList<>();
-        arr.add(new Receipt(31, 62, 93, new Date(System.currentTimeMillis()), new Date(System.currentTimeMillis() + 50000000)));
+        ArrayList<Receipt> arr = Datasource.getInstance().queryReceipts();
         receipts = FXCollections.observableList(arr);
         receiptsTableView.setItems(receipts);
     }
@@ -123,6 +119,37 @@ public class PharmacistController {
 
     public void dispenseMedicine() {
 
+    }
+
+    public void showReceiptDetails() {
+        Receipt selectedReceipt = receiptsTableView.getSelectionModel().getSelectedItem();
+        if(selectedReceipt == null) {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("No Patient Selected");
+            alert.setHeaderText(null);
+            alert.setContentText("Please select the patient you want to retrieve data from.");
+            alert.showAndWait();
+            return;
+        }
+
+        Dialog<ButtonType> dialog = new Dialog<>();
+        dialog.initOwner(pharmacistPanel.getScene().getWindow());
+        dialog.setTitle("Receipt Details");
+        FXMLLoader fxmlLoader = new FXMLLoader();
+        fxmlLoader.setLocation(getClass().getResource("../scene/ReceiptDetails.fxml"));
+        try {
+            dialog.getDialogPane().setContent(fxmlLoader.load());
+            ReceiptDetailsController receiptDetailsController = fxmlLoader.getController();
+            receiptDetailsController.updateFields(selectedReceipt);
+        } catch (IOException e) {
+            System.out.println("Couldn't load the dialog");
+            e.printStackTrace();
+            return;
+        }
+
+        dialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
+
+        dialog.showAndWait();
     }
 
     public void showHelpDialog() {
@@ -373,6 +400,7 @@ public class PharmacistController {
         } else if (result.isPresent() && result.get() == ButtonType.CANCEL) {
             addMedicine();
         }
+        loadMedicine();
     }
 
     private void applyButtonFunctionSupply(MedicineSupply.SupplyItem selectedItem, SupplyMedicineController supplyMedicineController){
