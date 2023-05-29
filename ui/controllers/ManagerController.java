@@ -105,8 +105,16 @@ public class ManagerController {
         receptionistTableView.setItems(receptionists);
 
     }
+    
+    public void addPersonnel(){
+        new AddPersonalViewBuilder(username, managerPanel).showAddUserView();
+    }
 
-    public void addPersonnel() {
+    public void authorize(){
+
+    }
+
+    public void restrict(){
 
     }
 
@@ -141,7 +149,7 @@ public class ManagerController {
                 dialog.initOwner(managerPanel.getScene().getWindow());
                 dialog.setTitle("Edit Personnel");
                 FXMLLoader fxmlLoader = new FXMLLoader();
-                fxmlLoader.setLocation(getClass().getResource("../scene/EditPersonnel.fxml"));
+                fxmlLoader.setLocation(getClass().getResource("../scene/user/EditPersonnel.fxml"));
                 try {
                     dialog.getDialogPane().setContent(fxmlLoader.load());
                     editPersonnelController = fxmlLoader.getController();
