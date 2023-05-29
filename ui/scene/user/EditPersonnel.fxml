@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
@@ -22,8 +23,8 @@
         <GridPane prefHeight="174.0" prefWidth="400.0" BorderPane.alignment="CENTER">
             <columnConstraints>
                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="185.0" minWidth="100.0" prefWidth="80.0" />
-                <ColumnConstraints hgrow="SOMETIMES" maxWidth="309.0" minWidth="10.0" prefWidth="299.0" />
-                <ColumnConstraints hgrow="SOMETIMES" maxWidth="309.0" minWidth="10.0" prefWidth="30.0" />
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="309.0" minWidth="10.0" prefWidth="249.0" />
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="309.0" minWidth="10.0" prefWidth="56.0" />
             </columnConstraints>
             <rowConstraints>
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -35,14 +36,17 @@
                 <Insets top="30.0" />
             </BorderPane.margin>
             <children>
-                <Label prefHeight="17.0" prefWidth="221.0" text="Set Staff ID:" />
-                <Label text="Set Status:" GridPane.rowIndex="1" />
-                <Label text="Set Username:" GridPane.rowIndex="2" />
-                <ChoiceBox fx:id="staffChoiceBox" prefHeight="25.0" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                <TextField fx:id="staffIdTextField" GridPane.columnIndex="1" />
-            <Label text="Set Password:" GridPane.rowIndex="3" />
-            <TextField fx:id="userNameTextField" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-            <TextField fx:id="passwordTextField" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                <Label text="Set Status:" GridPane.rowIndex="2" />
+                <Label text="Set Username:" />
+                <ChoiceBox fx:id="staffChoiceBox" prefHeight="25.0" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+            <Label text="Set Password:" GridPane.rowIndex="1" />
+            <TextField fx:id="userNameTextField" prefHeight="25.0" prefWidth="226.0" GridPane.columnIndex="1" />
+            <TextField fx:id="passwordTextField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <Label fx:id="workingAreaLabel" text="Set Working Area:" GridPane.rowIndex="3" />
+            <Label fx:id="expertiseLabel" text="Set Expertise:" GridPane.rowIndex="3" />
+            <ChoiceBox fx:id="choiceBoxAdditional" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+            <Button mnemonicParsing="false" onAction="#usernameResetButton" text="Reset" GridPane.columnIndex="2" />
+            <Button mnemonicParsing="false" onAction="#passwordResetButton" text="Reset" GridPane.columnIndex="2" GridPane.rowIndex="1" />
             </children>
         </GridPane>
     </center>

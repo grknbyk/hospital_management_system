@@ -5,12 +5,17 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import model.Staff;
-import model.enums.Status;
+import model.*;
+import model.enums.*;
 
 import java.util.Optional;
 
+import javax.print.Doc;
+
 public class EditPersonnelController {
+
+    private String username;
+    private String password;
 
     @FXML
     private Label addressLabel;
@@ -37,7 +42,13 @@ public class EditPersonnelController {
     private ChoiceBox<Status> staffChoiceBox;
 
     @FXML
-    private TextField staffIdTextField;
+    private Label expertiseLabel;
+
+    @FXML
+    private Label workingAreaLabel;
+
+    @FXML
+    private ChoiceBox<String> choiceBoxAdditional;
 
     @FXML
     private TextField userNameTextField;
@@ -45,7 +56,35 @@ public class EditPersonnelController {
     @FXML
     private TextField passwordTextField;
 
+    public void initialize() {
+        this.staffChoiceBox.getSelectionModel().selectedItemProperty().addListener((v, oldValue, newValue) -> {
+            if (newValue == Status.DOCTOR) {
+                workingAreaLabel.setVisible(false);
+                expertiseLabel.setVisible(true);
+                choiceBoxAdditional.getItems().clear();
+                for (model.enums.Expertise expertise : model.enums.Expertise.values()) {
+                    choiceBoxAdditional.getItems().add(expertise.toString());
+                }
+                choiceBoxAdditional.setVisible(true);
+            } else if(newValue == Status.NURSE){
+                expertiseLabel.setVisible(false);
+                workingAreaLabel.setVisible(true);
+                choiceBoxAdditional.getItems().clear();
+                for (model.enums.WorkingArea workingArea : model.enums.WorkingArea.values()) {
+                    choiceBoxAdditional.getItems().add(workingArea.toString());
+                }
+                choiceBoxAdditional.setVisible(true);
+            }else{
+                expertiseLabel.setVisible(false);
+                workingAreaLabel.setVisible(false);
+                choiceBoxAdditional.setVisible(false);
+            }
+        });
+    }
+
     public void updateFields(Staff personnel) {
+        this.username = personnel.getUsername();
+        this.password = personnel.getPassword();
         this.addressLabel.setText(personnel.getAddress());
         this.ageLabel.setText(String.valueOf(personnel.getAge()));
         this.emailLabel.setText(personnel.getEmail());
@@ -53,28 +92,32 @@ public class EditPersonnelController {
         this.imageField.setImage(new Image("ui/imgs/default_person.png"));
         this.nameSurnameLabel.setText(personnel.getName()+" "+personnel.getSurname());
         this.phoneLabel.setText(personnel.getPhone());
-        this.staffIdTextField.setText(String.valueOf(personnel.getId()));
         this.userNameTextField.setText(personnel.getUsername());
+        this.passwordTextField.setText(personnel.getPassword());
         this.staffChoiceBox.getItems().addAll(Status.values());
         this.staffChoiceBox.setValue(personnel.getStatus());
+
+        if(personnel instanceof Doctor){
+            this.choiceBoxAdditional.setValue(((Doctor) personnel).getExpertise());
+        }
+        if(personnel instanceof model.Nurse){
+            this.choiceBoxAdditional.setValue(((model.Nurse) personnel).getWorkingArea());
+        }
+
+        
     }
 
     public boolean saveChanges(Staff personnel) {
-        Datasource.getInstance().queryStaffProfile(personnel.getId()).setUsername(userNameTextField.getText());
-        //Database güncellenmiyor
-        //System.out.println(Datasource.getInstance().queryStaffProfile(personnel.getId()).getUsername());
-        Datasource.getInstance().queryStaffProfile(personnel.getId()).setPassword(passwordTextField.getText());
-        Datasource.getInstance().queryStaffProfile(personnel.getId()).setStatus(staffChoiceBox.getValue());
-
-        if(Datasource.getInstance().queryStaffProfile(Integer.parseInt(staffIdTextField.getText())) != null) {
-            return alreadyTaken();
-        }else {
-            //burası da kontrol edilecek
-            //Caused by: java.lang.NullPointerException: Cannot invoke "String.equals(Object)" because the return value of "java.sql.ResultSet.getString(String)" is null
-            //	at database.Datasource.queryStaffProfile(Datasource.java:885)
-            Datasource.getInstance().queryStaffProfile(personnel.getId()).setId(Integer.parseInt(this.staffIdTextField.getText()));
+        Staff staff = personnel;
+        staff.setUsername(userNameTextField.getText());
+        staff.setPassword(passwordTextField.getText());
+        
+        String result = Datasource.getInstance().updateStaffUser(staff);
+        if(result.equals("Staff updated successfully") || result.equals("Couldn't update the staff completely"))
             return true;
-        }
+        else
+            return alreadyTaken();
+           
     }
 
     private boolean alreadyTaken() {
@@ -84,6 +127,14 @@ public class EditPersonnelController {
         alert.setContentText("Staff ID already exists");
         alert.showAndWait();
         return false;
+    }
+
+    public void usernameResetButton(){
+        this.userNameTextField.setText(this.username);
+    }
+
+    public void passwordResetButton(){
+        this.passwordTextField.setText(this.password);
     }
 
 }
