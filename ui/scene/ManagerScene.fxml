@@ -26,6 +26,18 @@
                         <MenuItem mnemonicParsing="false" text="Delete" />
                   </items>
                 </Menu>
+                  <Menu mnemonicParsing="false" text="Dial">
+                     <items>
+                        <MenuItem mnemonicParsing="false" onAction="#showAboutDialog" text="Secretary" />
+                        <MenuItem mnemonicParsing="false" onAction="#showAboutDialog" text="Security" />
+                        <MenuItem mnemonicParsing="false" onAction="#showAboutDialog" text="Emergency" />
+                     </items>
+                  </Menu>
+                  <Menu mnemonicParsing="false" text="Help">
+                     <items>
+                        <MenuItem mnemonicParsing="false" onAction="#showHelpDialog" text="Help" />
+                     </items>
+                  </Menu>
                 <Menu mnemonicParsing="false" text="About">
                   <items>
                     <MenuItem mnemonicParsing="false" onAction="#showAboutDialog" text="About" />
