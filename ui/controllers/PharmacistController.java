@@ -3,11 +3,12 @@ package ui.controllers;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
+import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.Dialog;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -21,6 +22,7 @@ import java.net.URISyntaxException;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import database.Datasource;
@@ -169,7 +171,6 @@ public class PharmacistController {
         dialogStage.show();
     }
 
-
     public void showAboutDialog() {
         // Create a new stage for the dialog
         Stage dialogStage = new Stage();
@@ -247,6 +248,55 @@ public class PharmacistController {
         dialogStage.show();
     }
 
+    public void addMedicine() {
+        AddMedicineController addMedicineController;
+        Dialog<ButtonType> dialog = new Dialog<>();
+        dialog.initOwner(pharmacistPanel.getScene().getWindow());
+        dialog.setTitle("Add Medicine");
+        FXMLLoader fxmlLoader = new FXMLLoader();
+        fxmlLoader.setLocation(getClass().getResource("../scene/AddMedicine.fxml"));
+        try {
+            dialog.getDialogPane().setContent(fxmlLoader.load());
+            addMedicineController = fxmlLoader.getController();
+            addMedicineController.initializeField();
+        } catch (IOException e) {
+            System.out.println("Couldn't load the dialog");
+            e.printStackTrace();
+            return;
+        }
+        dialog.getDialogPane().getScene().getWindow().setOnCloseRequest(e -> {
+            dialog.close();
+        });
+
+        ButtonType applyButton = new ButtonType("Apply");
+        ButtonType cancelButton = new ButtonType("Cancel");
+
+        dialog.getDialogPane().getButtonTypes().addAll(applyButton, cancelButton);
+
+        Optional<ButtonType> result = dialog.showAndWait();
+        if(result.isPresent() && result.get() == applyButton) {
+            applyButtonFunction(addMedicineController);
+        }else if(result.isPresent() && result.get() == cancelButton){
+            dialog.close();
+        }
+    }
+
+    private void applyButtonFunction(AddMedicineController addMedicineController){
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Confirmation");
+        alert.setHeaderText("Confirmation Dialog");
+        alert.setContentText("Are you sure you want add?");
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            if (!addMedicineController.addMedicine()){
+                //enters if selected personnel is not updated
+                addMedicine();
+            }
+        } else if (result.isPresent() && result.get() == ButtonType.CANCEL) {
+            addMedicine();
+        }
+    }
 
     private void copyToClipboard(String text) {
         Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();

@@ -60,19 +60,10 @@ public class EditPersonnelController {
     }
 
     public boolean saveChanges(Staff personnel) {
-        Datasource.getInstance().queryStaffProfile(personnel.getId()).setUsername(userNameTextField.getText());
-        //Database güncellenmiyor
-        //System.out.println(Datasource.getInstance().queryStaffProfile(personnel.getId()).getUsername());
-        Datasource.getInstance().queryStaffProfile(personnel.getId()).setPassword(passwordTextField.getText());
-        Datasource.getInstance().queryStaffProfile(personnel.getId()).setStatus(staffChoiceBox.getValue());
-
         if(Datasource.getInstance().queryStaffProfile(Integer.parseInt(staffIdTextField.getText())) != null) {
             return alreadyTaken();
         }else {
-            //burası da kontrol edilecek
-            //Caused by: java.lang.NullPointerException: Cannot invoke "String.equals(Object)" because the return value of "java.sql.ResultSet.getString(String)" is null
-            //	at database.Datasource.queryStaffProfile(Datasource.java:885)
-            Datasource.getInstance().queryStaffProfile(personnel.getId()).setId(Integer.parseInt(this.staffIdTextField.getText()));
+            //update burda yapılacak
             return true;
         }
     }
