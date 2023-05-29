@@ -233,7 +233,7 @@ public class Datasource {
             " INNER JOIN " + TABLE_PERSON +
             " ON " + TABLE_PATIENT + "." + COLUMN_PATIENT_PERSON_ID + " = " + TABLE_PERSON + "." + COLUMN_PERSON_ID +
             " WHERE " + COLUMN_PATIENT_STAFF_ID + " = ?";
-    
+
     private static final String QUERY_RECEIPTS = " SELECT * FROM " + TABLE_RECEIPT;
 
     private static final String DELETE_CONTACT_BY_PERSON_ID = "DELETE FROM " + TABLE_CONTACT +
@@ -340,8 +340,8 @@ public class Datasource {
 
     private static final String QUERY_PATIENTS_NULL_STAFF = "SELECT * FROM " + TABLE_PATIENT +
             " WHERE " + COLUMN_PATIENT_STAFF_ID + " IS NULL";
-    
-    private static final String QUERY_MEDICINE_BY_RECEIPT_ID = "SELECT " + 
+
+    private static final String QUERY_MEDICINE_BY_RECEIPT_ID = "SELECT " +
             TABLE_MEDICINE + "." + COLUMN_MEDICINE_ID + ", " +
             TABLE_MEDICINE + "." + COLUMN_MEDICINE_NAME + ", " +
             TABLE_MEDICINE + "." + COLUMN_MEDICINE_TYPE + ", " +
@@ -351,7 +351,7 @@ public class Datasource {
             " ON " + TABLE_RECEIPT_MEDICINE + "." + COLUMN_RECEIPT_MEDICINE_MEDICINE_ID + " = " +
             TABLE_MEDICINE + "." + COLUMN_MEDICINE_ID +
             " WHERE " + TABLE_RECEIPT_MEDICINE + "." + COLUMN_RECEIPT_MEDICINE_RECEIPT_ID + " = ?";
-    
+
     private static final String QUERY_PERSON_BY_ID = "SELECT * FROM " + TABLE_PERSON +
             " WHERE " + COLUMN_PERSON_ID + " = ?";
 
@@ -610,7 +610,7 @@ public class Datasource {
         }
     }
 
-    private Person queryPersonbyId(int person_id){
+    private Person queryPersonbyId(int person_id) {
         try {
             queryPersonById.setInt(1, person_id);
             ResultSet results = queryPersonById.executeQuery();
@@ -664,19 +664,19 @@ public class Datasource {
      * @return ArrayList of Medicine objects relevant to receipt_id
      * @param receipt_id the id of the receipt
      */
-    public HashMap<Medicine,Integer> queryMedicineByReceiptId(int receipt_id){
-        try{
+    public HashMap<Medicine, Integer> queryMedicineByReceiptId(int receipt_id) {
+        try {
             queryMedicineByReceiptId.setInt(1, receipt_id);
             ResultSet results = queryMedicineByReceiptId.executeQuery();
-            HashMap<Medicine,Integer> medicines = new HashMap<>();
-            while(results.next()){
+            HashMap<Medicine, Integer> medicines = new HashMap<>();
+            while (results.next()) {
                 int medicine_id = results.getInt(1);
                 String medicine_name = results.getString(2);
                 MedicineType medicine_type = MedicineType.valueOf(results.getString(3));
                 int medicine_amount = results.getInt(4);
                 Medicine medicine = new Medicine(medicine_name, medicine_type);
                 medicine.setId(medicine_id);
-                medicines.put(medicine,medicine_amount);
+                medicines.put(medicine, medicine_amount);
             }
             return medicines;
         } catch (SQLException e) {
@@ -690,7 +690,7 @@ public class Datasource {
      *         receipts.
      * @throws ParseException
      */
-    public ArrayList<Receipt> queryReceipts(){
+    public ArrayList<Receipt> queryReceipts() {
         try (Statement statement = conn.createStatement()) {
             ResultSet results = statement.executeQuery(QUERY_RECEIPTS);
             ArrayList<Receipt> receipts = new ArrayList<>();
@@ -714,13 +714,12 @@ public class Datasource {
                 int staff_id = results.getInt(COLUMN_RECEIPT_STAFF_ID);
                 int patient_id = results.getInt(COLUMN_RECEIPT_PATIENT_ID);
 
-
                 Receipt receipt = new Receipt(receipt_id, patient_id, staff_id, givenDate, expireDate);
                 Boolean isGiven = results.getString(COLUMN_RECEIPT_IS_GIVEN).equalsIgnoreCase("true") ? true : false;
                 receipt.setGiven(isGiven);
-                
-                HashMap<Medicine,Integer> medicines = queryMedicineByReceiptId(receipt_id);
-                for(Medicine medicine : medicines.keySet()){
+
+                HashMap<Medicine, Integer> medicines = queryMedicineByReceiptId(receipt_id);
+                for (Medicine medicine : medicines.keySet()) {
                     receipt.add(medicine, medicines.get(medicine));
                 }
                 receipts.add(receipt);
@@ -765,30 +764,30 @@ public class Datasource {
         }
     }
 
-    private Medicine queryMedicineByName(String medName){
-       try{
-           queryMedicineByName.setString(1, medName);
-           ResultSet results = queryMedicineByName.executeQuery();
-           if(results.next()){
-               int medicine_id = results.getInt(1);
-               String medicine_name = results.getString(2);
-               MedicineType medicine_type = MedicineType.valueOf(results.getString(3));
-               Medicine medicine = new Medicine(medicine_name, medicine_type);
-               medicine.setId(medicine_id);
-               return medicine;
-           }
-           return null;
-       } catch (SQLException e) {
-           System.out.println("Query failed: " + e.getMessage());
-           return null;
-       }
+    private Medicine queryMedicineByName(String medName) {
+        try {
+            queryMedicineByName.setString(1, medName);
+            ResultSet results = queryMedicineByName.executeQuery();
+            if (results.next()) {
+                int medicine_id = results.getInt(1);
+                String medicine_name = results.getString(2);
+                MedicineType medicine_type = MedicineType.valueOf(results.getString(3));
+                Medicine medicine = new Medicine(medicine_name, medicine_type);
+                medicine.setId(medicine_id);
+                return medicine;
+            }
+            return null;
+        } catch (SQLException e) {
+            System.out.println("Query failed: " + e.getMessage());
+            return null;
+        }
     }
 
-    public ArrayList<Patient> queryPatientsNullStaff(){
-        try(Statement statement = conn.createStatement()){
+    public ArrayList<Patient> queryPatientsNullStaff() {
+        try (Statement statement = conn.createStatement()) {
             ResultSet results = statement.executeQuery(QUERY_PATIENTS_NULL_STAFF);
             ArrayList<Patient> patients = new ArrayList<>();
-            while(results.next()){
+            while (results.next()) {
                 Person person = queryPersonbyId(results.getInt(COLUMN_PATIENT_PERSON_ID));
                 Patient patient = new Patient();
                 patient.setId(results.getInt(COLUMN_PATIENT_PERSON_ID));
@@ -812,7 +811,7 @@ public class Datasource {
                 patients.add(patient);
             }
             return patients;
-        }catch (SQLException e){
+        } catch (SQLException e) {
             System.out.println("Query failed: " + e.getMessage());
             return null;
         }
@@ -883,7 +882,7 @@ public class Datasource {
         }
     }
 
-        /**
+    /**
      * @return ArrayList of Medicine objects for information of all medicines.
      */
     public ArrayList<Medicine> queryMedicine() {
@@ -958,39 +957,19 @@ public class Datasource {
     /**
      * @param medicine_supply the supply object to update and insert records
      */
-public void saveMedicineSupply(MedicineSupply medicine_supply){
-        try{
-            conn.setAutoCommit(false);
-            ArrayList<MedicineSupply.SupplyItem> items = (ArrayList<SupplyItem>) Arrays.stream(MedicineSupply.getInstance().toList().toArray()).map(obj -> (MedicineSupply.SupplyItem) obj).collect(Collectors.toList());
-            for(MedicineSupply.SupplyItem item : items){
-                Medicine medicine = queryMedicineByName(item.getMedicine().getName());
-                if(medicine == null){
-                    int med_id = insertMedicine(item.getMedicine());
-                    insertMedicineStock(med_id,item.getStock());
-                }else{
-                    updateMedicineStock(item.getId(),item.getStock());
-                }
-            }
-            
-            conn.commit();
-        }catch (SQLException e){
-            System.out.println("Save failed: " + e.getMessage());
-            try{
-                System.out.println("Performing rollback");
-                conn.rollback();
-            }catch (SQLException e2){
-                System.out.println("Rollback failed: " + e2.getMessage());
-            }
-        }finally {
-            try{
-                System.out.println("Resetting default commit behavior");
-                conn.setAutoCommit(true);
-            }catch (SQLException e){
-                System.out.println("Reset failed: " + e.getMessage());
+    public void saveMedicineSupply(MedicineSupply medicine_supply) {
+        ArrayList<MedicineSupply.SupplyItem> items = (ArrayList<SupplyItem>) Arrays
+                .stream(MedicineSupply.getInstance().toList().toArray()).map(obj -> (MedicineSupply.SupplyItem) obj)
+                .collect(Collectors.toList());
+        for (MedicineSupply.SupplyItem item : items) {
+            Medicine medicine = queryMedicineByName(item.getMedicine().getName());
+            if (medicine == null) {
+                addNewMedicine(item.getMedicine(), item.getStock());
+            } else {
+                updateMedicineStock(item.getId(), item.getStock());
             }
         }
     }
-    
 
     /**
      * @param staff_id the id of the staff
@@ -1809,7 +1788,7 @@ public void saveMedicineSupply(MedicineSupply medicine_supply){
      * required fields: medicine, MedicineType
      * 
      * @param medicine pass the required fields mentioned above
-     * @param amount  quantity of the medicine
+     * @param amount   quantity of the medicine
      * @return message that shows the result of the operation.
      */
     public String addNewMedicine(Medicine medicine, int amount) {
@@ -1966,10 +1945,10 @@ public void saveMedicineSupply(MedicineSupply medicine_supply){
      * username, password, status for staff
      * phone, email, address for contact of the staff.
      * WARNING: if you add a doctor, you must pass Doctor object
-     *          to retrieve the doctor's expertise.
-     *          if you add a nurse, you must pass Nurse object
-     *         to retrieve the nurse's expertise.
-     *        else, no workingArea or no expertise will be added.
+     * to retrieve the doctor's expertise.
+     * if you add a nurse, you must pass Nurse object
+     * to retrieve the nurse's expertise.
+     * else, no workingArea or no expertise will be added.
      * 
      * @param staff pass the required fields mentioned above
      * @return message that shows the result of the operation.
@@ -1989,7 +1968,7 @@ public void saveMedicineSupply(MedicineSupply medicine_supply){
             Boolean result = insertContact(person_id, staff.getContact());
             results.add(result);
 
-            if (staff.getStatus() == Status.DOCTOR){
+            if (staff.getStatus() == Status.DOCTOR) {
                 Doctor doctor = new Doctor();
                 if (staff instanceof Doctor)
                     doctor = (Doctor) staff;
@@ -1997,7 +1976,7 @@ public void saveMedicineSupply(MedicineSupply medicine_supply){
                 results.add(doctorResult);
             }
 
-            if (staff.getStatus() == Status.NURSE){
+            if (staff.getStatus() == Status.NURSE) {
                 Nurse nurse = new Nurse();
                 if (staff instanceof Nurse)
                     nurse = (Nurse) staff;
