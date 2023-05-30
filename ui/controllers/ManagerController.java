@@ -108,6 +108,7 @@ public class ManagerController {
     
     public void addPersonnel(){
         new AddPersonalViewBuilder(username, managerPanel).showAddUserView();
+        initialize();
     }
 
     public void authorize(){
