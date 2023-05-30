@@ -1,5 +1,7 @@
 package model;
 
+import java.util.Locale;
+
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -51,5 +53,12 @@ abstract public class Person {
 
 	public void setAge(int age) {
 		this.age.set(age);
+	}
+
+	@Override
+	public String toString() {
+		return getName().substring(0, 1).toUpperCase(Locale.US) + ". "
+				+ getSurname().substring(0, 1).toUpperCase(Locale.US)
+				+ getSurname().substring(1).toLowerCase(Locale.US);
 	}
 }

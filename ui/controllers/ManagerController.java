@@ -199,7 +199,7 @@ public class ManagerController {
 
 
     public void logout(ActionEvent event) throws IOException {
-        Parent root = FXMLLoader.load(getClass().getResource("../scene/LoginScene.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("../scene/panels/LoginScene.fxml"));
         Scene scene = new Scene(root);
         Stage window = (Stage) logoutMenuItem.getParentPopup().getOwnerNode().getScene().getWindow();
         window.setTitle("Hospital Management System");

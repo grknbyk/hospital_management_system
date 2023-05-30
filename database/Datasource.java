@@ -1,5 +1,6 @@
 package database;
 
+import java.lang.reflect.Array;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.DriverManager;
@@ -7,6 +8,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Time;
+import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -15,6 +18,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
@@ -34,6 +38,7 @@ import model.Receptionist;
 import model.Staff;
 import model.enums.BloodType;
 import model.enums.EmergencyState;
+import model.enums.Expertise;
 import model.enums.Gender;
 import model.enums.MedicineType;
 import model.enums.Priority;
@@ -74,6 +79,7 @@ public class Datasource {
     private static final String COLUMN_PATIENT_EMERGENCY_STATE = "emergency_state";
     private static final String COLUMN_PATIENT_PRIORITY = "priority";
     private static final String COLUMN_PATIENT_BLOOD_TYPE = "blood_type";
+    private static final String COLUMN_PATIENT_DELETION_STATUS = "deletion_status";
 
     private static final String TABLE_DOCTOR = "doctor";
     private static final String COLUMN_DOCTOR_STAFF_ID = "staff_id";
@@ -317,8 +323,12 @@ public class Datasource {
     private static final String INSERT_NURSE = "INSERT INTO " + TABLE_NURSE +
             " VALUES (?,?)";
 
+    private static final String QUERY_DOCTORS_BY_EXPERTISE = "SELECT " + COLUMN_DOCTOR_STAFF_ID + " FROM "
+            + TABLE_DOCTOR +
+            " WHERE " + COLUMN_DOCTOR_EXPERTISE + " = ?";
+
     private static final String INSERT_PATIENT = "INSERT INTO " + TABLE_PATIENT +
-            " VALUES (?,?,?,?,?,?,?,?)";
+            " VALUES (?,?,?,?,?,?,?,?,\"not deleted\")";
 
     private static final String INSERT_MEDICINE = "INSERT INTO " + TABLE_MEDICINE +
             " VALUES (?,?,?)";
@@ -339,7 +349,8 @@ public class Datasource {
     private static final String QUERY_LAST_RECEIPT_ID = "SELECT MAX(" + COLUMN_RECEIPT_ID + ") FROM " + TABLE_RECEIPT;
 
     private static final String QUERY_PATIENTS_NULL_STAFF = "SELECT * FROM " + TABLE_PATIENT +
-            " WHERE " + COLUMN_PATIENT_STAFF_ID + " IS NULL";
+            " WHERE ( " + COLUMN_PATIENT_STAFF_ID + " IS NULL OR " + COLUMN_PATIENT_STAFF_ID + " = -1 )" + " AND "
+            + COLUMN_PATIENT_DELETION_STATUS + " = \"not deleted\"";
 
     private static final String QUERY_MEDICINE_BY_RECEIPT_ID = "SELECT " +
             TABLE_MEDICINE + "." + COLUMN_MEDICINE_ID + ", " +
@@ -360,6 +371,19 @@ public class Datasource {
     private static final String QUERY_MEDICINE_BY_NAME = "SELECT * FROM " + TABLE_MEDICINE +
             " WHERE " + COLUMN_MEDICINE_NAME + " = ?";
 
+    private static final String UPDATE_RECEIPT_GIVEN = "UPDATE " + TABLE_RECEIPT + " SET " +
+            COLUMN_RECEIPT_IS_GIVEN + " = ? " +
+            " WHERE " + COLUMN_RECEIPT_ID + " = ?";
+
+    private static final String SET_DELETED_PATIENT = "UPDATE " + TABLE_PATIENT + " SET " +
+            COLUMN_PATIENT_DELETION_STATUS + " = \"deleted\" " +
+            " WHERE " + COLUMN_PATIENT_PERSON_ID + " = ?";
+
+    private static final String UPDATE_PATIENT = "UPDATE " + TABLE_PATIENT + " SET " +
+            COLUMN_PATIENT_STAFF_ID + " = ?, " +
+            COLUMN_PATIENT_COMPLAINT + " = ?, " +
+            COLUMN_PATIENT_APPOINTMENT + " = ? " +
+            " WHERE " + COLUMN_PATIENT_PERSON_ID + " = ?";
 
     private Connection conn;
 
@@ -376,6 +400,7 @@ public class Datasource {
     private PreparedStatement queryStaffById;
     private PreparedStatement queryDoctorExpretiseByStaffId;
     private PreparedStatement queryNurseWorkingAreaByStaffId;
+    private PreparedStatement queryDoctorsByExpertise;
     private PreparedStatement deleteContactByPersonId;
     private PreparedStatement deleteDoctorByStaffId;
     private PreparedStatement deleteNurseByStaffId;
@@ -393,6 +418,9 @@ public class Datasource {
     private PreparedStatement updateStaffByStaffId;
     private PreparedStatement updateDoctorByStaffId;
     private PreparedStatement updateNurseByStaffId;
+    private PreparedStatement updatePatientByPersonId;
+    private PreparedStatement updateReceiptIsGiven;
+    private PreparedStatement updatePatientSetDeleted;
     private PreparedStatement insertPerson;
     private PreparedStatement insertContact;
     private PreparedStatement insertStaff;
@@ -423,8 +451,16 @@ public class Datasource {
             preparedStatements.add(queryLogin);
             queryStaffByUsername = conn.prepareStatement(QUERY_STAFF_BY_USERNAME);
             preparedStatements.add(queryStaffByUsername);
+            updatePatientByPersonId = conn.prepareStatement(UPDATE_PATIENT);
+            preparedStatements.add(updatePatientByPersonId);
+            queryDoctorsByExpertise = conn.prepareStatement(QUERY_DOCTORS_BY_EXPERTISE);
+            preparedStatements.add(queryDoctorsByExpertise);
+            updateReceiptIsGiven = conn.prepareStatement(UPDATE_RECEIPT_GIVEN);
+            preparedStatements.add(updateReceiptIsGiven);
             queryMedicineByName = conn.prepareStatement(QUERY_MEDICINE_BY_NAME);
             preparedStatements.add(queryMedicineByName);
+            updatePatientSetDeleted = conn.prepareStatement(SET_DELETED_PATIENT);
+            preparedStatements.add(updatePatientSetDeleted);
             queryPersonById = conn.prepareStatement(QUERY_PERSON_BY_ID);
             preparedStatements.add(queryPersonById);
             queryMedicineByReceiptId = conn.prepareStatement(QUERY_MEDICINE_BY_RECEIPT_ID);
@@ -525,6 +561,28 @@ public class Datasource {
         }
     }
 
+    public ArrayList<Person> queryDoctors(Expertise expertise){
+        try{
+            ArrayList<Person> doctors = new ArrayList<>();
+            queryDoctorsByExpertise.setString(1, expertise.getValue());
+            ResultSet results = queryDoctorsByExpertise.executeQuery();
+            ArrayList<Integer> staffIds = new ArrayList<>();
+            while(results.next())
+                staffIds.add(results.getInt(COLUMN_DOCTOR_STAFF_ID));
+
+            for(int staffId : staffIds){
+                int person_id = getPersonIdByStaffId(staffId);
+                Person person = queryPersonbyId(person_id);
+                person.setId(staffId);
+                doctors.add(person);
+            }            
+            return doctors;
+        }catch(SQLException e){
+            System.out.println("Query failed: " + e.getMessage());
+            return null;
+        }
+    }
+
     private int getPersonIdByStaffId(int id) {
         try {
             queryStaffById.setInt(1, id);
@@ -579,6 +637,48 @@ public class Datasource {
         } catch (SQLException e) {
             System.out.println("Query failed: " + e.getMessage());
             return -1;
+        }
+    }
+
+    public void deletePatientById(int patient_id) {
+        try {
+            conn.setAutoCommit(false);
+            updatePatientSetDeleted.setInt(1, patient_id);
+            int result = updatePatientSetDeleted.executeUpdate();
+            if (result == 1) {
+                conn.commit();
+            } else {
+                throw new SQLException("Patient was not deleted");
+            }
+            // if any error occurs, sql will rollback in the catch block
+        } catch (Exception e) {
+            System.out.println("Update staff failed: " + e.getMessage());
+            try {
+                System.out.println("Performing rollback");
+                conn.rollback();
+                System.out.println("Update staff failed: " + e.getMessage());
+            } catch (SQLException e2) {
+                System.out.println("Oh boy! Things are really bad! " + e2.getMessage());
+                System.out.println("Update staff failed: " + e2.getMessage());
+            }
+        } finally {
+            try {
+                System.out.println("Resetting default commit behavior");
+                conn.setAutoCommit(true);
+            } catch (SQLException e) {
+                System.out.println("Couldn't reset auto-commit! " + e.getMessage());
+            }
+
+        }
+    }
+
+    public void updateReceipIsGiven(int receipt_id, boolean isGiven) {
+        try {
+            updateReceiptIsGiven.setString(1, (isGiven ? "true" : "false"));
+            updateReceiptIsGiven.setInt(2, receipt_id);
+            updateReceiptIsGiven.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println("Update failed: " + e.getMessage());
         }
     }
 
@@ -719,9 +819,11 @@ public class Datasource {
                 Boolean isGiven = results.getString(COLUMN_RECEIPT_IS_GIVEN).equalsIgnoreCase("true") ? true : false;
                 receipt.setGiven(isGiven);
 
-                HashMap<Medicine, Integer> medicines = queryMedicineByReceiptId(receipt_id);
-                for (Medicine medicine : medicines.keySet()) {
-                    receipt.add(medicine, medicines.get(medicine));
+                if (!isGiven) {
+                    HashMap<Medicine, Integer> medicines = queryMedicineByReceiptId(receipt_id);
+                    for (Medicine medicine : medicines.keySet()) {
+                        receipt.add(medicine, medicines.get(medicine));
+                    }
                 }
                 receipts.add(receipt);
             }
@@ -1792,7 +1894,7 @@ public class Datasource {
      * @param amount   quantity of the medicine
      * @return message that shows the result of the operation.
      */
-    public String addNewMedicine(Medicine medicine, int amount) {
+    public int addNewMedicine(Medicine medicine, int amount) {
         try {
             conn.setAutoCommit(false);
             ArrayList<Boolean> results = new ArrayList<>();
@@ -1809,7 +1911,7 @@ public class Datasource {
                 throw new SQLException("Couldn't insert medicine!");
             }
             conn.commit();
-            return "Medicine added successfully!";
+            return medicine_id;
             // if any error occurs, sql will rollback in the catch block
         } catch (Exception e) {
             StringBuilder sb = new StringBuilder();
@@ -1822,7 +1924,8 @@ public class Datasource {
                 sb.append("Oh boy! Things are really bad! " + e2.getMessage());
                 sb.append("Adding new medicine failed: " + e2.getMessage());
             }
-            return sb.toString();
+            System.out.println(sb.toString());
+            return -1;
         } finally {
             try {
                 System.out.println("Resetting default commit behavior");
@@ -1907,7 +2010,6 @@ public class Datasource {
                 results.add(false);
             else
                 results.add(true);
-
             Boolean result = insertPatient(patient_id, patient.getDoctorId(), patient.getReceiptId(), patient);
             results.add(result);
 
@@ -2001,6 +2103,54 @@ public class Datasource {
             } catch (SQLException e2) {
                 sb.append("Oh boy! Things are really bad! " + e2.getMessage() + "\n");
                 sb.append("Adding new staff failed: " + e2.getMessage() + "\n");
+            }
+            System.out.println(sb.toString());
+            return sb.toString();
+        } finally {
+            try {
+                System.out.println("Resetting default commit behavior");
+                conn.setAutoCommit(true);
+            } catch (SQLException e) {
+                System.out.println("Couldn't reset auto-commit! " + e.getMessage());
+            }
+
+        }
+    }
+
+    /*
+     * required patient id,
+     * updates appointment, complaints, doctor_id
+     */
+    public String updatePatient(Patient editedPatient) {
+        try {
+            conn.setAutoCommit(false);
+            updatePatientByPersonId.setInt(1, editedPatient.getDoctorId());
+            updatePatientByPersonId.setString(2, editedPatient.getComplaint());
+            LocalDateTime appointment = editedPatient.getAppointment();
+            if (appointment == null)
+                appointment = LocalDateTime.now();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            String formattedDateTime = appointment.format(formatter);
+            updatePatientByPersonId.setString(3, formattedDateTime);
+            updatePatientByPersonId.setInt(4, editedPatient.getId());
+
+            int result = updatePatientByPersonId.executeUpdate();
+            if (result != 1) {
+                throw new SQLException("Couldn't update patient!");
+            }
+            conn.commit();
+            return "Patient updated successfully!";
+            // if any error occurs, sql will rollback in the catch block
+        } catch (Exception e) {
+            StringBuilder sb = new StringBuilder();
+            sb.append("Updating patient failed: " + e.getMessage() + "\n");
+            try {
+                sb.append("Performing rollback \n");
+                conn.rollback();
+                sb.append("Updating patient failed: " + e.getMessage() + "\n");
+            } catch (SQLException e2) {
+                sb.append("Oh boy! Things are really bad! " + e2.getMessage() + "\n");
+                sb.append("Updating patient failed: " + e2.getMessage() + "\n");
             }
             System.out.println(sb.toString());
             return sb.toString();

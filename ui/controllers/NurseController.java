@@ -226,7 +226,7 @@ public class NurseController {
         dialog.initOwner(nursePanel.getScene().getWindow());
         dialog.setTitle("Patient Data");
         FXMLLoader fxmlLoader = new FXMLLoader();
-        fxmlLoader.setLocation(getClass().getResource("../scene/PatientData.fxml"));
+        fxmlLoader.setLocation(getClass().getResource("../scene/patient/PatientData.fxml"));
         try {
             dialog.getDialogPane().setContent(fxmlLoader.load());
             PatientDataController patientDataController = fxmlLoader.getController();
@@ -256,7 +256,7 @@ public class NurseController {
     }
 
     public void logout(ActionEvent event) throws IOException {
-        Parent root = FXMLLoader.load(getClass().getResource("../scene/LoginScene.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("../scene/panels/LoginScene.fxml"));
         Scene scene = new Scene(root);
         Stage window = (Stage) logoutMenuItem.getParentPopup().getOwnerNode().getScene().getWindow();
         window.setTitle("Hospital Management System");

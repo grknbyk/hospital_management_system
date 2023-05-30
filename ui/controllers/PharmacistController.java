@@ -219,7 +219,7 @@ public class PharmacistController {
     }
 
     public void logout(ActionEvent event) throws IOException {
-        Parent root = FXMLLoader.load(getClass().getResource("../scene/LoginScene.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("../scene/panels/LoginScene.fxml"));
         Scene scene = new Scene(root);
         Stage window = (Stage) logoutMenuItem.getParentPopup().getOwnerNode().getScene().getWindow();
         window.setTitle("Hospital Management System");
@@ -256,7 +256,7 @@ public class PharmacistController {
                 dialog.initOwner(pharmacistPanel.getScene().getWindow());
                 dialog.setTitle("Dispense Medicine");
                 FXMLLoader fxmlLoader = new FXMLLoader();
-                fxmlLoader.setLocation(getClass().getResource("../scene/DispenseMedicine.fxml"));
+                fxmlLoader.setLocation(getClass().getResource("../scene/medicine/DispenseMedicine.fxml"));
                 try {
                     dialog.getDialogPane().setContent(fxmlLoader.load());
                     dispenseMedicineController = fxmlLoader.getController();
@@ -298,6 +298,7 @@ public class PharmacistController {
             dispenseMedicineController.dispenseReceipt(selectedReceipt).forEach(medicine -> {
                 selectedReceipt.remove(medicine);
                 selectedReceipt.setGiven(true);
+                Datasource.getInstance().updateReceipIsGiven(selectedReceipt.getId(), true);
             });
         } else if (result.isPresent() && result.get() == ButtonType.CANCEL) {
             dispenseMedicine();
@@ -321,7 +322,7 @@ public class PharmacistController {
         dialog.initOwner(pharmacistPanel.getScene().getWindow());
         dialog.setTitle("Receipt Details");
         FXMLLoader fxmlLoader = new FXMLLoader();
-        fxmlLoader.setLocation(getClass().getResource("../scene/ReceiptDetails.fxml"));
+        fxmlLoader.setLocation(getClass().getResource("../scene/receipt/ReceiptDetails.fxml"));
         try {
             dialog.getDialogPane().setContent(fxmlLoader.load());
             ReceiptDetailsController receiptDetailsController = fxmlLoader.getController();
@@ -479,7 +480,7 @@ public class PharmacistController {
         dialog.initOwner(pharmacistPanel.getScene().getWindow());
         dialog.setTitle("Add Medicine");
         FXMLLoader fxmlLoader = new FXMLLoader();
-        fxmlLoader.setLocation(getClass().getResource("../scene/AddMedicine.fxml"));
+        fxmlLoader.setLocation(getClass().getResource("../scene/medicine/AddMedicine.fxml"));
         try {
             dialog.getDialogPane().setContent(fxmlLoader.load());
             addMedicineController = fxmlLoader.getController();
@@ -526,7 +527,7 @@ public class PharmacistController {
                 dialog.initOwner(pharmacistPanel.getScene().getWindow());
                 dialog.setTitle("Supply Medicine");
                 FXMLLoader fxmlLoader = new FXMLLoader();
-                fxmlLoader.setLocation(getClass().getResource("../scene/SupplyMedicine.fxml"));
+                fxmlLoader.setLocation(getClass().getResource("../scene/medicine/SupplyMedicine.fxml"));
                 try {
                     dialog.getDialogPane().setContent(fxmlLoader.load());
                     supplyMedicineController = fxmlLoader.getController();
@@ -631,7 +632,7 @@ public class PharmacistController {
                 dialog.initOwner(pharmacistPanel.getScene().getWindow());
                 dialog.setTitle("Reduce Medicine");
                 FXMLLoader fxmlLoader = new FXMLLoader();
-                fxmlLoader.setLocation(getClass().getResource("../scene/ReduceMedicine.fxml"));
+                fxmlLoader.setLocation(getClass().getResource("../scene/medicine/ReduceMedicine.fxml"));
                 try {
                     dialog.getDialogPane().setContent(fxmlLoader.load());
                     reduceMedicineController = fxmlLoader.getController();
