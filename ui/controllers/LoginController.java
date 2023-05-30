@@ -56,8 +56,6 @@ public class LoginController {
         String username = usernameTextField.getText();
         String password = passwordTextField.getText();
 
-        username = "receptionist";
-        password = "receptionist";
         
 		String status = Datasource.getInstance().queryLogin(username, password);
         
