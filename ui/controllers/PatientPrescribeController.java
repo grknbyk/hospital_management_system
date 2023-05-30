@@ -86,6 +86,8 @@ public class PatientPrescribeController {
         }
 
         Medicine medicine = new Medicine();
+        int id = Datasource.getInstance().queryMedicineIdByName(name);
+        medicine.setId(id);
         medicine.setName(name);
         medicine.setType(type);
         int amount = amountSpinner.getValue();
