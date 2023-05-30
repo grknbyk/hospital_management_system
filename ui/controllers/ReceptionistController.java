@@ -27,13 +27,11 @@ import java.awt.datatransfer.StringSelection;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
 import java.util.Optional;
 
 import javafx.fxml.FXML;
 import javafx.scene.layout.BorderPane;
 import model.Patient;
-import model.Staff;
 
 public class ReceptionistController {
     String username;

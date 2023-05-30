@@ -59,12 +59,12 @@
                 <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
             </columnResizePolicy>
             <columns>
-                <TableColumn maxWidth="3000.0" prefWidth="127.0" text="Emergency">
+                <TableColumn fx:id="emergencyColumn" maxWidth="3000.0" prefWidth="127.0" text="Emergency">
                     <cellValueFactory>
                         <PropertyValueFactory property="emergencyState" />
                     </cellValueFactory>
                 </TableColumn>
-                <TableColumn maxWidth="3000.0" prefWidth="37.0" text="Priority">
+                <TableColumn fx:id="priorityColumn" maxWidth="3000.0" prefWidth="37.0" text="Priority">
                     <cellValueFactory>
                         <PropertyValueFactory property="priority" />
                     </cellValueFactory>
@@ -94,7 +94,7 @@
                         <PropertyValueFactory property="gender" />
                     </cellValueFactory>
                 </TableColumn>
-                <TableColumn maxWidth="2500.0" minWidth="30.0" prefWidth="100.0" text="Appointment Time">
+                <TableColumn fx:id="appointmentColumn" maxWidth="2500.0" minWidth="30.0" prefWidth="100.0" text="Appointment Time">
                     <cellValueFactory>
                         <PropertyValueFactory property="hour" />
                     </cellValueFactory>

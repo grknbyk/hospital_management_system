@@ -8,7 +8,9 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.sql.Date;
+import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import database.Datasource;
@@ -29,6 +31,8 @@ import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.TableCell;
+import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -38,6 +42,8 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import model.Patient;
 import model.Receipt;
+import model.enums.EmergencyState;
+import model.enums.Priority;
 
 public class DoctorController {
 
@@ -62,9 +68,66 @@ public class DoctorController {
     private ObservableList<Patient> patients;
 
     @FXML
+    private TableColumn<Patient, EmergencyState> emergencyColumn;
+
+    @FXML
+    private TableColumn<Patient, Priority> priorityColumn;
+
+    @FXML
+    private TableColumn<Patient, LocalDateTime> appointmentColumn;
+
+
+
+    @FXML
     private MenuButton options;
 
     public void initialize() {
+
+        
+
+        priorityColumn.setCellFactory(val -> new TableCell<Patient, Priority>() {
+            @Override
+            protected void updateItem(Priority item, boolean empty) {
+                super.updateItem(item, empty);
+
+                if (empty || item == null) {
+                    setText(null);
+                } else {
+                    setText(item.toString());
+                    if (item == Priority.HIGH) {
+                        setStyle("-fx-background-color: rgba(255, 0, 0, 0.4);");
+                    } else if (item == Priority.MEDIUM) {
+                        setStyle("-fx-background-color: rgba(255, 255, 0, 0.4);");
+                    } else {
+                        setStyle("-fx-background-color: rgba(0, 255, 0, 0.4);");
+                    }
+                }
+            }
+        });
+
+        emergencyColumn.setCellFactory(val -> new TableCell<Patient, EmergencyState>() {
+            @Override
+            protected void updateItem(EmergencyState item, boolean empty) {
+                super.updateItem(item, empty);
+
+                if (empty || item == null) {
+                    setText(null);
+                } else {
+                    setText(item.toString());
+                    if (item == EmergencyState.NON_URGENT) {
+                        setStyle("-fx-background-color: rgba(0, 255, 0, 0.4);");
+                    } else if (item == EmergencyState.STABLE) {
+                        setStyle("-fx-background-color: rgba(0, 0, 255, 0.4);");
+                    } else if (item == EmergencyState.URGENT) {
+                        setStyle("-fx-background-color: rgba(255, 0, 255, 0.4);");
+                    } else if (item == EmergencyState.CRITICAL) {
+                        setStyle("-fx-background-color: rgba(255, 255, 0, 0.4);");
+                    }else {
+                        setStyle("-fx-background-color: rgba(255, 0, 0, 0.4);");
+                    }
+                }
+            }
+        });
 
         Image menuImg = new Image("ui/imgs/default_person.png");
         ImageView imageView = new ImageView(menuImg);
@@ -83,6 +146,7 @@ public class DoctorController {
         patients = FXCollections.observableArrayList(Datasource.getInstance().queryPatients(staffId));
         patientTableView.setItems(patients);
     }
+
 
     public void showHelpDialog() {
         // Create a new stage for the dialog
