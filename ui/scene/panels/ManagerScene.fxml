@@ -21,10 +21,8 @@
               <menus>
                 <Menu mnemonicParsing="false" text="Personnel">
                   <items>
-                    <MenuItem mnemonicParsing="false" onAction="#addPersonnel" text="Add" />
+                        <MenuItem mnemonicParsing="false" onAction="#addPersonnel" text="Add" />
                         <MenuItem mnemonicParsing="false" onAction="#editPersonnel" text="Edit" />
-                        <MenuItem mnemonicParsing="false" text="Authorize" />
-                        <MenuItem mnemonicParsing="false" text="Restrict" />
                   </items>
                 </Menu>
                   <Menu mnemonicParsing="false" text="Dial">
