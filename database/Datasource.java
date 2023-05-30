@@ -352,6 +352,9 @@ public class Datasource {
             " WHERE ( " + COLUMN_PATIENT_STAFF_ID + " IS NULL OR " + COLUMN_PATIENT_STAFF_ID + " = -1 )" + " AND "
             + COLUMN_PATIENT_DELETION_STATUS + " = \"not deleted\"";
 
+    private static final String QUERY_MEDICINE_ID_BY_NAME = "SELECT " + COLUMN_MEDICINE_ID + " FROM " + TABLE_MEDICINE
+            + " WHERE " + COLUMN_MEDICINE_NAME + " = ?";
+
     private static final String QUERY_MEDICINE_BY_RECEIPT_ID = "SELECT " +
             TABLE_MEDICINE + "." + COLUMN_MEDICINE_ID + ", " +
             TABLE_MEDICINE + "." + COLUMN_MEDICINE_NAME + ", " +
@@ -391,6 +394,7 @@ public class Datasource {
     private PreparedStatement queryLogin;
     private PreparedStatement queryStaffByUsername;
     private PreparedStatement queryStaffUsernameById;
+    private PreparedStatement queryMedicineIdByName;
     private PreparedStatement queryStaffIdByUsername;
     private PreparedStatement queryPatientsByStaffId;
     private PreparedStatement queryMedicine;
@@ -451,6 +455,8 @@ public class Datasource {
             preparedStatements.add(queryLogin);
             queryStaffByUsername = conn.prepareStatement(QUERY_STAFF_BY_USERNAME);
             preparedStatements.add(queryStaffByUsername);
+            queryMedicineIdByName = conn.prepareStatement(QUERY_MEDICINE_ID_BY_NAME);
+            preparedStatements.add(queryMedicineIdByName);
             updatePatientByPersonId = conn.prepareStatement(UPDATE_PATIENT);
             preparedStatements.add(updatePatientByPersonId);
             queryDoctorsByExpertise = conn.prepareStatement(QUERY_DOCTORS_BY_EXPERTISE);
@@ -883,6 +889,21 @@ public class Datasource {
         } catch (SQLException e) {
             System.out.println("Query failed: " + e.getMessage());
             return null;
+        }
+    }
+
+    public int queryMedicineIdByName(String medName) {
+        try {
+            queryMedicineByName.setString(1, medName);
+            ResultSet results = queryMedicineByName.executeQuery();
+            if (results.next()) {
+                int medicine_id = results.getInt(1);
+                return medicine_id;
+            }
+            return -1;
+        } catch (SQLException e) {
+            System.out.println("Query failed: " + e.getMessage());
+            return -1;
         }
     }
 
