@@ -360,6 +360,7 @@ public class Datasource {
     private static final String QUERY_MEDICINE_BY_NAME = "SELECT * FROM " + TABLE_MEDICINE +
             " WHERE " + COLUMN_MEDICINE_NAME + " = ?";
 
+
     private Connection conn;
 
     private ArrayList<PreparedStatement> preparedStatements;
@@ -610,7 +611,7 @@ public class Datasource {
         }
     }
 
-    private Person queryPersonbyId(int person_id) {
+    public Person queryPersonbyId(int person_id) {
         try {
             queryPersonById.setInt(1, person_id);
             ResultSet results = queryPersonById.executeQuery();

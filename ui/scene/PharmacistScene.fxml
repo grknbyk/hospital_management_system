@@ -87,7 +87,7 @@
                                 <PropertyValueFactory property="type" />
                             </cellValueFactory>
                         </TableColumn>
-                        <TableColumn maxWidth="4000.0" prefWidth="75.0" text="In Stock">
+                        <TableColumn fx:id="inStockColumn" maxWidth="4000.0" prefWidth="75.0" text="In Stock">
                             <cellValueFactory>
                                 <PropertyValueFactory property="stock" />
                             </cellValueFactory>
@@ -101,27 +101,32 @@
                         <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
                     </columnResizePolicy>
                     <columns>
-                        <TableColumn maxWidth="3000.0" prefWidth="75.0" text="id">
+                        <TableColumn maxWidth="3000.0" prefWidth="120.0" resizable="false" text="id">
                             <cellValueFactory>
                                 <PropertyValueFactory property="id" />
                             </cellValueFactory>
                         </TableColumn>
-                        <TableColumn maxWidth="3000.0" prefWidth="75.0" text="Patient id">
+                        <TableColumn maxWidth="3000.0" prefWidth="120.0" resizable="false" text="Patient id">
                             <cellValueFactory>
                                 <PropertyValueFactory property="patientId" />
                             </cellValueFactory>
                         </TableColumn>
-                        <TableColumn maxWidth="3000.0" prefWidth="75.0" text="Doctor id">
-                            <cellValueFactory>
-                                <PropertyValueFactory property="staffId" />
-                            </cellValueFactory>
-                        </TableColumn>
-                        <TableColumn maxWidth="4000.0" prefWidth="308.0" text="Given Date">
+                  <TableColumn fx:id="patientNameColumn" maxWidth="3000.0" prefWidth="320.0" resizable="false" text="Patient name">
+                     <cellValueFactory>
+                        <PropertyValueFactory property="name" />
+                     </cellValueFactory>
+                  </TableColumn>
+                  <TableColumn fx:id="patientSurnameColumn" maxWidth="3000.0" prefWidth="320.0" resizable="false" text="Patient surname">
+                     <cellValueFactory>
+                        <PropertyValueFactory property="surname" />
+                     </cellValueFactory>
+                  </TableColumn>
+                        <TableColumn maxWidth="4000.0" prefWidth="200.0" resizable="false" text="Given Date">
                             <cellValueFactory>
                                 <PropertyValueFactory property="givenDate" />
                             </cellValueFactory>
                         </TableColumn>
-                        <TableColumn maxWidth="4000.0" prefWidth="308.0" text="Expire Date">
+                        <TableColumn fx:id="expireDateColumn" maxWidth="4000.0" prefWidth="200.0" resizable="false" text="Expire Date">
                             <cellValueFactory>
                                 <PropertyValueFactory property="expireDate" />
                             </cellValueFactory>

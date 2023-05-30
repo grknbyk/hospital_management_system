@@ -30,7 +30,7 @@ public class SupplyMedicineController {
 
     public boolean increaseAmount(MedicineSupply supply, MedicineSupply.SupplyItem selectedItem) {
         supply.supplyStock(selectedItem.getMedicine(), amountSpinner.getValue());
-
+        Datasource.getInstance().saveMedicineSupply(supply);
         return true;
     }
 }
