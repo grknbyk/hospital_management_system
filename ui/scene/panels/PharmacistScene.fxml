@@ -22,10 +22,8 @@
                         <Menu mnemonicParsing="false" text="Stock">
                             <items>
                                 <MenuItem mnemonicParsing="false" onAction="#addMedicine" text="Add New" />
-                                <MenuItem mnemonicParsing="false" text="Remove" />
                                 <MenuItem mnemonicParsing="false" onAction="#supplyMedicine" text="Supply" />
                                 <MenuItem mnemonicParsing="false" text="Reduce" onAction="#reduceMedicine"/>
-                                <MenuItem mnemonicParsing="false" text="Update" />
                             </items>
                         </Menu>
                         <Menu mnemonicParsing="false" text="Receipts">
