@@ -70,6 +70,48 @@ public class ReceptionistController {
         patientTableView.setItems(patients);
     }
 
+    public void showData(){
+        RecepsionistPatientDataController registerPatientController;
+        Patient selectedPatient = patientTableView.getSelectionModel().getSelectedItem();
+        if (selectedPatient == null) {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("No Patient Selected");
+            alert.setHeaderText(null);
+            alert.setContentText("Select a patient");
+            alert.showAndWait();
+            return;
+        }
+
+        Dialog<ButtonType> dialog = new Dialog<>();
+        dialog.initOwner(receptionistPanel.getScene().getWindow());
+        dialog.setTitle("Patient Data");
+        FXMLLoader fxmlLoader = new FXMLLoader();
+        fxmlLoader.setLocation(getClass().getResource("../scene/patient/PatientPersonalData.fxml"));
+        try {
+            dialog.getDialogPane().setContent(fxmlLoader.load());
+            registerPatientController = fxmlLoader.getController();
+            registerPatientController.initializeFields(selectedPatient);
+        } catch (IOException e) {
+            System.out.println("Couldn't load the dialog");
+            e.printStackTrace();
+            return;
+        }
+
+        dialog.getDialogPane().getScene().getWindow().setOnCloseRequest(e -> {
+            dialog.close();
+        });
+
+        ButtonType closeButton = new ButtonType("Close");
+
+        dialog.getDialogPane().getButtonTypes().addAll(closeButton);
+
+        Optional<ButtonType> result = dialog.showAndWait();
+        if (result.isPresent() && result.get() == closeButton) {
+            dialog.close();
+        }
+            
+    }
+
     public void denyPatient() {
         Patient selectedPatient = patientTableView.getSelectionModel().getSelectedItem();
         if (selectedPatient == null) {
@@ -164,7 +206,7 @@ public class ReceptionistController {
 
         Dialog<ButtonType> dialog = new Dialog<>();
         dialog.initOwner(receptionistPanel.getScene().getWindow());
-        dialog.setTitle("Register Patient");
+        dialog.setTitle("Assign Patient");
         FXMLLoader fxmlLoader = new FXMLLoader();
         fxmlLoader.setLocation(getClass().getResource("../scene/patient/RegisterPatient.fxml"));
         try {
