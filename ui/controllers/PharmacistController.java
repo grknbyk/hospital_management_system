@@ -198,6 +198,7 @@ public class PharmacistController {
         medicine = FXCollections.observableList(Arrays.stream(MedicineSupply.getInstance().toList().toArray())
                 .map(obj -> (MedicineSupply.SupplyItem) obj).collect(Collectors.toList()));
         medicineTableView.setItems(medicine);
+        medicineTableView.refresh();
     }
 
     public void loadReceipts() {
@@ -588,6 +589,8 @@ public class PharmacistController {
         } else if (result.isPresent() && result.get() == ButtonType.CANCEL) {
             addMedicine();
         }
+
+        Datasource.getInstance().saveMedicineSupply(MedicineSupply.getInstance());
         loadMedicine();
     }
 
