@@ -53,4 +53,9 @@ public abstract class Staff extends Person {
 	public String getAddress() {
 		return contact.getAddress();
 	}
+
+	@Override
+	public String toString() {
+		return super.toString();
+	}
 }

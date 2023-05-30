@@ -15,6 +15,7 @@ import javafx.scene.image.ImageView;
 import model.*;
 import model.enums.*;
 
+import java.awt.Label;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -75,6 +76,9 @@ public class RegisterPatientController {
     @FXML
     private ImageView imageView;
 
+
+
+
     @FXML
     private void todayButtonClicked() {
         appointmentDatePicker.setValue(LocalDate.now());
@@ -110,7 +114,7 @@ public class RegisterPatientController {
             if (newValue != null) {
                 ArrayList<Person> persons = doctors.get(newValue);
                 for (Person person : persons) {
-                    doctorComboBox.getItems().add(person.getName());
+                    doctorComboBox.getItems().add(person.toString());
                 }
                 doctorComboBox.getSelectionModel().select(0);
             }
