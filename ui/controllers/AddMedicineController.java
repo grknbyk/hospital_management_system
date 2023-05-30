@@ -39,8 +39,8 @@ public class AddMedicineController {
                 new Alert(Alert.AlertType.ERROR, "An error occurred while adding medicine").showAndWait();
                 return false;
             }
-
-            Datasource.getInstance().addNewMedicine(med, amount);
+            int id = Datasource.getInstance().addNewMedicine(med, amount);
+            med.setId(id);
             MedicineSupply.getInstance().setStock(med, amount);
             return true;
         } catch (Exception e) {

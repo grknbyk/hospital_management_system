@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Spinner?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.controllers.RegisterPatientController">
+    <top>
+        <AnchorPane prefHeight="219.0" prefWidth="600.0" BorderPane.alignment="CENTER">
+            <children>
+            <Label layoutX="208.0" layoutY="32.0" text="Personal Informations" />
+            <GridPane layoutX="208.0" layoutY="59.0" prefHeight="120.0" prefWidth="287.0">
+              <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="60.0" minWidth="60.0" prefWidth="32.0" />
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="500.0" minWidth="150.0" prefWidth="135.0" />
+              </columnConstraints>
+              <rowConstraints>
+                  <RowConstraints maxHeight="30.0" minHeight="0.0" prefHeight="0.0" vgrow="SOMETIMES" />
+                <RowConstraints fillHeight="false" maxHeight="30.0" minHeight="0.0" prefHeight="10.0" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="30.0" minHeight="10.0" prefHeight="50.0" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="30.0" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+              </rowConstraints>
+               <children>
+                  <Label text="Name:" />
+                  <Label text="Surname:" GridPane.rowIndex="1" />
+                  <TextField fx:id="nameTextField" GridPane.columnIndex="1" />
+                  <TextField fx:id="surnameTextField" prefHeight="25.0" prefWidth="210.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                  <Spinner fx:id="ageSpinner" prefHeight="25.0" prefWidth="92.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                  <Label text="Age:" GridPane.rowIndex="2" />
+                  <Label text="Gender:" GridPane.rowIndex="3" />
+                  <ChoiceBox fx:id="genderChoiceBox" prefHeight="25.0" prefWidth="92.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+               </children>
+            </GridPane>
+            <GridPane layoutX="36.0" layoutY="205.0" prefHeight="200.0" prefWidth="540.0" AnchorPane.topAnchor="205.0">
+               <columnConstraints>
+                  <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" maxWidth="500.0" minWidth="180.0" prefWidth="32.0" />
+                  <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" maxWidth="180.0" minWidth="180.0" prefWidth="135.0" />
+                  <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="180.0" minWidth="180.0" prefWidth="135.0" />
+               </columnConstraints>
+               <rowConstraints>
+                  <RowConstraints maxHeight="20.0" minHeight="0.0" prefHeight="0.0" vgrow="SOMETIMES" />
+                  <RowConstraints fillHeight="false" maxHeight="30.0" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints fillHeight="false" maxHeight="30.0" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints fillHeight="false" maxHeight="30.0" minHeight="0.0" prefHeight="10.0" vgrow="SOMETIMES" />
+                  <RowConstraints fillHeight="false" maxHeight="30.0" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints fillHeight="false" maxHeight="30.0" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+               </rowConstraints>
+               <children>
+                  <DatePicker fx:id="appointmentDatePicker" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                  <Label text="Clinic Informations" />
+                  <Label text="  Appointment Date                               " GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                  <ComboBox fx:id="bloodTypeComboBox" prefHeight="25.0" prefWidth="173.0" promptText="Blood Type" GridPane.rowIndex="2" />
+                  <ComboBox fx:id="emergencyStateComboBox" prefHeight="25.0" prefWidth="173.0" promptText="Emergency State" GridPane.rowIndex="3" />
+                  <ComboBox fx:id="priorityComboBox" prefHeight="25.0" prefWidth="173.0" promptText="Priority" GridPane.rowIndex="4" />
+                  <ComboBox fx:id="departmentComboBox" prefHeight="25.0" prefWidth="173.0" promptText="Department" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                  <ComboBox fx:id="doctorComboBox" prefHeight="25.0" prefWidth="173.0" promptText="Doctor" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                  <ComboBox fx:id="workingAreaComboBox" prefHeight="25.0" prefWidth="173.0" promptText="Working Area" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                  <Label text="Complaint: " GridPane.rowIndex="1" />
+                  <Label text="Minute" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+               </children>
+            </GridPane>
+            <ImageView fx:id="imageView" fitHeight="150.0" fitWidth="150.0" layoutX="36.0" layoutY="30.0" pickOnBounds="true" preserveRatio="true" />
+            <Spinner fx:id="hourSpinner" layoutX="402.0" layoutY="318.0" prefHeight="25.0" prefWidth="52.0" />
+            <Button fx:id="todayButton" layoutX="525.0" layoutY="260.0" mnemonicParsing="false" onAction="#todayButtonClicked" text="Today" />
+            <Spinner fx:id="minuteSpinner" layoutX="485.0" layoutY="318.0" prefHeight="25.0" prefWidth="52.0" />
+            <Label layoutX="455.0" layoutY="321.0" text="Hour" />
+            <TextField fx:id="complaintTextField" layoutX="100.0" layoutY="227.0" minWidth="475.0" />
+            </children>
+        </AnchorPane>
+    </top>
+   <center>
+      <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
+   </center>
+</BorderPane>
