@@ -20,6 +20,7 @@
                         <Menu mnemonicParsing="false" text="Patient">
                      <MenuItem mnemonicParsing="false" onAction="#registerPatient" text="Register" />
                             <MenuItem mnemonicParsing="false" onAction="#assignPatient" text="Assign" />
+                     <MenuItem mnemonicParsing="false" onAction="#showData" text="Data" />
                             <MenuItem mnemonicParsing="false" onAction="#denyPatient" text="Deny" />
                         </Menu>
                         <Menu mnemonicParsing="false" text="Dial">
@@ -76,21 +77,6 @@
                 <TableColumn maxWidth="4000.0" prefWidth="75.0" text="Last Name">
                     <cellValueFactory>
                         <PropertyValueFactory property="surname" />
-                    </cellValueFactory>
-                </TableColumn>
-                <TableColumn maxWidth="2000.0" prefWidth="75.0" text="Blood Type">
-                    <cellValueFactory>
-                        <PropertyValueFactory property="bloodType" />
-                    </cellValueFactory>
-                </TableColumn>
-                <TableColumn maxWidth="2000.0" minWidth="30.0" prefWidth="100.0" text="Age">
-                    <cellValueFactory>
-                        <PropertyValueFactory property="age" />
-                    </cellValueFactory>
-                </TableColumn>
-                <TableColumn maxWidth="3000.0" prefWidth="75.0" text="Gender">
-                    <cellValueFactory>
-                        <PropertyValueFactory property="gender" />
                     </cellValueFactory>
                 </TableColumn>
                 <TableColumn maxWidth="2500.0" minWidth="30.0" prefWidth="100.0" text="Appointment Time">

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="320.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.controllers.RecepsionistPatientDataController">
+    <top>
+        <AnchorPane prefHeight="219.0" prefWidth="600.0" BorderPane.alignment="CENTER">
+            <children>
+            <Label layoutX="208.0" layoutY="32.0" text="Personal Informations" />
+            <GridPane layoutX="208.0" layoutY="59.0" prefHeight="214.0" prefWidth="287.0">
+              <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="81.0" minWidth="60.0" prefWidth="79.0" />
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="500.0" minWidth="150.0" prefWidth="208.0" />
+              </columnConstraints>
+              <rowConstraints>
+                  <RowConstraints maxHeight="30.0" minHeight="0.0" prefHeight="0.0" vgrow="SOMETIMES" />
+                <RowConstraints fillHeight="false" maxHeight="30.0" minHeight="0.0" prefHeight="10.0" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="30.0" minHeight="10.0" prefHeight="50.0" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="30.0" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="30.0" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="30.0" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="30.0" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+              </rowConstraints>
+               <children>
+                  <Label text="Name:" />
+                  <Label text="Surname:" GridPane.rowIndex="1" />
+                  <Label text="Age:" GridPane.rowIndex="2" />
+                  <Label text="Gender:" GridPane.rowIndex="3" />
+                  <Label fx:id="patientNameLabel" text="xxxxx" GridPane.columnIndex="1" />
+                  <Label fx:id="patientSurnameLabel" text="xxxxx" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                  <Label fx:id="patientAgeLabel" text="xxxx" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                  <Label fx:id="patientGenderLabel" text="xxxxx" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                  <Label text="Blood Type: " GridPane.rowIndex="4" />
+                  <Label text="Complaint:" GridPane.rowIndex="6" />
+                  <Label text="Appointment:" GridPane.rowIndex="5" />
+                  <Label fx:id="patientBloodTypeLabel" text="xxxxx" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                  <Label fx:id="patientAppointmentLabel" text="xxxxx" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                  <Label fx:id="patientComplaintLabel" text="xxxxx" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+               </children>
+            </GridPane>
+            <ImageView fx:id="imageView" fitHeight="150.0" fitWidth="150.0" layoutX="36.0" layoutY="30.0" pickOnBounds="true" preserveRatio="true" />
+            </children>
+        </AnchorPane>
+    </top>
+</BorderPane>
