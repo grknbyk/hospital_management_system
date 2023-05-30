@@ -24,7 +24,7 @@
                                 <MenuItem mnemonicParsing="false" onAction="#addMedicine" text="Add New" />
                                 <MenuItem mnemonicParsing="false" text="Remove" />
                                 <MenuItem mnemonicParsing="false" onAction="#supplyMedicine" text="Supply" />
-                                <MenuItem mnemonicParsing="false" text="Consume" />
+                                <MenuItem mnemonicParsing="false" text="Consume" onAction="#reduceMedicine"/>
                                 <MenuItem mnemonicParsing="false" text="Update" />
                             </items>
                         </Menu>

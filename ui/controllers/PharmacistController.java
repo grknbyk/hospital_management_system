@@ -606,6 +606,9 @@ public class PharmacistController {
         } else if (result.isPresent() && result.get() == ButtonType.CANCEL) {
             supplyMedicine();
         }
+
+        Datasource.getInstance().saveMedicineSupply(MedicineSupply.getInstance());
+        loadMedicine();
     }
 
     public void reduceMedicine() {
@@ -682,6 +685,9 @@ public class PharmacistController {
         } else if (result.isPresent() && result.get() == ButtonType.CANCEL) {
             reduceMedicine();
         }
+
+        Datasource.getInstance().saveMedicineSupply(MedicineSupply.getInstance());
+        loadMedicine();
     }
 
     private void copyToClipboard(String text) {
