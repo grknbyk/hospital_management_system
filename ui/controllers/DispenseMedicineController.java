@@ -39,14 +39,16 @@ public class DispenseMedicineController {
         dispenseTableView.setItems(dispenseElementObservableList);
     }
 
-    public void dispenseReceipt(Receipt selectedReceipt) {
-
+    public ArrayList<Medicine> dispenseReceipt(Receipt selectedReceipt) {
+        ArrayList<Medicine> dispensedMedicines = new ArrayList<>();
         ArrayList<DispenseElement> dispenseElements =new ArrayList<>(dispenseTableView.getItems());
         for (DispenseElement element : dispenseElements) {
             if (element.demand <= element.inStock) {
                 MedicineSupply.getInstance().consumeStock(element.medicine, element.demand);
+                dispensedMedicines.add(element.medicine);
             }
         }
+        return dispensedMedicines;
     }
 
     public class DispenseElement {

@@ -5,16 +5,25 @@ import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.sql.Date;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
+import javax.xml.crypto.Data;
+
 import database.Datasource;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableArray;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -33,6 +42,9 @@ import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
+import javafx.scene.control.TableCell;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableView;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -41,9 +53,11 @@ import model.Medicine;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 import model.MedicineSupply;
+import model.Patient;
+import model.Person;
 import model.Receipt;
-
 
 public class PharmacistController {
     String username;
@@ -80,11 +94,95 @@ public class PharmacistController {
     private ObservableList<Receipt> receipts;
 
     @FXML
+    private TableColumn<Receipt, String> patientNameColumn;
+
+    @FXML
+    private TableColumn<Receipt, String> patientSurnameColumn;
+
+    @FXML
+    private TableColumn<Receipt, Date> expireDateColumn;
+
+    @FXML
+    private TableColumn<MedicineSupply.SupplyItem, Integer> inStockColumn;
+
+    private ObservableList<Person> patients;
+
+    @FXML
     private MenuButton options;
 
     private TreeMap<Medicine, MedicineSupply.SupplyItem> medicinesTreeMap;
 
     public void initialize() {
+
+        inStockColumn.setCellFactory(val -> new TableCell<MedicineSupply.SupplyItem, Integer>() {
+            @Override
+            protected void updateItem(Integer item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                    setStyle("");
+                } else {
+                    setText(item.toString());
+                    if (item >= 150) {
+                        setStyle("-fx-background-color: rgba(0, 255, 0, 0.4);");
+                    } else if (item >= 100) {
+                        setStyle("-fx-background-color: rgba(180, 255, 0, 0.4);");
+                    } 
+                    else if (item >= 50) {
+                        setStyle("-fx-background-color: rgba(255, 200, 0, 0.4);");
+                    } 
+                    else if (item >= 30) {
+                        setStyle("-fx-background-color: rgba(255, 100, 0, 0.4);");
+                    } 
+                    else {
+                        setStyle("-fx-background-color: rgba(255, 0, 0, 0.4);");
+                    }
+                }
+            }
+        });
+        expireDateColumn.setCellFactory(val -> new TableCell<Receipt, Date>() {
+            @Override
+            protected void updateItem(Date item, boolean empty) {
+                super.updateItem(item, empty);
+                
+                if (empty || item == null) {
+                    setText(null);
+                    setStyle("");
+                } else {
+                    setText(item.toString());
+        
+
+                    if (LocalDate.now().isAfter(item.toLocalDate())) {
+                        setStyle("-fx-background-color: rgba(255, 0, 0, 0.4);");
+                    } else if(LocalDate.now().equals(item.toLocalDate())) {
+                        setStyle("-fx-background-color: rgba(255, 255, 0, 0.4);");
+                    }else{
+                        setStyle("-fx-background-color: rgba(0, 255, 0, 0.4);");
+                    }
+                }
+            }
+        });
+        
+
+        patientNameColumn.setCellValueFactory(arg0 -> {
+            int id = arg0.getValue().getPatientId();
+            for (Person p : patients) {
+                if (p.getId() == id) {
+                    return new SimpleStringProperty(p.getName());
+                }
+            }
+            return new SimpleStringProperty("");
+        });
+
+        patientSurnameColumn.setCellValueFactory(arg0 -> {
+            int id = arg0.getValue().getPatientId();
+            for (Person p : patients) {
+                if (p.getId() == id) {
+                    return new SimpleStringProperty(p.getSurname());
+                }
+            }
+            return new SimpleStringProperty("");
+        });
 
         Image menuImg = new Image("ui/imgs/default_person.png");
         ImageView imageView = new ImageView(menuImg);
@@ -94,16 +192,24 @@ public class PharmacistController {
     }
 
     public void loadMedicine() {
-        //fill the table
+        // fill the table
         Datasource.getInstance().updateMedicineSupply(MedicineSupply.getInstance());
         medicinesTreeMap = MedicineSupply.getInstance().getInventory();
-        medicine = FXCollections.observableList(Arrays.stream(MedicineSupply.getInstance().toList().toArray()).map(obj -> (MedicineSupply.SupplyItem) obj).collect(Collectors.toList()));
+        medicine = FXCollections.observableList(Arrays.stream(MedicineSupply.getInstance().toList().toArray())
+                .map(obj -> (MedicineSupply.SupplyItem) obj).collect(Collectors.toList()));
         medicineTableView.setItems(medicine);
     }
 
     public void loadReceipts() {
 
         ArrayList<Receipt> arr = Datasource.getInstance().queryReceipts();
+        ArrayList<Person> patients = new ArrayList<>();
+        for (Receipt r : arr) {
+            int patientId = r.getPatientId();
+            Person p = Datasource.getInstance().queryPersonbyId(patientId);
+            patients.add(p);
+        }
+        this.patients = FXCollections.observableList(patients);
         receipts = FXCollections.observableList(arr);
         receiptsTableView.setItems(receipts);
     }
@@ -127,11 +233,20 @@ public class PharmacistController {
             if (selectedTab.equals(receiptsTab)) {
 
                 Receipt selectedReceipt = receiptsTableView.getSelectionModel().getSelectedItem();
-                if(selectedReceipt == null) {
+
+                if (selectedReceipt == null) {
                     Alert alert = new Alert(Alert.AlertType.INFORMATION);
                     alert.setTitle("No Receipt Selected");
                     alert.setHeaderText(null);
                     alert.setContentText("Select a Receipt");
+                    alert.showAndWait();
+                    return;
+                }
+                if (LocalDate.now().isAfter(selectedReceipt.getExpireDate().toLocalDate())) {
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("Expired Receipt");
+                    alert.setHeaderText(null);
+                    alert.setContentText("Please renew the receipt");
                     alert.showAndWait();
                     return;
                 }
@@ -145,7 +260,7 @@ public class PharmacistController {
                 try {
                     dialog.getDialogPane().setContent(fxmlLoader.load());
                     dispenseMedicineController = fxmlLoader.getController();
-                    dispenseMedicineController.updateFields(selectedReceipt,medicinesTreeMap);
+                    dispenseMedicineController.updateFields(selectedReceipt, medicinesTreeMap);
                 } catch (IOException e) {
                     System.out.println("Couldn't load the dialog");
                     e.printStackTrace();
@@ -161,9 +276,9 @@ public class PharmacistController {
                 dialog.getDialogPane().getButtonTypes().addAll(applyButton, cancelButton);
 
                 Optional<ButtonType> result = dialog.showAndWait();
-                if(result.isPresent() && result.get() == applyButton) {
+                if (result.isPresent() && result.get() == applyButton) {
                     applyButtonFunctionDispense(selectedReceipt, dispenseMedicineController);
-                }else if(result.isPresent() && result.get() == cancelButton){
+                } else if (result.isPresent() && result.get() == cancelButton) {
                     dialog.close();
                 }
 
@@ -171,7 +286,8 @@ public class PharmacistController {
         }
     }
 
-    private void applyButtonFunctionDispense(Receipt selectedReceipt, DispenseMedicineController dispenseMedicineController){
+    private void applyButtonFunctionDispense(Receipt selectedReceipt,
+            DispenseMedicineController dispenseMedicineController) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Confirmation");
         alert.setHeaderText("Confirmation Dialog");
@@ -179,17 +295,20 @@ public class PharmacistController {
 
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
-            dispenseMedicineController.dispenseReceipt(selectedReceipt);
-
+            dispenseMedicineController.dispenseReceipt(selectedReceipt).forEach(medicine -> {
+                selectedReceipt.remove(medicine);
+                selectedReceipt.setGiven(true);
+            });
         } else if (result.isPresent() && result.get() == ButtonType.CANCEL) {
             dispenseMedicine();
         }
+        Datasource.getInstance().saveMedicineSupply(MedicineSupply.getInstance());
         loadMedicine();
     }
 
     public void showReceiptDetails() {
         Receipt selectedReceipt = receiptsTableView.getSelectionModel().getSelectedItem();
-        if(selectedReceipt == null) {
+        if (selectedReceipt == null) {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("No Patient Selected");
             alert.setHeaderText(null);
@@ -226,7 +345,8 @@ public class PharmacistController {
 
         // Create a text area for additional instructions or information
         Label additionalInfoLabel = new Label();
-        additionalInfoLabel.setText("Contact us via our contact addresses for error reporting. \nCheck out our tutorial content on our website.");
+        additionalInfoLabel.setText(
+                "Contact us via our contact addresses for error reporting. \nCheck out our tutorial content on our website.");
 
         // Create labels and fields for email, phone, and website
         Label emailLabel = new Label("Email:");
@@ -283,7 +403,8 @@ public class PharmacistController {
 
         // Create a text area for additional instructions or information
         Label additionalInfoLabel = new Label();
-        additionalInfoLabel.setText("Who are we?\nWe are computer engineering students at Dokuz Eylül University. \nWe developed this project for our school's OOP class. You can contact us via the following e-mail addresses.");
+        additionalInfoLabel.setText(
+                "Who are we?\nWe are computer engineering students at Dokuz Eylül University. \nWe developed this project for our school's OOP class. You can contact us via the following e-mail addresses.");
 
         // Create labels and fields for email, phone, and website
         Label emailLabel = new Label("Abdulkadir Öksüz:");
@@ -378,9 +499,9 @@ public class PharmacistController {
         dialog.getDialogPane().getButtonTypes().addAll(applyButton, cancelButton);
 
         Optional<ButtonType> result = dialog.showAndWait();
-        if(result.isPresent() && result.get() == applyButton) {
+        if (result.isPresent() && result.get() == applyButton) {
             applyButtonFunctionAdd(addMedicineController);
-        }else if(result.isPresent() && result.get() == cancelButton){
+        } else if (result.isPresent() && result.get() == cancelButton) {
             dialog.close();
         }
     }
@@ -391,7 +512,7 @@ public class PharmacistController {
             if (selectedTab.equals(stockTab)) {
 
                 MedicineSupply.SupplyItem selectedItem = medicineTableView.getSelectionModel().getSelectedItem();
-                if(selectedItem == null) {
+                if (selectedItem == null) {
                     Alert alert = new Alert(Alert.AlertType.INFORMATION);
                     alert.setTitle("No Item Selected");
                     alert.setHeaderText(null);
@@ -425,9 +546,9 @@ public class PharmacistController {
                 dialog.getDialogPane().getButtonTypes().addAll(applyButton, cancelButton);
 
                 Optional<ButtonType> result = dialog.showAndWait();
-                if(result.isPresent() && result.get() == applyButton) {
+                if (result.isPresent() && result.get() == applyButton) {
                     applyButtonFunctionSupply(selectedItem, supplyMedicineController);
-                }else if(result.isPresent() && result.get() == cancelButton){
+                } else if (result.isPresent() && result.get() == cancelButton) {
                     dialog.close();
                 }
 
@@ -435,7 +556,7 @@ public class PharmacistController {
         }
     }
 
-    private void errorDialogAdd(){
+    private void errorDialogAdd() {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Error");
         alert.setHeaderText("An error occured");
@@ -443,7 +564,7 @@ public class PharmacistController {
         alert.showAndWait();
     }
 
-    private void errorDialogSupply(){
+    private void errorDialogSupply() {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Error");
         alert.setHeaderText("An error occured while giving an order.");
@@ -451,7 +572,7 @@ public class PharmacistController {
         alert.showAndWait();
     }
 
-    private void applyButtonFunctionAdd(AddMedicineController addMedicineController){
+    private void applyButtonFunctionAdd(AddMedicineController addMedicineController) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Confirmation");
         alert.setHeaderText("Confirmation Dialog");
@@ -459,7 +580,7 @@ public class PharmacistController {
 
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
-            if (!addMedicineController.addMedicine()){
+            if (!addMedicineController.addMedicine()) {
                 errorDialogAdd();
                 addMedicine();
             }
@@ -469,7 +590,8 @@ public class PharmacistController {
         loadMedicine();
     }
 
-    private void applyButtonFunctionSupply(MedicineSupply.SupplyItem selectedItem, SupplyMedicineController supplyMedicineController){
+    private void applyButtonFunctionSupply(MedicineSupply.SupplyItem selectedItem,
+            SupplyMedicineController supplyMedicineController) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Confirmation");
         alert.setHeaderText("Confirmation Dialog");
@@ -477,9 +599,9 @@ public class PharmacistController {
 
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
-            if (!supplyMedicineController.increaseAmount(MedicineSupply.getInstance(), selectedItem)){
+            if (!supplyMedicineController.increaseAmount(MedicineSupply.getInstance(), selectedItem)) {
                 errorDialogSupply();
-                supplyMedicine();
+                Datasource.getInstance().saveMedicineSupply(MedicineSupply.getInstance());
             }
         } else if (result.isPresent() && result.get() == ButtonType.CANCEL) {
             supplyMedicine();
@@ -492,7 +614,7 @@ public class PharmacistController {
             if (selectedTab.equals(stockTab)) {
 
                 MedicineSupply.SupplyItem selectedItem = medicineTableView.getSelectionModel().getSelectedItem();
-                if(selectedItem == null) {
+                if (selectedItem == null) {
                     Alert alert = new Alert(Alert.AlertType.INFORMATION);
                     alert.setTitle("No Item Selected");
                     alert.setHeaderText(null);
@@ -526,9 +648,9 @@ public class PharmacistController {
                 dialog.getDialogPane().getButtonTypes().addAll(applyButton, cancelButton);
 
                 Optional<ButtonType> result = dialog.showAndWait();
-                if(result.isPresent() && result.get() == applyButton) {
+                if (result.isPresent() && result.get() == applyButton) {
                     applyButtonFunctionReduce(selectedItem, reduceMedicineController);
-                }else if(result.isPresent() && result.get() == cancelButton){
+                } else if (result.isPresent() && result.get() == cancelButton) {
                     dialog.close();
                 }
 
@@ -536,7 +658,7 @@ public class PharmacistController {
         }
     }
 
-    private void errorDialogReduce(){
+    private void errorDialogReduce() {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Error");
         alert.setHeaderText("An error occurred during reduction.");
@@ -544,7 +666,8 @@ public class PharmacistController {
         alert.showAndWait();
     }
 
-    private void applyButtonFunctionReduce(MedicineSupply.SupplyItem selectedItem, ReduceMedicineController reduceMedicineController){
+    private void applyButtonFunctionReduce(MedicineSupply.SupplyItem selectedItem,
+            ReduceMedicineController reduceMedicineController) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Confirmation");
         alert.setHeaderText("Confirmation Dialog");
@@ -552,7 +675,7 @@ public class PharmacistController {
 
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
-            if (!reduceMedicineController.decreaseAmount(MedicineSupply.getInstance(), selectedItem)){
+            if (!reduceMedicineController.decreaseAmount(MedicineSupply.getInstance(), selectedItem)) {
                 errorDialogReduce();
                 reduceMedicine();
             }
@@ -560,7 +683,6 @@ public class PharmacistController {
             reduceMedicine();
         }
     }
-
 
     private void copyToClipboard(String text) {
         Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();

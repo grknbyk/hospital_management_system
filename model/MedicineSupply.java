@@ -8,6 +8,13 @@ import utils.Pair;
 
 import java.util.TreeMap;
 
+import javafx.beans.Observable;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.value.ObservableIntegerValue;
+import javafx.beans.value.ObservableObjectValue;
+
 public class MedicineSupply {
     private TreeMap<Medicine, SupplyItem> inventory = new TreeMap<>();
     private static MedicineSupply instance = new MedicineSupply();
@@ -36,7 +43,7 @@ public class MedicineSupply {
         SupplyItem oldStock = inventory.getOrDefault(medicine, null);
         if (oldStock == null)
             oldStock = new SupplyItem(medicine, 0);
-        oldStock.stock += amount;
+        oldStock.stock.set(oldStock.stock.get() + amount);
 
         inventory.put(medicine, oldStock);
     }
@@ -45,7 +52,7 @@ public class MedicineSupply {
         SupplyItem oldStock = inventory.getOrDefault(medicine, null);
         if (oldStock == null)
             oldStock = new SupplyItem(medicine, 0);
-        oldStock.stock = amount;
+        oldStock.stock.set(amount);
 
         inventory.put(medicine, oldStock);
     }
@@ -57,11 +64,11 @@ public class MedicineSupply {
      * amount.
      */
     public boolean consumeStock(Medicine medicine, int amount) {
-        if (!inventory.containsKey(medicine) || inventory.get(medicine).stock < amount)
+        if (!inventory.containsKey(medicine) || inventory.get(medicine).stock.get() < amount)
             return false;
 
         SupplyItem oldStock = inventory.get(medicine);
-        oldStock.stock -= amount;
+        oldStock.stock.set((oldStock.stock.get()- amount));
         inventory.put(medicine, oldStock);
 
         return true;
@@ -75,32 +82,32 @@ public class MedicineSupply {
     }
 
     public static class SupplyItem {
-        private Medicine med;
-        private int stock;
+        ObjectProperty<Medicine> med = new SimpleObjectProperty<>();
+        SimpleIntegerProperty stock = new SimpleIntegerProperty();
 
         public SupplyItem(Medicine med, int stock) {
-            this.med = med;
-            this.stock = stock;
+            this.med.set(med);
+            this.stock.set(stock);
         }
 
         public String getName() {
-            return med.getName();
+            return med.get().getName();
         }
 
         public MedicineType getType() {
-            return med.getType();
+            return med.get().getType();
         }
 
         public int getId() {
-            return med.getId();
+            return med.get().getId();
         }
 
         public int getStock() {
-            return stock;
+            return stock.get();
         }
 
         public Medicine getMedicine() {
-            return med;
+            return med.get();
         }
     }
 }

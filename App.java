@@ -18,7 +18,7 @@ public class App extends Application {
 
         Image icon = new Image(getClass().getResourceAsStream("ui/imgs/main-icon.png"));
         primaryStage.getIcons().add(icon);
-
+        
         primaryStage.setTitle("Hospital Management System");
         primaryStage.setScene(new Scene(root, 600, 400));
         primaryStage.show();
