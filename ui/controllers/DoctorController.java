@@ -312,7 +312,7 @@ public class DoctorController {
         dialog.initOwner(DoctorPanel.getScene().getWindow());
         dialog.setTitle("Prescribe");
         FXMLLoader fxmlLoader = new FXMLLoader();
-        fxmlLoader.setLocation(getClass().getResource("../scene/PatientPrescribe.fxml"));
+        fxmlLoader.setLocation(getClass().getResource("../scene/receipt/PatientPrescribe.fxml"));
         try {
             dialog.getDialogPane().setContent(fxmlLoader.load());
             PatientPrescribeController patientPrescribeController = fxmlLoader.getController();
@@ -351,7 +351,7 @@ public class DoctorController {
         dialog.initOwner(DoctorPanel.getScene().getWindow());
         dialog.setTitle("Patient Data");
         FXMLLoader fxmlLoader = new FXMLLoader();
-        fxmlLoader.setLocation(getClass().getResource("../scene/PatientData.fxml"));
+        fxmlLoader.setLocation(getClass().getResource("../scene/patient/PatientData.fxml"));
         try {
             dialog.getDialogPane().setContent(fxmlLoader.load());
             PatientDataController patientDataController = fxmlLoader.getController();
@@ -368,7 +368,7 @@ public class DoctorController {
     }
 
     public void logout(ActionEvent event) throws IOException {
-        Parent root = FXMLLoader.load(getClass().getResource("../scene/LoginScene.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("../scene/panels/LoginScene.fxml"));
         Scene scene = new Scene(root);
         Stage window = (Stage) logoutMenuItem.getParentPopup().getOwnerNode().getScene().getWindow();
         window.setTitle("Hospital Management System");

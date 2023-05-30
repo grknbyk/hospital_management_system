@@ -14,7 +14,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
-import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
@@ -65,15 +64,15 @@ public class ReceptionistController {
         options.setGraphic(imageView);
     }
 
-    public void loadPatients(){
-        //fill the table
+    public void loadPatients() {
+        // fill the table
         patients = FXCollections.observableArrayList(Datasource.getInstance().queryPatientsNullStaff());
         patientTableView.setItems(patients);
     }
 
     public void denyPatient() {
         Patient selectedPatient = patientTableView.getSelectionModel().getSelectedItem();
-        if(selectedPatient == null) {
+        if (selectedPatient == null) {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("No Patient Selected");
             alert.setHeaderText(null);
@@ -89,13 +88,72 @@ public class ReceptionistController {
 
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
-            // hasta silme
+            Datasource.getInstance().deletePatientById(selectedPatient.getId());
+            patients.remove(selectedPatient);
+            patientTableView.refresh();
         }
     }
 
     public void registerPatient() {
+        RegisterPatientController registerPatientController;
+        Dialog<ButtonType> dialog = new Dialog<>();
+        dialog.initOwner(receptionistPanel.getScene().getWindow());
+        dialog.setTitle("Register Patient");
+        FXMLLoader fxmlLoader = new FXMLLoader();
+        fxmlLoader.setLocation(getClass().getResource("../scene/patient/RegisterPatient.fxml"));
+        try {
+            dialog.getDialogPane().setContent(fxmlLoader.load());
+            registerPatientController = fxmlLoader.getController();
+            registerPatientController.registerPatient();
+        } catch (IOException e) {
+            System.out.println("Couldn't load the dialog");
+            e.printStackTrace();
+            return;
+        }
+        dialog.getDialogPane().getScene().getWindow().setOnCloseRequest(e -> {
+            dialog.close();
+        });
+
+        ButtonType applyButton = new ButtonType("Register");
+        ButtonType cancelButton = new ButtonType("Cancel");
+
+        dialog.getDialogPane().getButtonTypes().addAll(applyButton, cancelButton);
+
+        Optional<ButtonType> result = dialog.showAndWait();
+        if (result.isPresent() && result.get() == applyButton) {
+            Boolean r = applyRegisterPatient();
+            if (r) {
+                Patient patient = registerPatientController.returnPatient(null);
+                if (patient != null) {
+                    Datasource.getInstance().addNewPatient(patient);
+                } else {
+                    registerPatient();
+                }
+            }
+        } else if (result.isPresent() && result.get() == cancelButton) {
+            dialog.close();
+        }
+    }
+
+    private boolean applyRegisterPatient() {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Confirmation");
+        alert.setHeaderText("Confirmation Dialog");
+        alert.setContentText("Are you sure you want to save the changes?");
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            return true;
+        } else if (result.isPresent() && result.get() == ButtonType.CANCEL) {
+            registerPatient();
+        }
+        return false;
+    }
+
+    public void assignPatient() {
+        RegisterPatientController registerPatientController;
         Patient selectedPatient = patientTableView.getSelectionModel().getSelectedItem();
-        if(selectedPatient == null) {
+        if (selectedPatient == null) {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("No Patient Selected");
             alert.setHeaderText(null);
@@ -108,11 +166,12 @@ public class ReceptionistController {
         dialog.initOwner(receptionistPanel.getScene().getWindow());
         dialog.setTitle("Register Patient");
         FXMLLoader fxmlLoader = new FXMLLoader();
-        fxmlLoader.setLocation(getClass().getResource("../scene/RegisterPatient.fxml"));
+        fxmlLoader.setLocation(getClass().getResource("../scene/patient/RegisterPatient.fxml"));
         try {
             dialog.getDialogPane().setContent(fxmlLoader.load());
-            RegisterPatientController registerPatientController = fxmlLoader.getController();
-            registerPatientController.updateFields(selectedPatient);
+            registerPatientController = fxmlLoader.getController();
+            registerPatientController.assignPatient(selectedPatient);
+            ;
         } catch (IOException e) {
             System.out.println("Couldn't load the dialog");
             e.printStackTrace();
@@ -122,20 +181,30 @@ public class ReceptionistController {
             dialog.close();
         });
 
-        ButtonType applyButton = new ButtonType("Apply");
+        ButtonType applyButton = new ButtonType("Attend");
         ButtonType cancelButton = new ButtonType("Cancel");
 
         dialog.getDialogPane().getButtonTypes().addAll(applyButton, cancelButton);
 
         Optional<ButtonType> result = dialog.showAndWait();
-        if(result.isPresent() && result.get() == applyButton) {
-            applyButtonFunction(selectedPatient);
-        }else if(result.isPresent() && result.get() == cancelButton){
+        if (result.isPresent() && result.get() == applyButton) {
+            Boolean r = applyAssignButtonFunction();
+            if (r) {
+                Patient editedPatient = registerPatientController.returnPatient(selectedPatient);
+                if (editedPatient == null) {
+                    assignPatient();
+                } else {
+                    Datasource.getInstance().updatePatient(editedPatient);
+                    patients.remove(selectedPatient);
+                    patientTableView.refresh();
+                }
+            }
+        } else if (result.isPresent() && result.get() == cancelButton) {
             dialog.close();
         }
     }
 
-    private void applyButtonFunction(Patient patient){
+    private boolean applyAssignButtonFunction() {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Confirmation");
         alert.setHeaderText("Confirmation Dialog");
@@ -143,10 +212,11 @@ public class ReceptionistController {
 
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
-            //update patient here
+            return true;
         } else if (result.isPresent() && result.get() == ButtonType.CANCEL) {
-            registerPatient();
+            assignPatient();
         }
+        return false;
     }
 
     public void showProfileDialog() {
@@ -154,7 +224,7 @@ public class ReceptionistController {
     }
 
     public void logout(ActionEvent event) throws IOException {
-        Parent root = FXMLLoader.load(getClass().getResource("../scene/LoginScene.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("../scene/panels/LoginScene.fxml"));
         Scene scene = new Scene(root);
         Stage window = (Stage) logoutMenuItem.getParentPopup().getOwnerNode().getScene().getWindow();
         window.setTitle("Hospital Management System");
@@ -170,7 +240,8 @@ public class ReceptionistController {
 
         // Create a text area for additional instructions or information
         Label additionalInfoLabel = new Label();
-        additionalInfoLabel.setText("Contact us via our contact addresses for error reporting. \nCheck out our tutorial content on our website.");
+        additionalInfoLabel.setText(
+                "Contact us via our contact addresses for error reporting. \nCheck out our tutorial content on our website.");
 
         // Create labels and fields for email, phone, and website
         Label emailLabel = new Label("Email:");
@@ -227,7 +298,8 @@ public class ReceptionistController {
 
         // Create a text area for additional instructions or information
         Label additionalInfoLabel = new Label();
-        additionalInfoLabel.setText("Who are we?\nWe are computer engineering students at Dokuz Eylül University. \nWe developed this project for our school's OOP class. You can contact us via the following e-mail addresses.");
+        additionalInfoLabel.setText(
+                "Who are we?\nWe are computer engineering students at Dokuz Eylül University. \nWe developed this project for our school's OOP class. You can contact us via the following e-mail addresses.");
 
         // Create labels and fields for email, phone, and website
         Label emailLabel = new Label("Abdulkadir Öksüz:");

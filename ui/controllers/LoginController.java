@@ -55,6 +55,9 @@ public class LoginController {
     private void login(ActionEvent event) throws IOException {
         String username = usernameTextField.getText();
         String password = passwordTextField.getText();
+
+        username = "receptionist";
+        password = "receptionist";
         
 		String status = Datasource.getInstance().queryLogin(username, password);
         
@@ -122,7 +125,7 @@ public class LoginController {
     private void showManagerPanel(ActionEvent event, String username) throws IOException {
 
         // Get the FXMLLoader
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("../scene/ManagerScene.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("../scene/panels/ManagerScene.fxml"));
         // Load the second controller
         Parent root = loader.load();
         ManagerController managerController = loader.getController();
@@ -141,7 +144,7 @@ public class LoginController {
 
     private void showDoctorPanel(ActionEvent event, String username) throws IOException {
         // Get the FXMLLoader
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("../scene/DoctorScene.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("../scene/panels/DoctorScene.fxml"));
         // Load the second controller
         Parent root = loader.load();
         DoctorController doctorController = loader.getController();
@@ -158,7 +161,7 @@ public class LoginController {
 
     private void showNursePanel(ActionEvent event, String username) throws IOException {
         // Get the FXMLLoader
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("../scene/NurseScene.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("../scene/panels/NurseScene.fxml"));
         // Load the second controller
         Parent root = loader.load();
         NurseController nurseController = loader.getController();
@@ -175,7 +178,7 @@ public class LoginController {
 
     private void showReceptionistPanel(ActionEvent event, String username) throws IOException {
 
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("../scene/RecepsionistScene.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("../scene/panels/RecepsionistScene.fxml"));
         Parent root = loader.load();
         ReceptionistController receptionistController = loader.getController();
         receptionistController.setUsername(username);
@@ -191,7 +194,7 @@ public class LoginController {
 
     private void showPharmacistPanel(ActionEvent event, String username) throws IOException {
 
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("../scene/PharmacistScene.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("../scene/panels/PharmacistScene.fxml"));
         Parent root = loader.load();
         PharmacistController pharmacistController = loader.getController();
         pharmacistController.setUsername(username);
