@@ -23,7 +23,7 @@ SQLite for database operations <br>
   If you encounter any issues related to JavaFX dependencies, make sure to add the following VM arguments in your IDE:<br>
   "vmArgs": "--module-path relativePath/javafx-sdk-18.0.2/lib --add-modules javafx.controls,javafx.fxml"
 
-## Contributors
+## [Contributors](contribitons.md)
 [Gürkan Bıyık](https://github.com/grknbyk) <br>
 [Can Çelenay](https://github.com/Brogolem35) <br>
 [Abdulkadir Öksüz](https://github.com/abdulkadiroksuz) <br>
