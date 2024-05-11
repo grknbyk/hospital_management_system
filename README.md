@@ -10,6 +10,9 @@ Java programming language <br>
 JavaFX library for the graphical user interface <br>
 SQLite for database operations <br>
 
+## Screenshots
+![](https://github.com/grknbyk/hospital_management_system/blob/master/screenshots/demo.gif)
+
 ## How to Run
 1- Clone the repository: git clone [hospital_management_system](https://github.com/grknbyk/hospital_management_system.git) <br>
 2- Open the project in your preferred Java IDE. <br>
